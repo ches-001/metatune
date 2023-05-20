@@ -28,7 +28,7 @@ class SVCModel(SampleClassMixin):
         params["degree"] = trial.suggest_int("degree", *self.degree_space, log=False)
         params["gamma"] = trial.suggest_categorical("gamma", self.gamma_space)
         params["coef0"] = trial.suggest_float("coef0", *self.coef0_space, log=False)
-        params["tolerence"] = trial.suggest_float("tolerence", *self.tol_space, log=False)
+        params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
         params["C"] = trial.suggest_float("C", *self.C_space, log=False)
         
         return params
