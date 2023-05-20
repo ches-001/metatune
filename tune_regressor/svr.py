@@ -1,4 +1,5 @@
 from baseline import SampleClassMixin
+from optuna.trial import Trial
 from dataclasses import dataclass
 from typing import Iterable, Optional, Dict, Any
 from sklearn.svm import SVR
@@ -20,8 +21,8 @@ class SVRModel(SampleClassMixin):
     C_space: Iterable[float] = (0.9, 1.0)
     epsilon_space: Iterable[float] = (0.1, 0.5)
     model: Any = None
-
-    def _sample_params(self, trial: Any = None) -> Optional[Dict[str, Any]]:
+    
+    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
         super()._sample_params(trial)
 
         params = {}
@@ -34,8 +35,8 @@ class SVRModel(SampleClassMixin):
         params["epsilon_space"] = trial.suggest_float("epsilon", *self.tol_space, log=False)
 
         return params
-
-    def sample_model(self, trial: Any = None) -> Any:
+    
+    def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().model(trial)
 
         params = self._sample_params(trial)
