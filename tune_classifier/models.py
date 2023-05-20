@@ -24,7 +24,7 @@ class DecisionTreeClassifierModel(SampleClassMixin):
     # min_samples_leaf: Iterable[float] = (1, 9)
     
     min_weight_fraction_leaf: Iterable[float] = (0.0, 0.5)
-    max_features: Iterable[str] = ("auto", "sqrt", "log2")
+    max_features: Iterable[str] = ("sqrt", "log2")
     max_leaf_nodes: Iterable[int] = (1, 1000)
     min_impurity_decrease: Iterable[float] = (0.0, 1.0)
     ccp_alpha: Iterable[float] = (0.0, 1.0)
@@ -52,8 +52,7 @@ class DecisionTreeClassifierModel(SampleClassMixin):
         params = self._sample_params(trial)
         model = DecisionTreeClassifier(
             **params,
-            class_weight="balanced",
-            shrinking=True)
+            class_weight="balanced")
         
         self.model = model
         return model
