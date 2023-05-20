@@ -47,7 +47,7 @@ class BaseTest:
     def test_study(self):
         try:
             study = optuna.create_study()  # Create a new study.
-            study.optimize(objective_factory(self.model, task=self.task), n_trials=2)
+            study.optimize(objective_factory(self.model, task=self.task), n_trials=5)
             best = study.best_params
         except:
             best = None

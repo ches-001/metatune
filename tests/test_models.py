@@ -1,6 +1,6 @@
 from baseline.mixin import SampleClassMixin
-from tune_regressor import *
-from tune_classifier import *
+import tune_classifier
+import tune_regressor
 from tests.utils import BaseTest
 
 
@@ -8,21 +8,21 @@ from tests.utils import BaseTest
 
 
 class TestSVR(BaseTest):
-    model: SampleClassMixin = SVRModel
+    model: SampleClassMixin = tune_regressor.SVRModel
     task: str = "regression"
 
 
 class TestDecisionTreeRegressor(BaseTest):
-    model: SampleClassMixin = DecisionTreeRegressorModel
+    model: SampleClassMixin = tune_regressor.DecisionTreeRegressorModel
     task: str = "regression"
 
 
 class TestSVC(BaseTest):
-    model: SampleClassMixin = SVCModel
+    model: SampleClassMixin = tune_classifier.SVCModel
     task: str = "classification"
 
 
 class TestDecisionTreeClassifier(BaseTest):
-    model: SampleClassMixin = DecisionTreeClassifierModel
+    model: SampleClassMixin = tune_classifier.DecisionTreeClassifierModel
     task: str = "classification"
 
