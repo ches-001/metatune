@@ -11,13 +11,13 @@ from sklearn.naive_bayes import GaussianNB
 
 @dataclass
 class SVRModel(SampleClassMixin):
-    kernel_space: Iterable = ("linear", "poly", "rbf", "sigmoid")
-    degree_space: Iterable = (1, 5)
-    gamma_space: Iterable = ("scale", "auto")
-    coef0_space: Iterable = (0.0, 0.5)
-    tol_space: Iterable = (1e-6, 1e-3)
-    C_space: Iterable = (0.9, 1.0)
-    epsilon_space = (0.1, 0.5)
+    kernel_space: Iterable[str] = ("linear", "poly", "rbf", "sigmoid")
+    degree_space: Iterable[int] = (1, 5)
+    gamma_space: Iterable[str] = ("scale", "auto")
+    coef0_space: Iterable[float] = (0.0, 0.5)
+    tol_space: Iterable[float] = (1e-6, 1e-3)
+    C_space: Iterable[float] = (0.9, 1.0)
+    epsilon_space: Iterable[float] = (0.1, 0.5)
     model: Any = None
     
     def _sample_params(self, trial: Any=None) -> Optional[Dict[str, Any]]:
