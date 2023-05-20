@@ -24,7 +24,6 @@ class SVRModel(SampleClassMixin):
         super()._sample_params(trial)
         
         params = {}
-        params["scaler"] = trial.suggest_categorical("scaler", self.scaler_space)
         params["kernel"] = trial.suggest_categorical("kernel", self.kernel_space)
         params["degree"] = trial.suggest_int("degree", *self.degree_space, log=False)
         params["gamma"] = trial.suggest_categorical("gamma", self.gamma_space)
@@ -35,7 +34,7 @@ class SVRModel(SampleClassMixin):
 
         return params
     
-    def sampled_model(self, trial: Any=None) -> Any:
+    def sample_model(self, trial: Any=None) -> Any:
         super().model(trial)
         
         params = self._sample_params(trial)
