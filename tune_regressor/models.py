@@ -31,7 +31,7 @@ class SVRModel(SampleClassMixin):
         params["coef0"] = trial.suggest_float("coef0", *self.coef0_space, log=False)
         params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
         params["C"] = trial.suggest_float("C", *self.C_space, log=False)
-        params["epsilon_space"] = trial.suggest_float("epsilon", *self.tol_space, log=False)
+        params["epsilon"] = trial.suggest_float("epsilon", *self.tol_space, log=False)
 
         return params
     
