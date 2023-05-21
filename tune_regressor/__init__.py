@@ -19,4 +19,4 @@ def get_entities(target_module: str) -> Iterable[Tuple[str, object]]:
     return tuning_entities
 
 tuning_entities = list(map(get_entities, __all__))
-tuning_entities = [_class for group in tuning_entities for _class in group]
+tuning_entities = dict(sum(tuning_entities, []))
