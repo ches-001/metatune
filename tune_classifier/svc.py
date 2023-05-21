@@ -40,7 +40,9 @@ class SVCModel(SampleClassMixin):
         params = self._sample_params(trial)
         model = SVC(
             **params, 
-            class_weight="balanced",)
+            class_weight="balanced",
+            shrinking=True, 
+            probability=True)
         
         self.model = model
         return model
