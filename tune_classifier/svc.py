@@ -3,13 +3,6 @@ from optuna.trial import Trial
 from dataclasses import dataclass
 from typing import Iterable, Optional, Dict, Any
 from sklearn.svm import SVC
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.gaussian_process import GaussianProcessClassifier
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.linear_model import LogisticRegression
-from sklearn.naive_bayes import BernoulliNB
-
 
 @dataclass
 class SVCModel(SampleClassMixin):
