@@ -16,6 +16,9 @@ class TestDecisionTreeRegressor(BaseTest):
     model: SampleClassMixin = tune_regressor.DecisionTreeRegressorModel
     task: str = "regression"
 
+class TestGaussianNBModel(BaseTest):
+    model: SampleClassMixin = tune_regressor.GaussianNBModel
+    task: str = "regression"
 
 class TestSVC(BaseTest):
     model: SampleClassMixin = tune_classifier.SVCModel
@@ -26,3 +29,6 @@ class TestDecisionTreeClassifier(BaseTest):
     model: SampleClassMixin = tune_classifier.DecisionTreeClassifierModel
     task: str = "classification"
 
+class TestBernoulliNBModel(BaseTest):
+    model: SampleClassMixin = tune_classifier.BernoulliNBModel
+    task: str = "classification"

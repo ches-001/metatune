@@ -4,7 +4,6 @@ from dataclasses import dataclass
 from typing import Iterable, Optional, Dict, Any
 from sklearn.naive_bayes import GaussianNB
 
-#The Chef is here
 @dataclass
 class GaussianNBModel(SampleClassMixin):
     priors_space: Optional[Iterable[float]] = None
@@ -17,15 +16,17 @@ class GaussianNBModel(SampleClassMixin):
         params = {}
         
         if self.priors_space is not None:
-            assert sum(self.priors_space) == 1, "Sum of prior must be equal to 1"   #I dey cook wetin I no know 
+            assert sum(self.priors_space) == 1, "Sum of prior must be equal to 1" 
             params["priors"] = trial.suggest_categorical("priors", [self.priors_space])
+        else:
+            params['priors'] = None
         
         if self.var_smoothing_space is not None:
             params["var_smoothing"] = trial.suggest_float("var_smoothing", *self.var_smoothing_space, log=False)
         else:
             params["var_smoothing"] = 1e-9
         
-        return params   #las las if anything happen I go blame am on chatGPT
+        return params
 
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().model(trial)
@@ -37,4 +38,3 @@ class GaussianNBModel(SampleClassMixin):
         self.model = model
         return model
 
-#The Chef was here
