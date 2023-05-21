@@ -48,8 +48,7 @@ class DecisionTreeRegressorModel(SampleClassMixin):
         super().model(trial)
         
         params = self._sample_params(trial)
-        model = DecisionTreeRegressor(
-            **params,)
+        model = DecisionTreeRegressor(**params)
         
         self.model = model
         return model

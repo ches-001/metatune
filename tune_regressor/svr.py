@@ -12,6 +12,7 @@ class SVRModel(SampleClassMixin):
     coef0_space: Iterable[float] = (0.0, 0.5)
     tol_space: Iterable[float] = (1e-6, 1e-3)
     C_space: Iterable[float] = (0.9, 1.0)
+    shrinking_space: Iterable[bool] = (True, )
     epsilon_space: Iterable[float] = (0.1, 0.5)
     model: Any = None
     
@@ -25,6 +26,7 @@ class SVRModel(SampleClassMixin):
         params["coef0"] = trial.suggest_float("coef0", *self.coef0_space, log=False)
         params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
         params["C"] = trial.suggest_float("C", *self.C_space, log=False)
+        params["shrinking"] = trial.suggest_categorical("shrinking", self.shrinking_space)
         params["epsilon"] = trial.suggest_float("epsilon", *self.tol_space, log=False)
 
         return params
@@ -33,9 +35,7 @@ class SVRModel(SampleClassMixin):
         super().model(trial)
         
         params = self._sample_params(trial)
-        model = SVR(
-            **params, 
-            shrinking=True)
+        model = SVR(**params)
         
         self.model = model
         return model

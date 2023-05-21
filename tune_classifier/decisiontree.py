@@ -19,6 +19,7 @@ class DecisionTreeClassifierModel(SampleClassMixin):
     max_leaf_nodes_space: Iterable[int] = (1, 1000)
     min_impurity_decrease_space: Iterable[float] = (0.0, 1.0)
     ccp_alpha_space: Iterable[float] = (0.0, 1.0)
+    class_weight_space: Iterable[str] = ("balanced", )
     model: Any = None
     
     def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
@@ -42,15 +43,14 @@ class DecisionTreeClassifierModel(SampleClassMixin):
         params["max_leaf_nodes"] = trial.suggest_int("max_leaf_nodes", *self.max_leaf_nodes_space, log=False)
         params["min_impurity_decrease"] = trial.suggest_float("min_impurity_decrease", *self.min_impurity_decrease_space, log=False)
         params["ccp_alpha"] = trial.suggest_float("ccp_alpha", *self.ccp_alpha_space, log=False)
+        params["class_weight"] = trial.suggest_categorical("class_weight", self.class_weight_space)
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().model(trial)
         
         params = self._sample_params(trial)
-        model = DecisionTreeClassifier(
-            **params,
-            class_weight="balanced")
+        model = DecisionTreeClassifier(**params)
         
         self.model = model
         return model
