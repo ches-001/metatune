@@ -10,6 +10,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import BernoulliNB
 
+
 @dataclass
 class SVCModel(SampleClassMixin):
     kernel_space: Iterable[str] = ("linear", "poly", "rbf", "sigmoid")

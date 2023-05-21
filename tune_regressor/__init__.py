@@ -1,10 +1,12 @@
 import inspect
 from tune_regressor.svr import SVRModel
+from tune_regressor.decisiontree import DecisionTreeRegressorModel
 from types import ModuleType
 from typing import Iterable, Tuple, Dict
 
 __all__: Iterable[str] = [
     "tune_regressor.svr",
+    "tune_regressor.decisiontree",
 ]
 
 def get_entities(target_module: str) -> Iterable[Tuple[str, object]]:

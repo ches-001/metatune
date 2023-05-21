@@ -1,10 +1,12 @@
 import inspect
 from tune_classifier.svc import SVCModel
+from tune_classifier.decisiontree import DecisionTreeClassifierModel
 from types import ModuleType
 from typing import Iterable, Tuple, Dict
 
 __all__: Iterable[str] = [
     "tune_classifier.svc",
+    "tune_classifier.decisiontree",
 ]
 
 def get_entities(target_module: str) -> Iterable[Tuple[str, object]]:
