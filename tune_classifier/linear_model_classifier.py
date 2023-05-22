@@ -8,7 +8,7 @@ from utils.linear_model_utils import get_valid_solver_info
 
 @dataclass
 class LogisticRegressionModel(SampleClassMixin):
-    penalty_space: Iterable[bool] = ("l1", "l2", "elasticnet", None)
+    penalty_space: Iterable[Optional[str]] = ("l1", "l2", "elasticnet", None)
     dual_space: Iterable[bool] = (True, False)
     tol_space: Iterable[float] = (1e-6, 1e-3)
     C_space: Iterable[float] = (0.9, 1.0)
