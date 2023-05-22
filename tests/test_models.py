@@ -7,64 +7,56 @@ from tests.utils import BaseTest
 # run python -m pytest -v
 
 
-# classification tests
-class TestDecisionTreeClassifier(BaseTest):
-    model: SampleClassMixin = tune_classifier.DecisionTreeClassifierModel()
-    task: str = "classification"
-
-
-class TestExtraTreeClassifier(BaseTest):
-    model: SampleClassMixin = tune_classifier.ExtraTreeClassifierModel(min_samples_leaf_space=(0.5, 0.9))
-    task: str = "classification"
-
-
-class TestLinearSVC(BaseTest):
-    model: SampleClassMixin = tune_classifier.LinearSVCModel()
-    task: str = "classification"
-
-
-class TestLogisticRegressor(BaseTest):
-    model: SampleClassMixin = tune_classifier.LogisticRegressionModel()
-    task: str = "classification"
-
-
-class TestSVC(BaseTest):
-    model: SampleClassMixin = tune_classifier.SVCModel()
-    task: str = "classification"
-
-
-# regression tests
-class TestDecisionTreeRegressor(BaseTest):
-    model: SampleClassMixin = tune_regressor.DecisionTreeRegressorModel()
+class TestSVR(BaseTest):
+    model: SampleClassMixin = tune_regressor.SVRModel
     task: str = "regression"
 
 
-class TestExtraTreeRegressor(BaseTest):
-    model: SampleClassMixin = tune_regressor.ExtraTreeRegressorModel()
+class TestDecisionTreeRegressor(BaseTest):
+    model: SampleClassMixin = tune_regressor.DecisionTreeRegressorModel
+    task: str = "regression"
+
+
+class TestSVC(BaseTest):
+    model: SampleClassMixin = tune_classifier.SVCModel
+    task: str = "classification"
+
+
+class TestDecisionTreeClassifier(BaseTest):
+    model: SampleClassMixin = tune_classifier.DecisionTreeClassifierModel
+    task: str = "classification"
+
+
+class TestLinearRegressor(BaseTest):
+    model: SampleClassMixin = tune_regressor.LinearRegressionModel
     task: str = "regression"
 
 
 class TestLassoRegressor(BaseTest):
-    model: SampleClassMixin = tune_regressor.LassoModel()
+    model: SampleClassMixin = tune_regressor.LassoModel
     task: str = "regression"
 
 
-class TestLinearRegressor(BaseTest):
-    model: SampleClassMixin = tune_regressor.LinearRegressionModel()
+class TestRidgeRegressor(BaseTest):
+    model: SampleClassMixin = tune_regressor.RidgeModel
     task: str = "regression"
+
+
+class TestLogisticRegressor(BaseTest):
+    model: SampleClassMixin = tune_classifier.LogisticRegressionModel
+    task: str = "classification"
+
+
+class TestLinearSVC(BaseTest):
+    model: SampleClassMixin = tune_classifier.LinearSVCModel
+    task: str = "classification"
 
 
 class TestLinearSVR(BaseTest):
-    model: SampleClassMixin = tune_regressor.LinearSVRModel()
-    task: str = "regression"
-
-    
-class TestRidgeRegressor(BaseTest):
-    model: SampleClassMixin = tune_regressor.RidgeModel()
+    model: SampleClassMixin = tune_regressor.LinearSVRModel
     task: str = "regression"
 
 
-class TestSVR(BaseTest):
-    model: SampleClassMixin = tune_regressor.SVRModel()
-    task: str = "regression"
-
+class TestRandomForestClassifier(BaseTest):
+    model: SampleClassMixin = tune_classifier.RandomForestClassifierModel
+    task: str = "classification"

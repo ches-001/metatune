@@ -35,11 +35,10 @@ class SVCModel(SampleClassMixin):
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().model(trial)
-        
         params = self._sample_params(trial)
-        model = SVC(**params)
-        
+        model = super()._evalate_sampled_model("classification", SVC, params)
         self.model = model
+
         return model
     
 
@@ -71,24 +70,13 @@ class LinearSVCModel(SampleClassMixin):
         params["intercept_scaling"] = trial.suggest_float("intercept_scaling", *self.intercept_scaling_space, log=False)
         params["class_weight"] = trial.suggest_categorical("class_weight", self.class_weight_space)
         params["max_iter"] = trial.suggest_int("max_iter", *self.max_iter_space, log=False)
-
-        if params["loss"] == "hinge":
-            params["penalty"] = "l2"
-            params["dual"] = True
-            trial.set_user_attr("penalty", params["penalty"])
-            trial.set_user_attr("dual", params["dual"])
-
-        if params["penalty"] == "l1" and params["loss"] == "squared_hinge":
-            params["dual"] = False
-            trial.set_user_attr("dual", params["dual"])
         
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().model(trial)
-        
         params = self._sample_params(trial)
-        model = LinearSVC(**params)
-        
+        model = super()._evalate_sampled_model("classification", LinearSVC, params)
         self.model = model
+
         return model

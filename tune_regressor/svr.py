@@ -33,11 +33,10 @@ class SVRModel(SampleClassMixin):
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().model(trial)
-        
         params = self._sample_params(trial)
-        model = SVR(**params)
-        
+        model = super()._evalate_sampled_model("regression", SVR, params)
         self.model = model
+
         return model
 
 
@@ -65,18 +64,13 @@ class LinearSVRModel(SampleClassMixin):
         params["intercept_scaling"] = trial.suggest_float("intercept_scaling", *self.intercept_scaling_space, log=False)
         params["dual"] = trial.suggest_categorical("dual", self.dual_space)
         params["max_iter"] = trial.suggest_int("max_iter", *self.max_iter_space, log=False)
-
-        if params["loss"] == "epsilon_insensitive":
-            params["dual"] = True
-            trial.set_user_attr("dual", params["dual"])
         
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().model(trial)
-        
         params = self._sample_params(trial)
-        model = LinearSVR(**params)
-        
+        model = super()._evalate_sampled_model("regression", LinearSVR, params)
         self.model = model
+
         return model
