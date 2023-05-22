@@ -26,3 +26,22 @@ class TestDecisionTreeClassifier(BaseTest):
     model: SampleClassMixin = tune_classifier.DecisionTreeClassifierModel
     task: str = "classification"
 
+
+class TestLinearRegressor(BaseTest):
+    model: SampleClassMixin = tune_regressor.LinearRegressionModel
+    task: str = "regression"
+
+
+class TestLassoRegressor(BaseTest):
+    model: SampleClassMixin = tune_regressor.LassoModel
+    task: str = "regression"
+
+
+class TestRidgeRegressor(BaseTest):
+    model: SampleClassMixin = tune_regressor.RidgeModel
+    task: str = "regression"
+
+
+class TestLogisticRegressor(BaseTest):
+    model: SampleClassMixin = tune_classifier.LogisticRegressionModel
+    task: str = "classification"
