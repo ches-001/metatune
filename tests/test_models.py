@@ -45,3 +45,13 @@ class TestRidgeRegressor(BaseTest):
 class TestLogisticRegressor(BaseTest):
     model: SampleClassMixin = tune_classifier.LogisticRegressionModel
     task: str = "classification"
+
+
+class TestLinearSVC(BaseTest):
+    model: SampleClassMixin = tune_classifier.LinearSVCModel
+    task: str = "classification"
+
+
+class TestLinearSVR(BaseTest):
+    model: SampleClassMixin = tune_regressor.LinearSVRModel
+    task: str = "regression"
