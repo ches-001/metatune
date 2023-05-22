@@ -55,3 +55,23 @@ class TestLinearSVR(BaseTest):
     model: SampleClassMixin = tune_regressor.LinearSVRModel
     task: str = "regression"
 
+class TestBernoulliNB(BaseTest):
+    model: SampleClassMixin = tune_classifier.BernoulliNBModel
+    task: str = "classification"
+
+class TestGaussianNB(BaseTest):
+    model: SampleClassMixin = tune_classifier.GaussianNBModel
+    task: str = "classification"
+
+class TestCategoricalNB(BaseTest):
+    model: SampleClassMixin = tune_classifier.CategoricalNBModel
+    task: str = "classification"
+
+class TestComplementNB(BaseTest):
+    model: SampleClassMixin = tune_classifier.ComplementNBModel
+    task: str = "classification"
+
+class TestMultinomialNB(BaseTest):
+    model: SampleClassMixin = tune_classifier.MultinomialNBModel
+    task: str = "classification"
+
