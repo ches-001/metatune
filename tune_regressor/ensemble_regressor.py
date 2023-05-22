@@ -3,18 +3,18 @@ from optuna.trial import Trial
 from dataclasses import dataclass
 from typing import Iterable, Optional, Dict, Any, Union, Callable
 from sklearn.ensemble import (
-    RandomForestClassifier, 
-    ExtraTreesClassifier, 
-    AdaBoostClassifier, 
-    GradientBoostingClassifier, 
-    BaggingClassifier, 
-    VotingClassifier
+    RandomForestRegressor, 
+    ExtraTreesRegressor, 
+    AdaBoostRegressor, 
+    GradientBoostingRegressor, 
+    BaggingRegressor, 
+    VotingRegressor
 )
 
 @dataclass
-class RandomForestClassifierModel(SampleClassMixin):
+class RandomForestRegressorModel(SampleClassMixin):
     n_estimators_space: Iterable[int] = (1, 200)
-    criterion_space: Iterable[str] = ("gini", "entropy", "log_loss")
+    criterion_space: Iterable[str] = ("squared_error", "absolute_error", "friedman_mse", "poisson")
     max_depth_space: Iterable[int] = (2, 1000)
     min_samples_split_space: Iterable[Union[int, float]] = (1e-4, 1.0)
     min_samples_leaf_space: Iterable[Union[int, float]] = (1e-4, 1.0)
@@ -24,7 +24,6 @@ class RandomForestClassifierModel(SampleClassMixin):
     min_impurity_decrease_space: Iterable[float] = (0.0, 1.0)
     bootstrap_space: Iterable[bool] = (True, False)
     oob_score_space: Iterable[bool] = (True, False)
-    class_weight_space: Iterable[str] = ("balanced", )
     ccp_alpha_space: Iterable[float] = (0.0, 1.0)
     max_samples_space: Iterable[Union[int, float]] = (0.1, 1.0)
     model: Any = None
@@ -55,8 +54,6 @@ class RandomForestClassifierModel(SampleClassMixin):
         params["min_impurity_decrease"] = trial.suggest_float("min_impurity_decrease", *self.min_impurity_decrease_space)
         params["bootstrap"] = trial.suggest_categorical("bootstrap", self.bootstrap_space)
         params["oob_score"] = trial.suggest_categorical("oob_score", self.oob_score_space)
-
-        params["class_weight"] = trial.suggest_categorical("class_weight", self.class_weight_space)
         params["ccp_alpha"] = trial.suggest_float("ccp_alpha", *self.ccp_alpha_space, log=False)
 
         if is_space_type(self.max_samples_space, float):
@@ -70,7 +67,7 @@ class RandomForestClassifierModel(SampleClassMixin):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().model(trial)
         params = self._sample_params(trial)
-        model = super()._evalate_sampled_model("classification", RandomForestClassifier, params)
+        model = super()._evalate_sampled_model("regression", RandomForestRegressor, params)
         self.model = model
         
         return model
