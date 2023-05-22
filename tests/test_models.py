@@ -55,3 +55,8 @@ class TestLinearSVC(BaseTest):
 class TestLinearSVR(BaseTest):
     model: SampleClassMixin = tune_regressor.LinearSVRModel
     task: str = "regression"
+
+
+class TestRandomForestClassifier(BaseTest):
+    model: SampleClassMixin = tune_classifier.RandomForestClassifierModel
+    task: str = "classification"
