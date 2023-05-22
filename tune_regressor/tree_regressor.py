@@ -16,7 +16,7 @@ class DecisionTreeRegressorModel(SampleClassMixin):
     min_samples_leaf_float_space: Iterable[float] = (0.0, 1.0)
     min_weight_fraction_leaf_space: Iterable[float] = (0.0, 0.5)
     max_features_space: Iterable[str] = ("sqrt", "log2")
-    max_leaf_nodes_space: Iterable[int] = (1, 1000)
+    max_leaf_nodes_space: Iterable[int] = (2, 1000)
     min_impurity_decrease_space: Iterable[float] = (0.0, 1.0)
     ccp_alpha_space: Iterable[float] = (0.0, 1.0)
     model: Any = None

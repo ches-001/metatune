@@ -26,10 +26,32 @@ class TestDecisionTreeClassifier(BaseTest):
     model: SampleClassMixin = tune_classifier.DecisionTreeClassifierModel
     task: str = "classification"
 
-class TestBernoulliNBModel(BaseTest):
-    model: SampleClassMixin = tune_classifier.BernoulliNBModel
+class TestLinearRegressor(BaseTest):
+    model: SampleClassMixin = tune_regressor.LinearRegressionModel
+    task: str = "regression"
+
+
+class TestLassoRegressor(BaseTest):
+    model: SampleClassMixin = tune_regressor.LassoModel
+    task: str = "regression"
+
+
+class TestRidgeRegressor(BaseTest):
+    model: SampleClassMixin = tune_regressor.RidgeModel
+    task: str = "regression"
+
+
+class TestLogisticRegressor(BaseTest):
+    model: SampleClassMixin = tune_classifier.LogisticRegressionModel
     task: str = "classification"
 
-class TestGaussianNBModel(BaseTest):
-    model: SampleClassMixin = tune_classifier.GaussianNBModel
+
+class TestLinearSVC(BaseTest):
+    model: SampleClassMixin = tune_classifier.LinearSVCModel
     task: str = "classification"
+
+
+class TestLinearSVR(BaseTest):
+    model: SampleClassMixin = tune_regressor.LinearSVRModel
+    task: str = "regression"
+
