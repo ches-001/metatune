@@ -95,3 +95,15 @@ class TestAdaBoostClassifier(BaseTest):
 class TestAdaBoostRegressor(BaseTest):
     model: SampleClassMixin = tune_regressor.AdaBoostRegressorModel()
     task: str = "regression"
+
+
+class TestKNNClassifier(BaseTest):
+    model: SampleClassMixin = tune_classifier.KNeighborsClassifierModel()
+    task: str = "classification"
+
+
+class TestKNNRegressor(BaseTest):
+    model: SampleClassMixin = tune_regressor.KNeighborsRegressorModel()
+    task: str = "regression"
+
+
