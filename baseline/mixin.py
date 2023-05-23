@@ -22,13 +22,27 @@ class SampleClassMixin:
             if param_name not in valid_param_names:
                 raise ValueError(f"invalid argument {param_name} for {model_class.__name__}")
             
-    def _random_classification_set(self) -> Tuple[Iterable]:
-        return np.random.randn(10, 5), np.random.randint(0, 2, size=(10))
+    def _random_classification_set(self, is_multitask: bool=False) -> Tuple[Iterable]:
+        if not is_multitask:
+            return np.random.randn(10, 5), np.random.randint(0, 2, size=(10))
+        
+        else:
+            return np.random.randn(10, 5), np.random.randint(0, 2, size=(10, 2))
     
-    def _random_regression_set(self) -> Tuple[Iterable]:
-        return np.random.randn(10, 5), np.random.randn(10)
+    def _random_regression_set(self, is_multitask: bool=False) -> Tuple[Iterable]:
+        if not is_multitask:
+            return np.random.randn(10, 5), np.random.randn(10)
+        
+        else:
+            return np.random.randn(10, 5), np.random.randn(10, 2)
     
-    def _evaluate_sampled_model(self, task: str, model_class: Callable, params: Dict[str, Any]) -> Any:
+    def _evaluate_sampled_model(
+            self, 
+            task: str, 
+            model_class: Callable, 
+            params: Dict[str, Any], 
+            is_mulktitask: bool=False) -> Any:
+        
         valid_tasks: Iterable[str] = ["regression", "classification"]
         assert task in valid_tasks, (
             f"Invalid task for self._evaluate_sampled_model, expected task to be one of {valid_tasks}, got {task}"
@@ -37,9 +51,9 @@ class SampleClassMixin:
         self._evaluate_params(model_class, params)
         
         if task == "regression":
-            X, y = self._random_regression_set()
+            X, y = self._random_regression_set(is_mulktitask)
         else:
-            X, y = self._random_classification_set()
+            X, y = self._random_classification_set(is_mulktitask)
 
         try:
             model_class(**params).fit(X, y)
