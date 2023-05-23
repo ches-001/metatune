@@ -83,7 +83,7 @@ class TestExtraTreesClassifier(BaseTest):
 
 
 class TestExtraTreesRegressor(BaseTest):
-    model: SampleClassMixin = tune_regressor.ExtraTreesRegressionModel()
+    model: SampleClassMixin = tune_regressor.ExtraTreesRegressorModel()
     task: str = "regression"
 
 
