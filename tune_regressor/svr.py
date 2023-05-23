@@ -34,7 +34,7 @@ class SVRModel(SampleClassMixin):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().model(trial)
         params = self._sample_params(trial)
-        model = super()._evalate_sampled_model("regression", SVR, params)
+        model = super()._evaluate_sampled_model("regression", SVR, params)
         self.model = model
 
         return model
@@ -70,7 +70,7 @@ class LinearSVRModel(SampleClassMixin):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().model(trial)
         params = self._sample_params(trial)
-        model = super()._evalate_sampled_model("regression", LinearSVR, params)
+        model = super()._evaluate_sampled_model("regression", LinearSVR, params)
         self.model = model
 
         return model

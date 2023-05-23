@@ -8,60 +8,60 @@ from tests.utils import BaseTest
 
 
 class TestSVR(BaseTest):
-    model: SampleClassMixin = tune_regressor.SVRModel
+    model: SampleClassMixin = tune_regressor.SVRModel()
     task: str = "regression"
 
 
 class TestDecisionTreeRegressor(BaseTest):
-    model: SampleClassMixin = tune_regressor.DecisionTreeRegressorModel
+    model: SampleClassMixin = tune_regressor.DecisionTreeRegressorModel()
     task: str = "regression"
 
 
 class TestSVC(BaseTest):
-    model: SampleClassMixin = tune_classifier.SVCModel
+    model: SampleClassMixin = tune_classifier.SVCModel()
     task: str = "classification"
 
 
 class TestDecisionTreeClassifier(BaseTest):
-    model: SampleClassMixin = tune_classifier.DecisionTreeClassifierModel
+    model: SampleClassMixin = tune_classifier.DecisionTreeClassifierModel()
     task: str = "classification"
 
 
 class TestLinearRegressor(BaseTest):
-    model: SampleClassMixin = tune_regressor.LinearRegressionModel
+    model: SampleClassMixin = tune_regressor.LinearRegressionModel()
     task: str = "regression"
 
 
 class TestLassoRegressor(BaseTest):
-    model: SampleClassMixin = tune_regressor.LassoModel
+    model: SampleClassMixin = tune_regressor.LassoModel()
     task: str = "regression"
 
 
 class TestRidgeRegressor(BaseTest):
-    model: SampleClassMixin = tune_regressor.RidgeModel
+    model: SampleClassMixin = tune_regressor.RidgeModel()
     task: str = "regression"
 
 
 class TestLogisticRegressor(BaseTest):
-    model: SampleClassMixin = tune_classifier.LogisticRegressionModel
+    model: SampleClassMixin = tune_classifier.LogisticRegressionModel()
     task: str = "classification"
 
 
 class TestLinearSVC(BaseTest):
-    model: SampleClassMixin = tune_classifier.LinearSVCModel
+    model: SampleClassMixin = tune_classifier.LinearSVCModel()
     task: str = "classification"
 
 
 class TestLinearSVR(BaseTest):
-    model: SampleClassMixin = tune_regressor.LinearSVRModel
+    model: SampleClassMixin = tune_regressor.LinearSVRModel()
     task: str = "regression"
 
 
 class TestRandomForestClassifier(BaseTest):
-    model: SampleClassMixin = tune_classifier.RandomForestClassifierModel
+    model: SampleClassMixin = tune_classifier.RandomForestClassifierModel()
     task: str = "classification"
 
 
 class TestRandomForestRegressor(BaseTest):
-    model: SampleClassMixin = tune_regressor.RandomForestRegressorModel
+    model: SampleClassMixin = tune_regressor.RandomForestRegressorModel()
     task: str = "regression"
