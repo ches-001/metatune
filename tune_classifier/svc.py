@@ -2,13 +2,7 @@ from baseline import SampleClassMixin
 from optuna.trial import Trial
 from dataclasses import dataclass
 from typing import Iterable, Optional, Dict, Any
-from sklearn.svm import SVC
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.gaussian_process import GaussianProcessClassifier
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.linear_model import LogisticRegression
-from sklearn.naive_bayes import BernoulliNB
+from sklearn.svm import SVC, LinearSVC
 
 
 @dataclass
@@ -19,6 +13,9 @@ class SVCModel(SampleClassMixin):
     coef0_space: Iterable[float] = (0.0, 0.5)
     tol_space: Iterable[float] = (1e-6, 1e-3)
     C_space: Iterable[float] = (0.9, 1.0)
+    class_weight_space: Iterable[str] = ("balanced", )
+    shrinking_space: Iterable[bool] = (True, )
+    probability_space: Iterable[bool] = (True, )
     model: Any = None
     
     def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
@@ -31,47 +28,55 @@ class SVCModel(SampleClassMixin):
         params["coef0"] = trial.suggest_float("coef0", *self.coef0_space, log=False)
         params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
         params["C"] = trial.suggest_float("C", *self.C_space, log=False)
-
+        params["class_weight"] = trial.suggest_categorical("class_weight", self.class_weight_space)
+        params["shrinking"] = trial.suggest_categorical("shrinking", self.shrinking_space)
+        params["probability"] = trial.suggest_categorical("probability", self.probability_space)
+        
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().model(trial)
 
         params = self._sample_params(trial)
-        model = SVC(
-            **params,
-            class_weight="balanced",
-            shrinking=True,
-            probability=True)
-
-        self.model = model
+        model = super()._evalute_sampled_model("classification", SVC, params)
         return model
-
+    
 
 @dataclass
-class KNeighborsClassifierModel(SampleClassMixin):
-    n_neighbors_space: Iterable[int] = (1, 10)
-    weights_space: Iterable[str] = ("uniform", "distance")
-    algorithm_space: Iterable[str] = ("ball_tree", "kd_tree", "brute")
-    metric_space: Iterable[str] = ("cityblock", "cosine", "euclidean", "haversine", "manhattan", "minkowski")
+class LinearSVCModel(SampleClassMixin):
+    penalty_space: Iterable[str] = ("l1", "l2")
+    loss_space: Iterable[str] = ("hinge", "squared_hinge")
+    dual_space: Iterable[bool] = (True, False)
+    tol_space: Iterable[float] = (1e-6, 1e-3)
+    C_space: Iterable[float] = (0.9, 1.0)
+    multi_class_space: Iterable[str] = ("ovr", "crammer_singer")
+    fit_intercept_space: Iterable[bool] = (True, False)
+    intercept_scaling_space: Iterable[float] = (0.5, 1.0)
+    class_weight_space: Iterable[str] = ("balanced", )
+    max_iter_space: Iterable[int] = (500, 2000)
     model: Any = None
-
-    def _sample_params(self, trial: Any = None) -> Optional[Dict[str, Any]]:
+    
+    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
         super()._sample_params(trial)
-
+        
         params = {}
-        params["n_neighbors"] = trial.suggest_int("n_neighbors", *self.n_neighbors_space, log=False)
-        params["weights"] = trial.suggest_categorical("weight", self.weights_space)
-        params["algorithm"] = trial.suggest_categorical("algorithm", self.algorithm_space)
-        params["metric"] = trial.suggest_categorical("metric", self.metric_space)
-
+        params["penalty"] = trial.suggest_categorical("penalty", self.penalty_space)
+        params["loss"] = trial.suggest_categorical("loss", self.loss_space)
+        params["dual"] = trial.suggest_categorical("dual", self.dual_space)
+        params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
+        params["C"] = trial.suggest_float("C", *self.C_space, log=False)
+        params["multi_class"] = trial.suggest_categorical("multi_class", self.multi_class_space)
+        params["fit_intercept"] = trial.suggest_categorical("fit_intercept", self.fit_intercept_space)
+        params["intercept_scaling"] = trial.suggest_float("intercept_scaling", *self.intercept_scaling_space, log=False)
+        params["class_weight"] = trial.suggest_categorical("class_weight", self.class_weight_space)
+        params["max_iter"] = trial.suggest_int("max_iter", *self.max_iter_space, log=False)
+        
         return params
-
-    def sample_model(self, trial: Any = None) -> Any:
+    
+    def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().model(trial)
-
         params = self._sample_params(trial)
+        model = super()._evaluate_sampled_model("classification", LinearSVC, params)
+        self.model = model
 
-        model = KNeighborsClassifier(
-            **params
-        )
+        return model
