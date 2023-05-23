@@ -57,6 +57,16 @@ class TestLinearSVR(BaseTest):
     task: str = "regression"
 
 
+class TestExtraTreeClassifier(BaseTest):
+    model: SampleClassMixin = tune_classifier.ExtraTreeClassifierModel()
+    task: str = "classification"
+
+
+class TestExtraTreeRegressor(BaseTest):
+    model: SampleClassMixin = tune_regressor.ExtraTreeRegressorModel()
+    task: str = "regression"
+
+
 class TestRandomForestClassifier(BaseTest):
     model: SampleClassMixin = tune_classifier.RandomForestClassifierModel()
     task: str = "classification"
