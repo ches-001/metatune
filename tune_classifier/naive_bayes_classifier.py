@@ -19,8 +19,8 @@ from sklearn.naive_bayes import (
 
 @dataclass
 class GaussianNBModel(SampleClassMixin):
-    priors_space: Optional[Iterable[float]] = None  #TODO: implement array selection
-    var_smoothing_space: Optional[Iterable[float]] = None
+    priors_space: Iterable[float] = (None,)  #TODO: implement array selection
+    var_smoothing_space: Iterable[float] = (1e-9, 1e-6)
     model: Any = None
 
     def _sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
@@ -28,16 +28,8 @@ class GaussianNBModel(SampleClassMixin):
 
         params = {}
         
-        if self.priors_space is not None:
-            assert sum(self.priors_space) == 1, "Sum of prior must be equal to 1" 
-            params["priors"] = trial.suggest_categorical("priors", [self.priors_space])
-        else:
-            params['priors'] = None
-        
-        if self.var_smoothing_space is not None:
-            params["var_smoothing"] = trial.suggest_float("var_smoothing", *self.var_smoothing_space, log=False)
-        else:
-            params["var_smoothing"] = 1e-9
+        params["priors"] = trial.suggest_categorical("priors", self.priors_space)
+        params["var_smoothing"] = trial.suggest_float("var_smoothing", *self.var_smoothing_space, log=False)
         
         return params
 
@@ -87,7 +79,7 @@ class BernoulliNBModel(SampleClassMixin):
         
 @dataclass
 class MultinomialNBModel(SampleClassMixin):
-    alpha_space: Union[Iterable[float], int] = (0.0, 1.0)   
+    alpha_space: Iterable[float] = (0.0, 1.0)   
     force_alpha_space: Iterable[bool] = (True, False)
     fit_prior_space: Iterable[bool] = (True, False)
     class_prior_space: Iterable[Optional[Iterable]] = (None, )     # TODO: Implement array selection
@@ -98,11 +90,7 @@ class MultinomialNBModel(SampleClassMixin):
 
         params = {}
 
-        if isinstance(self.alpha_space, Iterable[float]):
-            params['alpha'] = trial.suggest_float('alpha', *self.alpha_space, log=False)
-        elif isinstance(self.alpha_space, int):
-            params['alpha'] = [trial.suggest_float(*(0.0, 1,0)) for _ in range(self.alpha_space)]
-        
+        params['alpha'] = trial.suggest_float('alpha', *self.alpha_space, log=False)        
         #params['force_alpha']  = trial.suggest_categorical('force_alpha', self.force_alpha_space)
         params['fit_prior'] = trial.suggest_categorical('fit_prior', self.fit_prior_space)
         params["class_prior"] = trial.suggest_categorical("class_prior", self.class_prior_space)
@@ -130,11 +118,7 @@ class ComplementNBModel(SampleClassMixin):
 
         params = {}
 
-        if isinstance(self.alpha_space, Iterable[float]):
-            params['alpha'] = trial.suggest_float('alpha', *self.alpha_space, log=False)
-        elif isinstance(self.alpha_space, int):
-            params['alpha'] = [trial.suggest_float(*(0.0, 1,0)) for _ in range(self.alpha_space)]
-
+        params['alpha'] = trial.suggest_float('alpha', *self.alpha_space, log=False)
         #params['force_alpha']  = trial.suggest_categorical('force_alpha', self.force_alpha_space)
         params['fit_prior'] = trial.suggest_categorical('fit_prior', self.fit_prior_space)
         params["class_prior"] = trial.suggest_categorical("class_prior", self.class_prior_space)        
