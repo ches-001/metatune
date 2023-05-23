@@ -63,15 +63,25 @@ class TestRandomForestClassifier(BaseTest):
 
 
 class TestRandomForestRegressor(BaseTest):
-<<<<<<< HEAD
-    model: SampleClassMixin = tune_regressor.RandomForestRegressorModel
+    model: SampleClassMixin = tune_regressor.RandomForestRegressorModel()
     task: str = "regression"
 
 
 class TestExtraTreesClassifier(BaseTest):
-    model: SampleClassMixin = tune_classifier.ExtraTreesClassifierModel
+    model: SampleClassMixin = tune_classifier.ExtraTreesClassifierModel()
     task: str = "classification"
-=======
-    model: SampleClassMixin = tune_regressor.RandomForestRegressorModel()
+
+
+class TestExtraTreesRegressor(BaseTest):
+    model: SampleClassMixin = tune_regressor.ExtraTreesRegressionModel()
     task: str = "regression"
->>>>>>> 57655bd0ba4d6aa23f98ddff987644746f3ae28e
+
+
+class TestExtraTreeRegressor(BaseTest):
+    model: SampleClassMixin = tune_regressor.ExtraTreeRegressorModel()
+    task: str = "regression"
+
+
+class TestExtraTreeClassifier(BaseTest):
+    model: SampleClassMixin = tune_classifier.ExtraTreeClassifierModel()
+    task: str = "classification"

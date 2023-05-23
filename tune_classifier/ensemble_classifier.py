@@ -70,7 +70,22 @@ class RandomForestClassifierModel(SampleClassMixin):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().model(trial)
         params = self._sample_params(trial)
-        model = super()._evalate_sampled_model("classification", RandomForestClassifier, params)
+        model = super()._evaluate_sampled_model("classification", RandomForestClassifier, params)
+        self.model = model
+
+        return model
+
+
+@dataclass
+class ExtraTreesClassifierModel(RandomForestClassifierModel):
+     
+    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        return super(ExtraTreesClassifierModel, self)._sample_params(trial)
+    
+    def sample_model(self, trial: Optional[Trial]=None) -> Any:
+        super(RandomForestClassifierModel, self).model(trial)
+        params = self._sample_params(trial)
+        model = super(RandomForestClassifierModel, self)._evaluate_sampled_model("classification", RandomForestClassifier, params)
         self.model = model
         
         return model
