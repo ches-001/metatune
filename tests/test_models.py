@@ -87,11 +87,21 @@ class TestExtraTreesRegressor(BaseTest):
     task: str = "regression"
 
 
+class TestExtraTreeClassifier(BaseTest):
+    model: SampleClassMixin = tune_classifier.ExtraTreeClassifierModel()
+    task: str = "classification"
+
+
 class TestExtraTreeRegressor(BaseTest):
     model: SampleClassMixin = tune_regressor.ExtraTreeRegressorModel()
     task: str = "regression"
 
 
-class TestExtraTreeClassifier(BaseTest):
-    model: SampleClassMixin = tune_classifier.ExtraTreeClassifierModel()
+class TestAdaBoostClassifier(BaseTest):
+    model: SampleClassMixin = tune_classifier.AdaBoostClassifierModel()
     task: str = "classification"
+
+    
+class TestAdaBoostRegressor(BaseTest):
+    model: SampleClassMixin = tune_regressor.AdaBoostRegressorModel()
+    task: str = "regression"
