@@ -85,7 +85,7 @@ class ExtraTreesClassifierModel(RandomForestClassifierModel):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super(RandomForestClassifierModel, self).model(trial)
         params = self._sample_params(trial)
-        model = super(RandomForestClassifierModel, self)._evaluate_sampled_model("classification", RandomForestClassifier, params)
+        model = super(RandomForestClassifierModel, self)._evaluate_sampled_model("classification", ExtraTreesClassifier, params)
         self.model = model
         
         return model
