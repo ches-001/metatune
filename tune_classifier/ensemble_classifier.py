@@ -24,7 +24,7 @@ class RandomForestClassifierModel(SampleClassMixin):
     min_impurity_decrease_space: Iterable[float] = (0.0, 1.0)
     bootstrap_space: Iterable[bool] = (True, False)
     oob_score_space: Iterable[bool] = (True, False)
-    class_weight_space: Iterable[str] = ("balanced", )
+    class_weight_space: Iterable[str] = ("balanced", "balanced_subsample")
     ccp_alpha_space: Iterable[float] = (0.0, 1.0)
     max_samples_space: Iterable[Union[int, float]] = (0.1, 1.0)
     model: Any = None
@@ -70,8 +70,50 @@ class RandomForestClassifierModel(SampleClassMixin):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().model(trial)
         params = self._sample_params(trial)
-        model = super()._evalate_sampled_model("classification", RandomForestClassifier, params)
+        model = super()._evaluate_sampled_model("classification", RandomForestClassifier, params)
+        self.model = model
+
+        return model
+
+
+@dataclass
+class ExtraTreesClassifierModel(RandomForestClassifierModel):
+     
+    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        return super(ExtraTreesClassifierModel, self)._sample_params(trial)
+    
+    def sample_model(self, trial: Optional[Trial]=None) -> Any:
+        super(RandomForestClassifierModel, self).model(trial)
+        params = self._sample_params(trial)
+        model = super(RandomForestClassifierModel, self)._evaluate_sampled_model("classification", ExtraTreesClassifier, params)
         self.model = model
         
         return model
     
+
+@dataclass
+class AdaBoostClassifierModel(SampleClassMixin):
+    estimator_space: Iterable[Optional[object]] = (None, )
+    n_estimators_space: Iterable[int] = (1, 200)
+    learning_rate_space: Iterable[float] = (0.01, 1.0)
+    algorithm_space: Iterable[str] = ("SAMME", "SAMME.R")
+    model: Any = None
+    
+    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super()._sample_params(trial)
+        
+        params = {}
+        params["estimator"] = trial.suggest_categorical("estimator", self.estimator_space)
+        params["n_estimators"] = trial.suggest_int("n_estimators", *self.n_estimators_space, log=False)
+        params["learning_rate"] = trial.suggest_float("learning_rate", *self.learning_rate_space, log=False)
+        params["algorithm"] = trial.suggest_categorical("algorithm", self.algorithm_space)
+        
+        return params
+    
+    def sample_model(self, trial: Optional[Trial]=None) -> Any:
+        super().model(trial)
+        params = self._sample_params(trial)
+        model = super()._evaluate_sampled_model("classification", AdaBoostClassifier, params)
+        self.model = model
+
+        return model
