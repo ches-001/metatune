@@ -61,3 +61,7 @@ class TestRandomForestClassifier(BaseTest):
     model: SampleClassMixin = tune_classifier.RandomForestClassifierModel()
     task: str = "classification"
 
+
+class TestRandomForestRegressor(BaseTest):
+    model: SampleClassMixin = tune_regressor.RandomForestRegressorModel()
+    task: str = "regression"
