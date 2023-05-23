@@ -28,7 +28,7 @@ class SampleClassMixin:
     def _random_regression_set(self) -> Tuple[Iterable]:
         return np.random.randn(10, 5), np.random.randn(10)
     
-    def _evalate_sampled_model(self, task: str, model_class: Callable, params: Dict[str, Any]) -> Any:
+    def _evaluate_sampled_model(self, task: str, model_class: Callable, params: Dict[str, Any]) -> Any:
         valid_tasks: Iterable[str] = ["regression", "classification"]
         assert task in valid_tasks, (
             f"Invalid task for self._evalate_sampled_model, expected task to be one of {valid_tasks}, got {task}"
