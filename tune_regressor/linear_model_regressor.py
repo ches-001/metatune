@@ -22,7 +22,7 @@ class LinearRegressionModel(SampleClassMixin):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().model(trial)
         params = self._sample_params(trial)
-        model = super()._evalate_sampled_model("regression", LinearRegression, params)
+        model = super()._evaluate_sampled_model("regression", LinearRegression, params)
         self.model = model
 
         return model
@@ -54,7 +54,7 @@ class LassoModel(SampleClassMixin):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().model(trial)
         params = self._sample_params(trial)
-        model = super()._evalate_sampled_model("regression", Lasso, params)
+        model = super()._evaluate_sampled_model("regression", Lasso, params)
         self.model = model
 
         return model
@@ -86,7 +86,7 @@ class RidgeModel(SampleClassMixin):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().model(trial)
         params = self._sample_params(trial)
-        model = super()._evalate_sampled_model("regression", Ridge, params)
+        model = super()._evaluate_sampled_model("regression", Ridge, params)
         self.model = model
 
         return model
