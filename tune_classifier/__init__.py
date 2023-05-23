@@ -11,7 +11,7 @@ __all__: Iterable[str] = [
     "tune_classifier.tree_classifier",
     "tune_classifier.linear_model_classifier",
     "tune_classifier.ensemble_classifier",
-    "tune_classifier.knc",
+    "tune_classifier.neighbor_classifier",
 ]
 
 tuning_entities: Iterable[Iterable[Tuple[str, object]]] = list(map(get_entities, __all__))

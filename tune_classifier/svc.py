@@ -38,7 +38,7 @@ class SVCModel(SampleClassMixin):
         super().model(trial)
 
         params = self._sample_params(trial)
-        model = super()._evalute_sampled_model("classification", SVC, params)
+        model = super()._evaluate_sampled_model("classification", SVC, params)
         return model
     
 
