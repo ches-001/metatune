@@ -24,7 +24,7 @@ class RandomForestClassifierModel(SampleClassMixin):
     min_impurity_decrease_space: Iterable[float] = (0.0, 1.0)
     bootstrap_space: Iterable[bool] = (True, False)
     oob_score_space: Iterable[bool] = (True, False)
-    class_weight_space: Iterable[str] = ("balanced", )
+    class_weight_space: Iterable[str] = ("balanced", "balanced_subsample")
     ccp_alpha_space: Iterable[float] = (0.0, 1.0)
     max_samples_space: Iterable[Union[int, float]] = (0.1, 1.0)
     model: Any = None
@@ -71,6 +71,21 @@ class RandomForestClassifierModel(SampleClassMixin):
         super().model(trial)
         params = self._sample_params(trial)
         model = super()._evaluate_sampled_model("classification", RandomForestClassifier, params)
+        self.model = model
+
+        return model
+
+
+@dataclass
+class ExtraTreesClassifierModel(RandomForestClassifierModel):
+     
+    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        return super(ExtraTreesClassifierModel, self)._sample_params(trial)
+    
+    def sample_model(self, trial: Optional[Trial]=None) -> Any:
+        super(RandomForestClassifierModel, self).model(trial)
+        params = self._sample_params(trial)
+        model = super(RandomForestClassifierModel, self)._evaluate_sampled_model("classification", RandomForestClassifier, params)
         self.model = model
         
         return model

@@ -72,3 +72,18 @@ class RandomForestRegressorModel(SampleClassMixin):
         
         return model
     
+
+@dataclass
+class ExtraTreesRegressionModel(RandomForestRegressorModel):
+     
+    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        return super(ExtraTreesRegressionModel, self)._sample_params(trial)
+    
+    def sample_model(self, trial: Optional[Trial]=None) -> Any:
+        super(RandomForestRegressorModel, self).model(trial)
+        params = self._sample_params(trial)
+        model = super(RandomForestRegressorModel, self)._evaluate_sampled_model("regression", ExtraTreesRegressor, params)
+        self.model = model
+        
+        return model
+    
