@@ -26,7 +26,6 @@ class TestDecisionTreeClassifier(BaseTest):
     model: SampleClassMixin = tune_classifier.DecisionTreeClassifierModel
     task: str = "classification"
 
-
 class TestLinearRegressor(BaseTest):
     model: SampleClassMixin = tune_regressor.LinearRegressionModel
     task: str = "regression"
@@ -65,3 +64,4 @@ class TestRandomForestClassifier(BaseTest):
 class TestRandomForestRegressor(BaseTest):
     model: SampleClassMixin = tune_regressor.RandomForestRegressorModel
     task: str = "regression"
+
