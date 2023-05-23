@@ -36,7 +36,7 @@ class SVCModel(SampleClassMixin):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().model(trial)
         params = self._sample_params(trial)
-        model = super()._evalate_sampled_model("classification", SVC, params)
+        model = super()._evaluate_sampled_model("classification", SVC, params)
         self.model = model
 
         return model
@@ -76,7 +76,7 @@ class LinearSVCModel(SampleClassMixin):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().model(trial)
         params = self._sample_params(trial)
-        model = super()._evalate_sampled_model("classification", LinearSVC, params)
+        model = super()._evaluate_sampled_model("classification", LinearSVC, params)
         self.model = model
 
         return model

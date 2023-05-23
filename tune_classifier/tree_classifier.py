@@ -52,7 +52,7 @@ class DecisionTreeClassifierModel(SampleClassMixin):
         super().model(trial)
         
         params = self._sample_params(trial)
-        model = super()._evalate_sampled_model("classification", DecisionTreeClassifier, params)
+        model = super()._evaluate_sampled_model("classification", DecisionTreeClassifier, params)
         self.model = model
         return model
     
@@ -104,7 +104,7 @@ class ExtraTreeClassifierModel(SampleClassMixin):
         super().model(trial)
         
         params = self._sample_params(trial)
-        model = super()._evalate_sampled_model("classification", ExtraTreeClassifier, params)
+        model = super()._evaluate_sampled_model("classification", ExtraTreeClassifier, params)
         self.model = model
         return model
     

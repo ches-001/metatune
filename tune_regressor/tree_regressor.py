@@ -50,7 +50,7 @@ class DecisionTreeRegressorModel(SampleClassMixin):
         super().model(trial)
         
         params = self._sample_params(trial)
-        model = super()._evalate_sampled_model("regression", DecisionTreeRegressor, params)
+        model = super()._evaluate_sampled_model("regression", DecisionTreeRegressor, params)
         self.model = model
         return model
     
@@ -100,6 +100,6 @@ class ExtraTreeRegressorModel(SampleClassMixin):
         super().model(trial)
         
         params = self._sample_params(trial)
-        model = super()._evalate_sampled_model("regression", ExtraTreeRegressor, params)
+        model = super()._evaluate_sampled_model("regression", ExtraTreeRegressor, params)
         self.model = model
         return model    
