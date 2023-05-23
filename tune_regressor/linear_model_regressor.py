@@ -21,11 +21,10 @@ class LinearRegressionModel(SampleClassMixin):
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().model(trial)
-        
         params = self._sample_params(trial)
-        model = LinearRegression(**params)
-        
+        model = super()._evalate_sampled_model("regression", LinearRegression, params)
         self.model = model
+
         return model
     
 
@@ -54,11 +53,10 @@ class LassoModel(SampleClassMixin):
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().model(trial)
-        
         params = self._sample_params(trial)
-        model = Lasso(**params)
-        
+        model = super()._evalate_sampled_model("regression", Lasso, params)
         self.model = model
+
         return model
 
  
@@ -82,24 +80,13 @@ class RidgeModel(SampleClassMixin):
         params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
         params["positive"] = trial.suggest_categorical("positive", self.positive_space)
         params["solver"] = trial.suggest_categorical("solver", self.solver_space)
-        
-        non_positive_solvers: Iterable[str] = ["cholesky", "sparse_cg", "sag", "saga", "svd", "lsqr"]
-
-        if params["solver"] in non_positive_solvers:
-            params["positive"] = False
-
-        elif params["solver"] == "lbfgs":
-            params["positive"] = True
-
-        trial.set_user_attr("positive", params["positive"])
             
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().model(trial)
-        
         params = self._sample_params(trial)
-        model = Ridge(**params)
-        
+        model = super()._evalate_sampled_model("regression", Ridge, params)
         self.model = model
+
         return model

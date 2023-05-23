@@ -4,7 +4,6 @@ from optuna.trial import Trial
 from dataclasses import dataclass
 from typing import Iterable, Optional, Dict, Any
 from sklearn.linear_model import LogisticRegression
-from utils.linear_model_utils import get_valid_solver_info
 
 @dataclass
 class LogisticRegressionModel(SampleClassMixin):
@@ -36,35 +35,13 @@ class LogisticRegressionModel(SampleClassMixin):
         params["max_iter"] = trial.suggest_int("max_iter", *self.max_iter_space, log=False)
         params["multi_class"] = trial.suggest_categorical("multi_class", self.multi_class_space)
         params["l1_ratio"] = trial.suggest_float("l1_ratio", *self.l1_ratio_space, log=False)
-
-        valid_solver_info: Iterable = get_valid_solver_info(params["solver"])
-
-        params["dual"] = valid_solver_info["dual"]
-        trial.set_user_attr("dual", params["dual"])
-
-        if params["penalty"] not in valid_solver_info["penalties"]:
-            params["penalty"] = random.choice(valid_solver_info["penalties"])
-            trial.set_user_attr("penalty", params["penalty"])
-
-        if params["penalty"] != "elasticnet":
-            params["l1_ratio"] = None
-            trial.set_user_attr("l1_ratio", params["l1_ratio"])
-
-        if params["penalty"] is None:
-            params["C"] = 1.0
-            trial.set_user_attr("C", params["C"])
-
-        if params["penalty"] == "l1":
-            params["dual"] = False
-            trial.set_user_attr("dual", params["dual"])
  
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().model(trial)
-        
         params = self._sample_params(trial)
-        model = LogisticRegression(**params)
-        
+        model = super()._evalate_sampled_model("classification", LogisticRegression, params)
         self.model = model
+
         return model
