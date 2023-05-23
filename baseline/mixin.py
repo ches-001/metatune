@@ -31,7 +31,7 @@ class SampleClassMixin:
     def _evaluate_sampled_model(self, task: str, model_class: Callable, params: Dict[str, Any]) -> Any:
         valid_tasks: Iterable[str] = ["regression", "classification"]
         assert task in valid_tasks, (
-            f"Invalid task for self._evalate_sampled_model, expected task to be one of {valid_tasks}, got {task}"
+            f"Invalid task for self._evaluate_sampled_model, expected task to be one of {valid_tasks}, got {task}"
         )
 
         self._evaluate_params(model_class, params)
