@@ -87,3 +87,31 @@ class ExtraTreesRegressionModel(RandomForestRegressorModel):
         
         return model
     
+
+@dataclass
+class AdaBoostRegressorModel(SampleClassMixin):
+    estimator_space: Iterable[Optional[object]] = (None, )
+    n_estimators_space: Iterable[int] = (1, 200)
+    learning_rate_space: Iterable[float] = (0.01, 1.0)
+    loss_space: Iterable[str] = ("linear", "square", "exponential")
+    model: Any = None
+    
+    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super()._sample_params(trial)
+        
+        params = {}
+        params["estimator"] = trial.suggest_categorical("estimator", self.estimator_space)
+        params["n_estimators"] = trial.suggest_int("n_estimators", *self.n_estimators_space, log=False)
+        params["learning_rate"] = trial.suggest_float("learning_rate", *self.learning_rate_space, log=False)
+        params["loss"] = trial.suggest_categorical("loss", self.loss_space)
+        
+        return params
+    
+    def sample_model(self, trial: Optional[Trial]=None) -> Any:
+        super().model(trial)
+        params = self._sample_params(trial)
+        model = super()._evaluate_sampled_model("regression", AdaBoostRegressor, params)
+        self.model = model
+
+        return model
+    
