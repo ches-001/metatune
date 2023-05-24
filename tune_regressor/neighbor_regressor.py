@@ -7,7 +7,7 @@ from sklearn.neighbors import KNeighborsRegressor
 
 @dataclass
 class KNeighborsRegressorModel(SampleClassMixin):
-    n_neighbors_space: Iterable[int] = tuple(range(3, 21, 2))
+    n_neighbors_space: Iterable[int] = (1, 10)
     weights_space: Iterable[str] = ("uniform", "distance")
     algorithm_space: Iterable[str] = ("ball_tree", "kd_tree", "brute")
     leaf_size_space: Iterable[int] = (2, 60)
