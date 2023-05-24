@@ -1,6 +1,6 @@
 from baseline import SampleClassMixin
 from optuna.trial import Trial
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Iterable, Optional, Dict, Any, Union
 from sklearn.linear_model import (
     LinearRegression,
@@ -134,12 +134,14 @@ class ElasticNetModel(SampleClassMixin):
         return model
     
 
+@dataclass
 class MultiTaskLassoModel(SampleClassMixin):
     alpha_space: Iterable[float] = (0.01, 1.0)
     fit_intercept_space: Iterable[bool] = (True, False)
     max_iter_space: Iterable[int] = (100, 2000)
     tol_space: Iterable[float] = (1e-6, 1e-3)
     selection_space: Iterable[str] = ("cyclic", "random")
+    is_multitask: str = field(init=False, default=True)
     model: Any = None
     
     def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
@@ -157,7 +159,7 @@ class MultiTaskLassoModel(SampleClassMixin):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().model(trial)
         params = self._sample_params(trial)
-        model = super()._evaluate_sampled_model("regression", MultiTaskLasso, params, is_mulktitask=True)
+        model = super()._evaluate_sampled_model("regression", MultiTaskLasso, params, is_mulktitask=self.is_multitask)
         self.model = model
 
         return model
@@ -171,6 +173,7 @@ class MultiTaskElasticNetModel(SampleClassMixin):
     max_iter_space: Iterable[int] = (100, 2000)
     tol_space: Iterable[float] = (1e-6, 1e-3)
     selection_space: Iterable[str] = ("cyclic", "random")
+    is_multitask: str = field(init=False, default=True)
     model: Any = None
     
     def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
@@ -189,7 +192,8 @@ class MultiTaskElasticNetModel(SampleClassMixin):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().model(trial)
         params = self._sample_params(trial)
-        model = super()._evaluate_sampled_model("regression", MultiTaskElasticNet, params, is_mulktitask=True)
+        model = super()._evaluate_sampled_model(
+            "regression", MultiTaskElasticNet, params, is_mulktitask=self.is_multitask)
         self.model = model
 
         return model
