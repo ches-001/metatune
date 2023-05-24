@@ -19,7 +19,8 @@ class KNeighborsClassifierModel(SampleClassMixin):
         super()._sample_params(trial)
 
         params = {}
-        params["n_neighbors"] = trial.suggest_int("n_neighbors", *self.n_neighbors_space, log=False)
+        params["n_neighbors"] = trial.suggest_categorical(
+            "n_neighbors", [i for i in range(*self.n_neighbors_space) if i % 2 != 0 and i != 1])
         params["weights"] = trial.suggest_categorical("weight", self.weights_space)
         params["algorithm"] = trial.suggest_categorical("algorithm", self.algorithm_space)
         params["leaf_size"] = trial.suggest_int("leaf_size", *self.leaf_size_space)
