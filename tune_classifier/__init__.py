@@ -3,6 +3,7 @@ from tune_classifier.svc import *
 from tune_classifier.tree_classifier import *
 from tune_classifier.linear_model_classifier import *
 from tune_classifier.ensemble_classifier import *
+from tune_classifier.neighbor_classifier import *
 from typing import Iterable, Tuple, Dict, Generator
 
 __all__: Iterable[str] = [
@@ -10,6 +11,7 @@ __all__: Iterable[str] = [
     "tune_classifier.tree_classifier",
     "tune_classifier.linear_model_classifier",
     "tune_classifier.ensemble_classifier",
+    "tune_classifier.neighbor_classifier",
 ]
 
 tuning_entities: Iterable[Iterable[Tuple[str, object]]] = list(map(get_entities, __all__))

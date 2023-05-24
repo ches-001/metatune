@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Iterable, Optional, Dict, Any
 from sklearn.svm import SVR, LinearSVR
 
+
 @dataclass
 class SVRModel(SampleClassMixin):
     kernel_space: Iterable[str] = ("linear", "poly", "rbf", "sigmoid")
@@ -16,9 +17,9 @@ class SVRModel(SampleClassMixin):
     epsilon_space: Iterable[float] = (0.1, 0.5)
     model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+    def _sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
         super()._sample_params(trial)
-        
+
         params = {}
         params["kernel"] = trial.suggest_categorical("kernel", self.kernel_space)
         params["degree"] = trial.suggest_int("degree", *self.degree_space, log=False)
@@ -31,7 +32,7 @@ class SVRModel(SampleClassMixin):
 
         return params
     
-    def sample_model(self, trial: Optional[Trial]=None) -> Any:
+    def sample_model(self, trial: Optional[Trial] = None) -> Any:
         super().model(trial)
         params = self._sample_params(trial)
         model = super()._evaluate_sampled_model("regression", SVR, params)
