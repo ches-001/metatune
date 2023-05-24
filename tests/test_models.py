@@ -126,3 +126,29 @@ class TestAdaBoostClassifier(BaseTest):
 class TestAdaBoostRegressor(BaseTest):
     model: SampleClassMixin = tune_regressor.AdaBoostRegressorModel()
     task: str = "regression"
+
+
+class TestKNNClassifier(BaseTest):
+    model: SampleClassMixin = tune_classifier.KNeighborsClassifierModel()
+    task: str = "classification"
+
+
+class TestKNNRegressor(BaseTest):
+    model: SampleClassMixin = tune_regressor.KNeighborsRegressorModel()
+    task: str = "regression"
+
+
+class TestElasticNetRegressor(BaseTest):
+    model: SampleClassMixin = tune_regressor.ElasticNetModel()
+    task: str = "regression"
+
+
+class TestMultiTaskLassoRegressor(BaseTest):
+    model: SampleClassMixin = tune_regressor.MultiTaskLassoModel()
+    task: str = "regression"
+
+
+class TestMultiTaskElasticNetRegressor(BaseTest):
+    model: SampleClassMixin = tune_regressor.MultiTaskElasticNetModel()
+    task: str = "regression"
+
