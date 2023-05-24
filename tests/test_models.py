@@ -75,6 +75,16 @@ class TestMultinomialNB(BaseTest):
     model: SampleClassMixin = tune_classifier.MultinomialNBModel
     task: str = "classification"
 
+class TestExtraTreeClassifier(BaseTest):
+    model: SampleClassMixin = tune_classifier.ExtraTreeClassifierModel()
+    task: str = "classification"
+
+
+class TestExtraTreeRegressor(BaseTest):
+    model: SampleClassMixin = tune_regressor.ExtraTreeRegressorModel()
+    task: str = "regression"
+
+
 class TestRandomForestClassifier(BaseTest):
     model: SampleClassMixin = tune_classifier.RandomForestClassifierModel()
     task: str = "classification"
@@ -94,7 +104,7 @@ class TestExtraTreesClassifier(BaseTest):
 
 
 class TestExtraTreesRegressor(BaseTest):
-    model: SampleClassMixin = tune_regressor.ExtraTreesRegressionModel()
+    model: SampleClassMixin = tune_regressor.ExtraTreesRegressorModel()
     task: str = "regression"
 
 
