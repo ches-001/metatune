@@ -53,10 +53,13 @@ class BaseTest:
     task: str = None
 
     def test_dict_mapping(self):
-        assert (
-            self.model.__class__.__name__ in classifier_tuner_model_class_dict.keys() or 
-            self.model.__class__.__name__ in regressor_tuner_model_class_dict.keys()
-        ) 
+        if self.task == "classification":
+            assert self.model.__class__.__name__ in classifier_tuner_model_class_dict.keys()
+        
+        elif self.task == "regression":
+            assert self.model.__class__.__name__ in regressor_tuner_model_class_dict.keys()
+
+        else: assert False
 
     def test_methods(self):
         assert hasattr(self.model, "_sample_params")
