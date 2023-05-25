@@ -175,7 +175,7 @@ class GradientBoostingRegressorTuner(SampleClassMixin):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().model(trial)
         params = self._sample_params(trial)
-        model = super()._evaluate_sampled_model("classification", GradientBoostingRegressor, params)
+        model = super()._evaluate_sampled_model("regression", GradientBoostingRegressor, params)
         self.model = model
 
         return model
@@ -220,7 +220,7 @@ class BaggingRegressorTuner(SampleClassMixin):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().model(trial)
         params = self._sample_params(trial)
-        model = super()._evaluate_sampled_model("classification", BaggingRegressor, params)
+        model = super()._evaluate_sampled_model("regression", BaggingRegressor, params)
         self.model = model
 
         return model
