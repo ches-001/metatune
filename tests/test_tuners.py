@@ -131,3 +131,23 @@ class TestMultiTaskElasticNetRegressor(BaseTest):
     model: SampleClassMixin = tune_regressor.MultiTaskElasticNetTuner()
     task: str = "regression"
 
+
+class TestBaggingClassifier(BaseTest):
+    model: SampleClassMixin = tune_classifier.BaggingClassifierTuner()
+    task: str = "classification"
+
+
+class TestBaggingRegressor(BaseTest):
+    model: SampleClassMixin = tune_regressor.BaggingRegressorTuner()
+    task: str = "regression"
+
+
+class TestGradientBoostingClassifier(BaseTest):
+    model: SampleClassMixin = tune_classifier.GradientBoostingClassifierTuner()
+    task: str = "classification"
+
+
+class TestGradientBoostingRegressor(BaseTest):
+    model: SampleClassMixin = tune_regressor.GradientBoostingRegressorTuner()
+    task: str = "regression"
+
