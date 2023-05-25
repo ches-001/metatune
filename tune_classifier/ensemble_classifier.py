@@ -12,7 +12,7 @@ from sklearn.ensemble import (
 )
 
 @dataclass
-class RandomForestClassifierModel(SampleClassMixin):
+class RandomForestClassifierTuner(SampleClassMixin):
     n_estimators_space: Iterable[int] = (1, 200)
     criterion_space: Iterable[str] = ("gini", "entropy", "log_loss")
     max_depth_space: Iterable[int] = (2, 1000)
@@ -77,22 +77,22 @@ class RandomForestClassifierModel(SampleClassMixin):
 
 
 @dataclass
-class ExtraTreesClassifierModel(RandomForestClassifierModel):
+class ExtraTreesClassifierTuner(RandomForestClassifierTuner):
      
     def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        return super(ExtraTreesClassifierModel, self)._sample_params(trial)
+        return super(ExtraTreesClassifierTuner, self)._sample_params(trial)
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super(RandomForestClassifierModel, self).model(trial)
+        super(RandomForestClassifierTuner, self).model(trial)
         params = self._sample_params(trial)
-        model = super(RandomForestClassifierModel, self)._evaluate_sampled_model("classification", ExtraTreesClassifier, params)
+        model = super(RandomForestClassifierTuner, self)._evaluate_sampled_model("classification", ExtraTreesClassifier, params)
         self.model = model
         
         return model
     
 
 @dataclass
-class AdaBoostClassifierModel(SampleClassMixin):
+class AdaBoostClassifierTuner(SampleClassMixin):
     estimator_space: Iterable[Optional[object]] = (None, )
     n_estimators_space: Iterable[int] = (1, 200)
     learning_rate_space: Iterable[float] = (0.01, 1.0)
@@ -117,3 +117,10 @@ class AdaBoostClassifierModel(SampleClassMixin):
         self.model = model
 
         return model
+    
+
+tuner_model_class_dict: Dict[str, Callable] = {
+    RandomForestClassifierTuner.__name__: RandomForestClassifier,
+    ExtraTreesClassifierTuner.__name__: ExtraTreesClassifier,
+    AdaBoostClassifierTuner.__name__: AdaBoostClassifier,
+}

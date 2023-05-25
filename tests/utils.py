@@ -4,6 +4,9 @@ import numpy as np
 from sklearn import datasets
 from optuna.trial import Trial
 from baseline.mixin import SampleClassMixin
+from tune_classifier import classifier_tuner_model_class_dict
+from tune_regressor import regressor_tuner_model_class_dict
+
 
 
 # load sample datasets
@@ -48,6 +51,12 @@ def objective_factory(model: SampleClassMixin, task: str="regression"):
 class BaseTest:
     model: SampleClassMixin = None
     task: str = None
+
+    def test_dict_mapping(self):
+        assert (
+            self.model.__class__.__name__ in classifier_tuner_model_class_dict.keys() or 
+            self.model.__class__.__name__ in regressor_tuner_model_class_dict.keys()
+        ) 
 
     def test_methods(self):
         assert hasattr(self.model, "_sample_params")

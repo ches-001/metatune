@@ -6,7 +6,7 @@ from sklearn.tree import DecisionTreeRegressor, ExtraTreeRegressor
 
 
 @dataclass
-class DecisionTreeRegressorModel(SampleClassMixin):
+class DecisionTreeRegressorTuner(SampleClassMixin):
     criterion_space: Iterable[str] = ("squared_error", "friedman_mse", "absolute_error", "poisson")
     splitter_space: Iterable[str] = ("best", "random")
     max_depth_space: Iterable[int] = (2, 1000)
@@ -56,16 +56,21 @@ class DecisionTreeRegressorModel(SampleClassMixin):
     
 
 @dataclass
-class ExtraTreeRegressorModel(DecisionTreeRegressorModel):
+class ExtraTreeRegressorTuner(DecisionTreeRegressorTuner):
     
     def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        return super(ExtraTreeRegressorModel, self)._sample_params(trial)
+        return super(ExtraTreeRegressorTuner, self)._sample_params(trial)
         
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super(DecisionTreeRegressorModel, self).model(trial)
+        super(DecisionTreeRegressorTuner, self).model(trial)
         
         params = self._sample_params(trial)
-        model = super(DecisionTreeRegressorModel, self)._evaluate_sampled_model("regression", ExtraTreeRegressor, params)
+        model = super(DecisionTreeRegressorTuner, self)._evaluate_sampled_model("regression", ExtraTreeRegressor, params)
         self.model = model
         return model
     
+
+tuner_model_class_dict: Dict[str, Callable] = {
+    DecisionTreeRegressorTuner.__name__: DecisionTreeRegressor,
+    ExtraTreeRegressorTuner.__name__: ExtraTreeRegressor,
+}

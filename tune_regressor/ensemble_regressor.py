@@ -12,7 +12,7 @@ from sklearn.ensemble import (
 )
 
 @dataclass
-class RandomForestRegressorModel(SampleClassMixin):
+class RandomForestRegressorTuner(SampleClassMixin):
     n_estimators_space: Iterable[int] = (1, 200)
     criterion_space: Iterable[str] = ("squared_error", "absolute_error", "friedman_mse", "poisson")
     max_depth_space: Iterable[int] = (2, 1000)
@@ -74,22 +74,22 @@ class RandomForestRegressorModel(SampleClassMixin):
     
 
 @dataclass
-class ExtraTreesRegressorModel(RandomForestRegressorModel):
+class ExtraTreesRegressorTuner(RandomForestRegressorTuner):
      
     def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        return super(ExtraTreesRegressorModel, self)._sample_params(trial)
+        return super(ExtraTreesRegressorTuner, self)._sample_params(trial)
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super(RandomForestRegressorModel, self).model(trial)
+        super(RandomForestRegressorTuner, self).model(trial)
         params = self._sample_params(trial)
-        model = super(RandomForestRegressorModel, self)._evaluate_sampled_model("regression", ExtraTreesRegressor, params)
+        model = super(RandomForestRegressorTuner, self)._evaluate_sampled_model("regression", ExtraTreesRegressor, params)
         self.model = model
         
         return model
     
 
 @dataclass
-class AdaBoostRegressorModel(SampleClassMixin):
+class AdaBoostRegressorTuner(SampleClassMixin):
     estimator_space: Iterable[Optional[object]] = (None, )
     n_estimators_space: Iterable[int] = (1, 200)
     learning_rate_space: Iterable[float] = (0.01, 1.0)
@@ -115,3 +115,9 @@ class AdaBoostRegressorModel(SampleClassMixin):
 
         return model
     
+
+tuner_model_class_dict: Dict[str, Callable] = {
+    RandomForestRegressorTuner.__name__: RandomForestRegressor,
+    ExtraTreesRegressorTuner.__name__: ExtraTreesRegressor,
+    AdaBoostRegressorTuner.__name__: AdaBoostRegressor,
+}
