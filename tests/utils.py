@@ -1,5 +1,6 @@
 import optuna
 import sklearn
+import numpy as np
 from sklearn import datasets
 from optuna.trial import Trial
 from baseline.mixin import SampleClassMixin
@@ -14,6 +15,10 @@ REG_DATA = sklearn.model_selection.train_test_split(REG_X, REG_y, random_state=0
 CLS_X, CLS_y = datasets.load_iris(return_X_y=True)
 CLS_DATA = sklearn.model_selection.train_test_split(CLS_X, CLS_y, random_state=0)
 
+#multi-task regression
+MULTITASK_REG_X, MULTITASK_REG_y = np.random.randn(200, 20), np.random.randn(200, 5)
+MULTITASK_DATA = sklearn.model_selection.train_test_split(MULTITASK_REG_X, MULTITASK_REG_y, random_state=0)
+
 
 # Define an objective function to be minimized.
 def objective_factory(model: SampleClassMixin, task: str="regression"):
@@ -25,6 +30,10 @@ def objective_factory(model: SampleClassMixin, task: str="regression"):
     else:
         data = CLS_DATA
         metric = sklearn.metrics.accuracy_score
+
+    if hasattr(model, "is_multitask"):
+        data = MULTITASK_DATA
+        metric = sklearn.metrics.mean_squared_error
 
     X_train, X_val, y_train, y_val = data
     def objective(trial: Trial):
