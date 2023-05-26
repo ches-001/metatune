@@ -3,7 +3,11 @@ from baseline import SampleClassMixin
 from optuna.trial import Trial
 from dataclasses import dataclass
 from typing import Iterable, Optional, Dict, Any, Callable
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import (
+    LogisticRegression, 
+    Perceptron, 
+    PassiveAggressiveClassifier,
+    SGDClassifier)
 
 @dataclass
 class LogisticRegressionTuner(SampleClassMixin):

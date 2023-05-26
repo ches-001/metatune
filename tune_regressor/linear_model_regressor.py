@@ -8,7 +8,22 @@ from sklearn.linear_model import (
     Ridge, 
     ElasticNet, 
     MultiTaskLasso, 
-    MultiTaskElasticNet)
+    MultiTaskElasticNet, 
+    Lars,
+    LassoLars,
+    LassoLarsIC,
+    HuberRegressor, 
+    TheilSenRegressor,
+    BayesianRidge,
+    OrthogonalMatchingPursuit,
+    ARDRegression,
+    PassiveAggressiveRegressor,
+    QuantileRegressor,
+    SGDRegressor, 
+    RANSACRegressor, 
+    PoissonRegressor, 
+    GammaRegressor, 
+    TweedieRegressor)
 
 @dataclass
 class LinearRegressionTuner(SampleClassMixin):

@@ -8,6 +8,8 @@ from sklearn.ensemble import (
     AdaBoostRegressor, 
     GradientBoostingRegressor, 
     BaggingRegressor, 
+    StackingRegressor,
+    HistGradientBoostingRegressor,
 )
 
 @dataclass

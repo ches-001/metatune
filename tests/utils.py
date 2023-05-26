@@ -2,24 +2,26 @@ import optuna
 import sklearn
 import numpy as np
 from sklearn import datasets
+from sklearn.preprocessing import MinMaxScaler
 from optuna.trial import Trial
 from baseline.mixin import SampleClassMixin
 from tune_classifier import classifier_tuner_model_class_dict
 from tune_regressor import regressor_tuner_model_class_dict
 
-
-
 # load sample datasets
 # regression
 REG_X, REG_y = datasets.load_diabetes(return_X_y=True)
+REG_X = MinMaxScaler().fit_transform(REG_X)
 REG_DATA = sklearn.model_selection.train_test_split(REG_X, REG_y, random_state=0)
 
 # classification
 CLS_X, CLS_y = datasets.load_iris(return_X_y=True)
+CLS_X = MinMaxScaler().fit_transform(CLS_X)
 CLS_DATA = sklearn.model_selection.train_test_split(CLS_X, CLS_y, random_state=0)
 
 #multi-task regression
 MULTITASK_REG_X, MULTITASK_REG_y = np.random.randn(200, 20), np.random.randn(200, 5)
+MULTITASK_REG_X = MinMaxScaler().fit_transform(MULTITASK_REG_X)
 MULTITASK_DATA = sklearn.model_selection.train_test_split(MULTITASK_REG_X, MULTITASK_REG_y, random_state=0)
 
 

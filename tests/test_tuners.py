@@ -151,3 +151,12 @@ class TestGradientBoostingRegressor(BaseTest):
     model: SampleClassMixin = tune_regressor.GradientBoostingRegressorTuner()
     task: str = "regression"
 
+
+class TestNuSVC(BaseTest):
+    model: SampleClassMixin = tune_classifier.NuSVCTuner()
+    task: str = "classification"
+
+
+class TestNuSVR(BaseTest):
+    model: SampleClassMixin = tune_regressor.NuSVRTuner()
+    task: str = "regression"
