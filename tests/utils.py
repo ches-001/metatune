@@ -55,6 +55,7 @@ def objective_factory(model: SampleClassMixin, task: str="regression"):
 class BaseTest:
     model: SampleClassMixin = None
     task: str = None
+    n_trials: int = 20
 
     def test_dict_mapping(self):
         if self.task == "classification":
@@ -72,7 +73,7 @@ class BaseTest:
     def test_study(self):
         try:
             study = optuna.create_study()  # Create a new study.
-            study.optimize(objective_factory(self.model, task=self.task), n_trials=20)
+            study.optimize(objective_factory(self.model, task=self.task), n_trials=self.n_trials)
             best = study.best_params
         except:
             best = None

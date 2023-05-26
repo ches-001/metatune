@@ -180,8 +180,10 @@ class TestPassiveAggressiveRegressorTuner(BaseTest):
 class TestMLPClassifierTuner(BaseTest):
     model: SampleClassMixin = tune_classifier.MLPClassifierTuner(batch_size_space=("auto",))
     task: str = "classification"
-
+    n_trials: int = 10
+    
 
 class TestMLPRegressorTuner(BaseTest):
     model: SampleClassMixin = tune_regressor.MLPRegressorTuner(batch_size_space=("auto",))
     task: str = "regression"
+    n_trials: int = 10
