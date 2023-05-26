@@ -1,7 +1,7 @@
 from baseline import SampleClassMixin
 from optuna.trial import Trial
 from dataclasses import dataclass, field
-from typing import Iterable, Optional, Dict, Any, Union
+from typing import Iterable, Optional, Dict, Any, Union, Callable
 from sklearn.linear_model import (
     LinearRegression,
     Lasso, 
@@ -11,7 +11,7 @@ from sklearn.linear_model import (
     MultiTaskElasticNet)
 
 @dataclass
-class LinearRegressionModel(SampleClassMixin):
+class LinearRegressionTuner(SampleClassMixin):
     fit_intercept_space: Iterable[bool] = (True, False)
     positive_space: Iterable[bool] = (True, False)
     model: Any = None
@@ -35,7 +35,7 @@ class LinearRegressionModel(SampleClassMixin):
     
 
 @dataclass
-class LassoModel(SampleClassMixin):
+class LassoTuner(SampleClassMixin):
     alpha_space: Iterable[float] = (0.01, 1.0)
     fit_intercept_space: Iterable[bool] = (True, False)
     max_iter_space: Iterable[int] = (100, 2000)
@@ -67,7 +67,7 @@ class LassoModel(SampleClassMixin):
 
  
 @dataclass
-class RidgeModel(SampleClassMixin):
+class RidgeTuner(SampleClassMixin):
     alpha_space: Iterable[float] = (0.01, 1.0)
     fit_intercept_space: Iterable[bool] = (True, False)
     max_iter_space: Iterable[int] = (100, 2000)
@@ -99,7 +99,7 @@ class RidgeModel(SampleClassMixin):
     
 
 @dataclass
-class ElasticNetModel(SampleClassMixin):
+class ElasticNetTuner(SampleClassMixin):
     alpha_space: Iterable[float] = (0.01, 1.0)
     l1_ratio_space: Iterable[float] = (0.0, 1.0)
     fit_intercept_space: Iterable[bool] = (True, False)
@@ -135,7 +135,7 @@ class ElasticNetModel(SampleClassMixin):
     
 
 @dataclass
-class MultiTaskLassoModel(SampleClassMixin):
+class MultiTaskLassoTuner(SampleClassMixin):
     alpha_space: Iterable[float] = (0.01, 1.0)
     fit_intercept_space: Iterable[bool] = (True, False)
     max_iter_space: Iterable[int] = (100, 2000)
@@ -166,7 +166,7 @@ class MultiTaskLassoModel(SampleClassMixin):
     
 
 @dataclass
-class MultiTaskElasticNetModel(SampleClassMixin):
+class MultiTaskElasticNetTuner(SampleClassMixin):
     alpha_space: Iterable[float] = (0.01, 1.0)
     l1_ratio_space: Iterable[float] = (0.0, 1.0)
     fit_intercept_space: Iterable[bool] = (True, False)
@@ -197,3 +197,13 @@ class MultiTaskElasticNetModel(SampleClassMixin):
         self.model = model
 
         return model
+    
+
+tuner_model_class_dict: Dict[str, Callable] = {
+    LinearRegressionTuner.__name__: LinearRegression,
+    LassoTuner.__name__: Lasso,
+    RidgeTuner.__name__: Ridge,
+    ElasticNetTuner.__name__: ElasticNet,
+    MultiTaskLassoTuner.__name__: MultiTaskLasso,
+    MultiTaskElasticNetTuner.__name__: MultiTaskElasticNet,
+}

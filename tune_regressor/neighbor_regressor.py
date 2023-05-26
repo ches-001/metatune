@@ -1,12 +1,12 @@
 from baseline import SampleClassMixin
 from optuna.trial import Trial
 from dataclasses import dataclass
-from typing import Iterable, Optional, Dict, Any
+from typing import Iterable, Optional, Dict, Any, Callable
 from sklearn.neighbors import KNeighborsRegressor
 
 
 @dataclass
-class KNeighborsRegressorModel(SampleClassMixin):
+class KNeighborsRegressorTuner(SampleClassMixin):
     n_neighbors_space: Iterable[int] = (1, 10)
     weights_space: Iterable[str] = ("uniform", "distance")
     algorithm_space: Iterable[str] = ("ball_tree", "kd_tree", "brute")
@@ -39,3 +39,8 @@ class KNeighborsRegressorModel(SampleClassMixin):
         self.model = model
 
         return model
+
+
+tuner_model_class_dict: Dict[str, Callable] = {
+    KNeighborsRegressorTuner.__name__: KNeighborsRegressor,
+}

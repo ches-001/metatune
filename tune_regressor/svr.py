@@ -1,12 +1,12 @@
 from baseline import SampleClassMixin
 from optuna.trial import Trial
 from dataclasses import dataclass
-from typing import Iterable, Optional, Dict, Any
+from typing import Iterable, Optional, Dict, Any, Callable
 from sklearn.svm import SVR, LinearSVR
 
 
 @dataclass
-class SVRModel(SampleClassMixin):
+class SVRTuner(SampleClassMixin):
     kernel_space: Iterable[str] = ("linear", "poly", "rbf", "sigmoid")
     degree_space: Iterable[int] = (1, 5)
     gamma_space: Iterable[str] = ("scale", "auto")
@@ -42,7 +42,7 @@ class SVRModel(SampleClassMixin):
 
 
 @dataclass
-class LinearSVRModel(SampleClassMixin):
+class LinearSVRTuner(SampleClassMixin):
     epsilon_space: Iterable[float] = (0.0, 0.5)
     tol_space: Iterable[float] = (1e-6, 1e-3)
     C_space: Iterable[float] = (0.9, 1.0)
@@ -75,3 +75,9 @@ class LinearSVRModel(SampleClassMixin):
         self.model = model
 
         return model
+    
+
+tuner_model_class_dict: Dict[str, Callable] = {
+    SVRTuner.__name__: SVR,
+    LinearSVRTuner.__name__: LinearSVR,
+}
