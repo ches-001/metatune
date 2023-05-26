@@ -165,3 +165,13 @@ class TestNuSVR(BaseTest):
 class TestPerceptron(BaseTest):
     model: SampleClassMixin = tune_classifier.PerceptronTuner()
     task: str = "classification"
+
+
+class TestPassiveAggressiveClassifier(BaseTest):
+    model: SampleClassMixin = tune_classifier.PassiveAggressiveClassifierTuner()
+    task: str = "classification"
+
+
+class TestPassiveAggressiveRegressorTuner(BaseTest):
+    model: SampleClassMixin = tune_regressor.PassiveAggressiveRegressorTuner()
+    task: str = "regression"
