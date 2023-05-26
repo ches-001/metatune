@@ -24,6 +24,7 @@ class SampleClassMixin:
             
     def _random_classification_set(self, is_multitask: bool=False) -> Tuple[Iterable]:
         if not is_multitask:
+<<<<<<< HEAD
             return np.random.randn(25, 5), np.random.randint(0, 2, size=(25))
         
         else:
@@ -35,6 +36,19 @@ class SampleClassMixin:
         
         else:
             return np.random.randn(25, 5), np.random.randn(25, 2)
+=======
+            return np.random.randn(20, 5), np.random.randint(0, 2, size=(20))
+        
+        else:
+            return np.random.randn(20, 5), np.random.randint(0, 2, size=(20, 2))
+    
+    def _random_regression_set(self, is_multitask: bool=False) -> Tuple[Iterable]:
+        if not is_multitask:
+            return np.random.randn(20, 5), np.random.randn(20)
+        
+        else:
+            return np.random.randn(20, 5), np.random.randn(20, 2)
+>>>>>>> 64b529f2f5a18ad52e555108c7a254ae58ef06c8
     
     def _evaluate_sampled_model(
             self, 
