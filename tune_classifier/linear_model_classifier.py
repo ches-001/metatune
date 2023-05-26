@@ -2,11 +2,11 @@ import random
 from baseline import SampleClassMixin
 from optuna.trial import Trial
 from dataclasses import dataclass
-from typing import Iterable, Optional, Dict, Any
+from typing import Iterable, Optional, Dict, Any, Callable
 from sklearn.linear_model import LogisticRegression
 
 @dataclass
-class LogisticRegressionModel(SampleClassMixin):
+class LogisticRegressionTuner(SampleClassMixin):
     penalty_space: Iterable[Optional[str]] = ("l1", "l2", "elasticnet", None)
     dual_space: Iterable[bool] = (True, False)
     tol_space: Iterable[float] = (1e-6, 1e-3)
@@ -45,3 +45,8 @@ class LogisticRegressionModel(SampleClassMixin):
         self.model = model
 
         return model
+    
+
+tuner_model_class_dict: Dict[str, Callable] = {
+    LogisticRegressionTuner.__name__: LogisticRegression
+}

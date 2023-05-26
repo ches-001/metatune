@@ -1,12 +1,12 @@
 from baseline import SampleClassMixin
 from optuna.trial import Trial
 from dataclasses import dataclass
-from typing import Iterable, Optional, Dict, Any
+from typing import Iterable, Optional, Dict, Any, Callable
 from sklearn.svm import SVC, LinearSVC
 
 
 @dataclass
-class SVCModel(SampleClassMixin):
+class SVCTuner(SampleClassMixin):
     kernel_space: Iterable[str] = ("linear", "poly", "rbf", "sigmoid")
     degree_space: Iterable[int] = (1, 5)
     gamma_space: Iterable[str] = ("scale", "auto")
@@ -43,7 +43,7 @@ class SVCModel(SampleClassMixin):
     
 
 @dataclass
-class LinearSVCModel(SampleClassMixin):
+class LinearSVCTuner(SampleClassMixin):
     penalty_space: Iterable[str] = ("l1", "l2")
     loss_space: Iterable[str] = ("hinge", "squared_hinge")
     dual_space: Iterable[bool] = (True, False)
@@ -80,3 +80,9 @@ class LinearSVCModel(SampleClassMixin):
         self.model = model
 
         return model
+
+
+tuner_model_class_dict: Dict[str, Callable] = {
+    SVCTuner.__name__: SVC,
+    LinearSVCTuner.__name__: LinearSVC
+}

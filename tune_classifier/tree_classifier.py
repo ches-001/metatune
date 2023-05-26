@@ -6,7 +6,7 @@ from sklearn.tree import DecisionTreeClassifier, ExtraTreeClassifier
 
 
 @dataclass
-class DecisionTreeClassifierModel(SampleClassMixin):
+class DecisionTreeClassifierTuner(SampleClassMixin):
     criterion_space: Iterable[str] = ("gini", "entropy", "log_loss")
     splitter_space: Iterable[str] = ("best", "random")
     max_depth_space: Iterable[int] = (2, 1000)
@@ -58,16 +58,21 @@ class DecisionTreeClassifierModel(SampleClassMixin):
     
 
 @dataclass
-class ExtraTreeClassifierModel(DecisionTreeClassifierModel):
+class ExtraTreeClassifierTuner(DecisionTreeClassifierTuner):
     
     def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        return super(ExtraTreeClassifierModel, self)._sample_params(trial)
+        return super(ExtraTreeClassifierTuner, self)._sample_params(trial)
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super(DecisionTreeClassifierModel, self).model(trial)
+        super(DecisionTreeClassifierTuner, self).model(trial)
 
         params = self._sample_params(trial)
-        model = super(DecisionTreeClassifierModel, self)._evaluate_sampled_model("classification", ExtraTreeClassifier, params)
+        model = super(DecisionTreeClassifierTuner, self)._evaluate_sampled_model("classification", ExtraTreeClassifier, params)
         self.model = model
         return model
     
+
+tuner_model_class_dict: Dict[str, Callable] = {
+    DecisionTreeClassifierTuner.__name__: DecisionTreeClassifier,
+    ExtraTreeClassifierTuner.__name__: ExtraTreeClassifier,
+}
