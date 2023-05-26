@@ -174,7 +174,7 @@ class MultiTaskLassoTuner(SampleClassMixin):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().model(trial)
         params = self._sample_params(trial)
-        model = super()._evaluate_sampled_model("regression", MultiTaskLasso, params, is_mulktitask=self.is_multitask)
+        model = super()._evaluate_sampled_model("regression", MultiTaskLasso, params, is_multitask=self.is_multitask)
         self.model = model
 
         return model
@@ -208,7 +208,7 @@ class MultiTaskElasticNetTuner(SampleClassMixin):
         super().model(trial)
         params = self._sample_params(trial)
         model = super()._evaluate_sampled_model(
-            "regression", MultiTaskElasticNet, params, is_mulktitask=self.is_multitask)
+            "regression", MultiTaskElasticNet, params, is_multitask=self.is_multitask)
         self.model = model
 
         return model

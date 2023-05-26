@@ -41,7 +41,7 @@ class SampleClassMixin:
             task: str, 
             model_class: Callable, 
             params: Dict[str, Any], 
-            is_mulktitask: bool=False) -> Any:
+            is_multitask: bool=False) -> Any:
         
         valid_tasks: Iterable[str] = ["regression", "classification"]
         assert task in valid_tasks, (
@@ -51,9 +51,9 @@ class SampleClassMixin:
         self._evaluate_params(model_class, params)
         
         if task == "regression":
-            X, y = self._random_regression_set(is_mulktitask)
+            X, y = self._random_regression_set(is_multitask)
         else:
-            X, y = self._random_classification_set(is_mulktitask)
+            X, y = self._random_classification_set(is_multitask)
 
         try:
             model_class(**params).fit(X, y)
