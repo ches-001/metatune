@@ -175,3 +175,13 @@ class TestPassiveAggressiveClassifier(BaseTest):
 class TestPassiveAggressiveRegressorTuner(BaseTest):
     model: SampleClassMixin = tune_regressor.PassiveAggressiveRegressorTuner()
     task: str = "regression"
+
+
+class TestSGDClassifier(BaseTest):
+    model: SampleClassMixin = tune_classifier.SGDClassifierTuner()
+    task: str = "classification"
+
+
+class TestSGDRegressorTuner(BaseTest):
+    model: SampleClassMixin = tune_regressor.SGDRegressorTuner()
+    task: str = "regression"
