@@ -250,7 +250,7 @@ class PassiveAggressiveRegressorTuner(SampleClassMixin):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().model(trial)
         params = self._sample_params(trial)
-        model = super()._evaluate_sampled_model("classification", PassiveAggressiveRegressor, params)
+        model = super()._evaluate_sampled_model("regression", PassiveAggressiveRegressor, params)
         self.model = model
 
         return model

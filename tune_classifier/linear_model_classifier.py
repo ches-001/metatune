@@ -1,4 +1,3 @@
-import random
 from baseline import SampleClassMixin
 from optuna.trial import Trial
 from dataclasses import dataclass
@@ -135,6 +134,7 @@ class PassiveAggressiveClassifierTuner(SampleClassMixin):
         self.model = model
 
         return model
+
 
 tuner_model_class_dict: Dict[str, Callable] = {
     LogisticRegressionTuner.__name__: LogisticRegression,
