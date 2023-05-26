@@ -51,6 +51,51 @@ class LogisticRegressionTuner(SampleClassMixin):
         return model
     
 
+@dataclass
+class PerceptronTuner(SampleClassMixin):
+    penalty_space: Iterable[Optional[str]] = ("l1", "l2", "elasticnet", None)
+    alpha_space: Iterable[float] = (1e-5, 1.0)
+    l1_ratio_space: Iterable[float] = (0.0, 1.0)
+    fit_intercept_space: Iterable[bool] = (True, False)
+    max_iter_space: Iterable[int] = (100, 2000)
+    tol_space: Iterable[float] = (1e-6, 1e-3)
+    shuffle_space: Iterable[bool] = (True, False)
+    eta0_space: Iterable[float] = (0.1, 1.0)
+    early_stopping_space: Iterable[bool] = (True, False)
+    validation_fraction_space: Iterable[float] = (0.0, 0.5)
+    n_iter_no_change_space: Iterable[int] = (1, 100)
+    class_weight_space: Iterable[str] = ("balanced", )
+    model: Any = None
+    
+    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super()._sample_params(trial)
+        
+        params = {}
+        params["penalty"] = trial.suggest_categorical("penalty", self.penalty_space)
+        params["alpha"] = trial.suggest_float("alpha", *self.alpha_space, log=False)
+        params["l1_ratio"] = trial.suggest_float("l1_ratio", *self.l1_ratio_space, log=False)
+        params["fit_intercept"] = trial.suggest_categorical("fit_intercept", self.fit_intercept_space)
+        params["max_iter"] = trial.suggest_int("max_iter", *self.max_iter_space, log=False)
+        params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
+        params["shuffle"] = trial.suggest_categorical("shuffle", self.shuffle_space)
+        params["eta0"] = trial.suggest_float("eta0", *self.eta0_space, log=False)
+        params["early_stopping"] = trial.suggest_categorical("early_stopping", self.early_stopping_space)
+        params["validation_fraction"] = trial.suggest_float("validation_fraction", *self.validation_fraction_space, log=False)
+        params["n_iter_no_change"] = trial.suggest_int("n_iter_no_change", *self.n_iter_no_change_space, log=False)
+        params["class_weight"] = trial.suggest_categorical("class_weight", self.class_weight_space)
+ 
+        return params
+    
+    def sample_model(self, trial: Optional[Trial]=None) -> Any:
+        super().model(trial)
+        params = self._sample_params(trial)
+        model = super()._evaluate_sampled_model("classification", Perceptron, params)
+        self.model = model
+
+        return model
+
+
 tuner_model_class_dict: Dict[str, Callable] = {
-    LogisticRegressionTuner.__name__: LogisticRegression
+    LogisticRegressionTuner.__name__: LogisticRegression,
+    PerceptronTuner.__name__: Perceptron,
 }

@@ -134,7 +134,7 @@ class GradientBoostingRegressorTuner(SampleClassMixin):
     alpha_space: Iterable[float] = (0.01, 1.0)
     max_leaf_nodes_space: Iterable[Optional[int]] = (1, 1000)
     validation_fraction_space: Iterable[float] = (0.0, 0.5)
-    n_iter_no_change_space: Iterable[int] = (1, 500)
+    n_iter_no_change_space: Iterable[int] = (1, 100)
     tol_space: Iterable[float] = (1e-6, 1e-3)
     ccp_alpha_space: Iterable[float] = (0.0, 1.0)
     model: Any = None

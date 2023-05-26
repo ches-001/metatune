@@ -160,3 +160,8 @@ class TestNuSVC(BaseTest):
 class TestNuSVR(BaseTest):
     model: SampleClassMixin = tune_regressor.NuSVRTuner()
     task: str = "regression"
+
+
+class TestPerceptron(BaseTest):
+    model: SampleClassMixin = tune_classifier.PerceptronTuner()
+    task: str = "classification"

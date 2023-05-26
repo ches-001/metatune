@@ -84,7 +84,7 @@ class LinearSVCTuner(SampleClassMixin):
 
 @dataclass
 class NuSVCTuner(SampleClassMixin):
-    nu_space: Iterable[float] = (0.1, 1.0)
+    nu_space: Iterable[float] = (0.1, 0.5)
     kernel_space: Iterable[str] = ("linear", "poly", "rbf", "sigmoid")
     degree_space: Iterable[int] = (1, 5)
     gamma_space: Iterable[str] = ("scale", "auto")
