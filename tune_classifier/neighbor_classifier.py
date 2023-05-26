@@ -2,11 +2,12 @@ from baseline import SampleClassMixin
 from optuna.trial import Trial
 from dataclasses import dataclass
 from typing import Iterable, Optional, Dict, Any, Callable
-from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neighbors import KNeighborsClassifier, RadiusNeighborsClassifier
 
 
 @dataclass
 class KNeighborsClassifierTuner(SampleClassMixin):
+    radius_space: Iterable[int] = (1, 20)
     n_neighbors_space: Iterable[int] = (1, 10)
     weights_space: Iterable[str] = ("uniform", "distance")
     algorithm_space: Iterable[str] = ("ball_tree", "kd_tree", "brute")
@@ -41,6 +42,43 @@ class KNeighborsClassifierTuner(SampleClassMixin):
         return model
 
 
+@dataclass
+class RadiusNeighborClassifierTuner(SampleClassMixin):
+    radius_space: Iterable[int] = (1, 10)
+    weight_space: Iterable[str] = ("uniform", "distance")
+    algorithm_space: Iterable[str] = ("ball_tree", "kd_tree", "brute")
+    leaf_size_space: Iterable[int] = (2, 60)
+    p_space: Iterable[int] = (3, 10)
+    metric_space: Iterable[str] = ("cityblock", "cosine", "euclidean", "manhattan", "minkowski")
+    outlier_label_space: Iterable[str] = (None, "most_frequent")
+
+    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super()._sample_params(trial)
+
+        params = {}
+        params["radius"] = trial.suggest_int("radius", *self.radius_space)
+        params["weights"] = trial.suggest_categorical("weight", self.weight_space)
+        params["algorithm"] = trial.suggest_categorical("algorithm", self.algorithm_space)
+        params["leaf_size"] = trial.suggest_int("leaf_size", *self.leaf_size_space)
+        params["p"] = trial.suggest_int("p", *self.p_space)
+        params["metric"] = trial.suggest_categorical("metric", self.metric_space)
+        params["outlier_label"] = trial.suggest_categorical("outlier_label", self.outlier_label_space)
+
+        return params
+
+    def sample_model(self, trial: Optional[Trial] = None) -> Any:
+        super().model(trial)
+
+        params = self._sample_params(trial)
+
+        model = super()._evaluate_sampled_model("classification", RadiusNeighborsClassifier, params)
+
+        self.model = model
+
+        return model
+
+
 tuner_model_class_dict: Dict[str, Callable] = {
-    KNeighborsClassifierTuner.__name__: KNeighborsClassifier
+    KNeighborsClassifierTuner.__name__: KNeighborsClassifier,
+    RadiusNeighborClassifierTuner.__name__: RadiusNeighborsClassifier
 }

@@ -151,3 +151,12 @@ class TestGradientBoostingRegressor(BaseTest):
     model: SampleClassMixin = tune_regressor.GradientBoostingRegressorTuner()
     task: str = "regression"
 
+
+class TestRadiusNeighborClassifier(BaseTest):
+    model: SampleClassMixin = tune_classifier.RadiusNeighborClassifierTuner()
+    task: str = "classification"
+
+
+class TestRadiusNeighborRegressor(BaseTest):
+    model: SampleClassMixin = tune_regressor.RadiusNeighborRegressorTuner()
+    task: str = "regression"
