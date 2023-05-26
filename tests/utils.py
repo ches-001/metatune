@@ -2,16 +2,18 @@ import optuna
 import sklearn
 import numpy as np
 from sklearn import datasets
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler, scale
 from optuna.trial import Trial
 from baseline.mixin import SampleClassMixin
 from tune_classifier import classifier_tuner_model_class_dict
 from tune_regressor import regressor_tuner_model_class_dict
 
+
 # load sample datasets
 # regression
 REG_X, REG_y = datasets.load_diabetes(return_X_y=True)
 REG_X = MinMaxScaler().fit_transform(REG_X)
+REG_y = scale(REG_y)
 REG_DATA = sklearn.model_selection.train_test_split(REG_X, REG_y, random_state=0)
 
 # classification
