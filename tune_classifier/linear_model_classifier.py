@@ -61,7 +61,7 @@ class PerceptronTuner(SampleClassMixin):
     shuffle_space: Iterable[bool] = (True, False)
     eta0_space: Iterable[float] = (0.1, 1.0)
     early_stopping_space: Iterable[bool] = (True, False)
-    validation_fraction_space: Iterable[float] = (0.0, 0.5)
+    validation_fraction_space: Iterable[float] = (0.1, 0.5)
     n_iter_no_change_space: Iterable[int] = (1, 100)
     class_weight_space: Iterable[str] = ("balanced", )
     model: Any = None
@@ -101,7 +101,7 @@ class PassiveAggressiveClassifierTuner(SampleClassMixin):
     max_iter_space: Iterable[int] = (100, 2000)
     tol_space: Iterable[float] = (1e-6, 1e-3)
     early_stopping_space: Iterable[bool] = (True, False)
-    validation_fraction_space: Iterable[float] = (0.0, 0.5)
+    validation_fraction_space: Iterable[float] = (0.1, 0.5)
     n_iter_no_change_space: Iterable[int] = (1, 100)
     shuffle_space: Iterable[bool] = (True, False)
     loss_space: Iterable[str] = ("hinge", )
@@ -140,7 +140,6 @@ class PassiveAggressiveClassifierTuner(SampleClassMixin):
 class SGDClassifierTuner(SampleClassMixin):
     loss_space: Iterable[str] = (
         "hinge", 
-        "log_loss", 
         "log", 
         "modified_huber", 
         "squared_hinge", 
@@ -161,7 +160,7 @@ class SGDClassifierTuner(SampleClassMixin):
     eta0_space: Iterable[float] = (0.1, 1.0)
     power_t_space: Iterable[float] = (-1.0, 1.0)
     early_stopping_space: Iterable[bool] = (True, False)
-    validation_fraction_space: Iterable[float] = (0.0, 0.5)
+    validation_fraction_space: Iterable[float] = (0.1, 0.5)
     n_iter_no_change_space: Iterable[int] = (1, 100)
     class_weight_space: Iterable[str] = ("balanced", )
     average_space: Iterable[bool] = (True, False)
