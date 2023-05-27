@@ -10,7 +10,7 @@ from sklearn.ensemble import (
     BaggingRegressor, 
     HistGradientBoostingRegressor,
 )
-from tune_classifier.ensemble_classifier import BaggingClassifierTuner
+from tune_classifier import BaggingClassifierTuner
 
 @dataclass
 class RandomForestRegressorTuner(SampleClassMixin):
