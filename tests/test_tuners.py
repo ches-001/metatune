@@ -222,6 +222,10 @@ class TestLassoLarsIC(BaseTest):
     model: SampleClassMixin = tune_regressor.LassoLarsICTuner()
     task: str = "regression"
 
+class TestBayesianRidge(BaseTest):
+    model: SampleClassMixin = tune_regressor.BayesianRidgeTuner()
+    task: str = "regression"
+
 class TestGaussianNBClassifier(BaseTest):
     model: SampleClassMixin = tune_classifier.GaussianNBTuner()
     task: str = "classification"
