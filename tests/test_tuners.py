@@ -212,3 +212,8 @@ class TestHistGradientBoostingRegressor(BaseTest):
 class TestLars(BaseTest):
     model: SampleClassMixin = tune_regressor.LarsTuner()
     task: str = "regression"
+
+
+class TestLassoLars(BaseTest):
+    model: SampleClassMixin = tune_regressor.LassoLarsTuner()
+    task: str = "regression"
