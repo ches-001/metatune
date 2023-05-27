@@ -24,24 +24,24 @@ class SampleClassMixin:
             
     def _random_classification_set(self, is_multitask: bool=False) -> Tuple[Iterable]:
         if not is_multitask:
-            return np.random.randn(20, 5), np.random.randint(0, 2, size=(20))
+            return np.random.randn(25, 5), np.random.randint(0, 2, size=(25))
         
         else:
-            return np.random.randn(20, 5), np.random.randint(0, 2, size=(20, 2))
+            return np.random.randn(25, 5), np.random.randint(0, 2, size=(25, 2))
     
     def _random_regression_set(self, is_multitask: bool=False) -> Tuple[Iterable]:
         if not is_multitask:
-            return np.random.randn(20, 5), np.random.randn(20)
+            return np.random.randn(25, 5), np.random.randn(25)
         
         else:
-            return np.random.randn(20, 5), np.random.randn(20, 2)
+            return np.random.randn(25, 5), np.random.randn(25, 2)
     
     def _evaluate_sampled_model(
             self, 
             task: str, 
             model_class: Callable, 
             params: Dict[str, Any], 
-            is_mulktitask: bool=False) -> Any:
+            is_multitask: bool=False) -> Any:
         
         valid_tasks: Iterable[str] = ["regression", "classification"]
         assert task in valid_tasks, (
@@ -51,9 +51,9 @@ class SampleClassMixin:
         self._evaluate_params(model_class, params)
         
         if task == "regression":
-            X, y = self._random_regression_set(is_mulktitask)
+            X, y = self._random_regression_set(is_multitask)
         else:
-            X, y = self._random_classification_set(is_mulktitask)
+            X, y = self._random_classification_set(is_multitask)
 
         try:
             model_class(**params).fit(X, y)
