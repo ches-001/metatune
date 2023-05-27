@@ -8,7 +8,6 @@ from sklearn.ensemble import (
     AdaBoostRegressor, 
     GradientBoostingRegressor, 
     BaggingRegressor, 
-    StackingRegressor,
     HistGradientBoostingRegressor,
 )
 
@@ -16,7 +15,7 @@ from sklearn.ensemble import (
 class RandomForestRegressorTuner(SampleClassMixin):
     n_estimators_space: Iterable[int] = (1, 200)
     criterion_space: Iterable[str] = ("squared_error", "absolute_error", "friedman_mse", "poisson")
-    max_depth_space: Iterable[int] = (1, 100)
+    max_depth_space: Iterable[int] = (10, 2000)
     min_samples_split_space: Iterable[Union[int, float]] = (0.1, 1.0)
     min_samples_leaf_space: Iterable[Union[int, float]] = (0.1, 1.0)
     min_weight_fraction_leaf_space: Iterable[float] = (0.0, 0.5)
@@ -127,7 +126,7 @@ class GradientBoostingRegressorTuner(SampleClassMixin):
     min_samples_split_space: Iterable[Union[int, float]] = (0.1, 1.0)
     min_samples_leaf_space: Iterable[Union[int, float]] = (0.1, 1.0)
     min_weight_fraction_leaf_space: Iterable[float] = (0.0, 0.5)
-    max_depth_space: Iterable[int] = (1, 100)
+    max_depth_space: Iterable[int] = (10, 2000)
     min_impurity_decrease_space: Iterable[float] = (0.0, 1.0)
     init_space: Iterable[Optional[object]] = (None, )
     max_features_space: Iterable[str] = ("sqrt", "log2")
@@ -228,10 +227,68 @@ class BaggingRegressorTuner(SampleClassMixin):
         return model
     
 
+@dataclass
+class HistGradientBoostingRegressorTuner(SampleClassMixin):
+    loss_space: Iterable[str] = ("squared_error", "absolute_error", "poisson", "quantile")
+    quantile_space: Iterable[float] = (0.0, 1.0)
+    learning_rate_space: Iterable[float] = (0.001, 1.0)
+    max_iter_space: Iterable[int] = (10, 1000)
+    max_leaf_nodes_space: Iterable[Optional[int]] = (1, 1000)
+    max_depth_space: Iterable[int] = (10, 2000)
+    min_samples_leaf_space: Iterable[int] = (1, 200)
+    l2_regularization_space: Iterable[float] = (0.0, 1.0)
+    max_bins_space: Iterable[int] = (10, 255)
+    categorical_features_space: Iterable[Any] = (None, )
+    monotonic_cst_space: Iterable[Any] = (None, )
+    interaction_cst_space: Iterable[Any] = (None, )
+    early_stopping_space: Iterable[bool] = ("auto", True, False)
+    scoring_space: Iterable[Optional[Union[str, Callable]]] = ("loss", None)
+    validation_fraction_space: Iterable[float] = (0.1, 0.5)
+    n_iter_no_change_space: Iterable[int] = (1, 100)
+    tol_space: Iterable[float] = (1e-6, 1e-3)
+    model: Any = None
+    
+    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super()._sample_params(trial)
+
+        params = {}
+        params["loss"] = trial.suggest_categorical("loss", self.loss_space)
+
+        if params["loss"] == "quantile":
+            params["quantile"] = trial.suggest_float("quantile", *self.quantile_space, log=False)
+
+        params["learning_rate"] = trial.suggest_float("learning_rate", *self.learning_rate_space, log=False)
+        params["max_iter"] = trial.suggest_int("max_iter", *self.max_iter_space, log=False)
+        params["max_leaf_nodes"] = trial.suggest_int("max_leaf_nodes", *self.max_leaf_nodes_space, log=False)
+        params["max_depth"] = trial.suggest_int("max_depth", *self.max_depth_space, log=False)
+        params["min_samples_leaf"] = trial.suggest_int("min_samples_leaf", *self.min_samples_leaf_space, log=False)
+        params["l2_regularization"] = trial.suggest_float("l2_regularization", *self.l2_regularization_space, log=False)
+        params["max_bins"] = trial.suggest_int("max_bins", *self.max_bins_space, log=False)
+        params["categorical_features"] = trial.suggest_categorical("categorical_features", self.categorical_features_space)
+        params["monotonic_cst"] = trial.suggest_categorical("monotonic_cst", self.monotonic_cst_space)
+        params["interaction_cst"] = trial.suggest_categorical("interaction_cst", self.interaction_cst_space)
+        params["early_stopping"] = trial.suggest_categorical("early_stopping", self.early_stopping_space)
+        params["scoring"] = trial.suggest_categorical("scoring", self.scoring_space)
+        params["validation_fraction"] = trial.suggest_float("validation_fraction", *self.validation_fraction_space, log=False)
+        params["n_iter_no_change"] = trial.suggest_int("n_iter_no_change", *self.n_iter_no_change_space, log=False)
+        params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
+
+        return params
+    
+    def sample_model(self, trial: Optional[Trial]=None) -> Any:
+        super().model(trial)
+        params = self._sample_params(trial)
+        model = super()._evaluate_sampled_model("regression", HistGradientBoostingRegressor, params)
+        self.model = model
+
+        return model
+    
+
 tuner_model_class_dict: Dict[str, Callable] = {
     RandomForestRegressorTuner.__name__: RandomForestRegressor,
     ExtraTreesRegressorTuner.__name__: ExtraTreesRegressor,
     AdaBoostRegressorTuner.__name__: AdaBoostRegressor,
     GradientBoostingRegressorTuner.__name__: GradientBoostingRegressor,
     BaggingRegressorTuner.__name__: BaggingRegressor,
+    HistGradientBoostingRegressorTuner.__name__: HistGradientBoostingRegressor,
 }
