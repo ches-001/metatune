@@ -8,9 +8,7 @@ from tests.utils import BaseTest
 
 
 class TestSVR(BaseTest):
-
     model: SampleClassMixin = tune_regressor.SVRTuner()
-
     task: str = "regression"
 
 
@@ -20,7 +18,6 @@ class TestDecisionTreeRegressor(BaseTest):
 
 
 class TestSVC(BaseTest):
-
     model: SampleClassMixin = tune_classifier.SVCTuner()
     task: str = "classification"
 
@@ -211,3 +208,22 @@ class TestHistGradientBoostingRegressor(BaseTest):
     model: SampleClassMixin = tune_regressor.HistGradientBoostingRegressorTuner()
     task: str = "regression"
 
+class TestGaussianNBClassifier(BaseTest):
+    model: SampleClassMixin = tune_classifier.GaussianNBTuner()
+    task: str = "classification"
+
+class TestBernoulliNBClassifier(BaseTest):
+    model: SampleClassMixin = tune_classifier.BernoulliNBTuner()
+    task: str = "classification"
+
+class TestMultinomialNBClassifier(BaseTest):
+    model: SampleClassMixin = tune_classifier.MultinomialNBTuner()
+    task: str = "classification"
+
+class TestComplementNBClassifier(BaseTest):
+    model: SampleClassMixin = tune_classifier.ComplementNBTuner()
+    task: str = "classification"
+
+class TestCategoricalNBTuner(BaseTest):
+    model: SampleClassMixin = tune_classifier.CategoricalNBTuner()
+    task: str = "classification"

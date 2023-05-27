@@ -2,6 +2,7 @@ from baseline import SampleClassMixin
 from optuna.trial import Trial
 from dataclasses import dataclass
 from typing import (
+    Callable,
     Iterable, 
     Optional, 
     Dict, 
@@ -18,7 +19,7 @@ from sklearn.naive_bayes import (
     )
 
 @dataclass
-class GaussianNBModel(SampleClassMixin):
+class GaussianNBTuner(SampleClassMixin):
     priors_space: Iterable[float] = (None,)  #TODO: implement array selection
     var_smoothing_space: Iterable[float] = (1e-9, 1e-6)
     model: Any = None
@@ -43,7 +44,7 @@ class GaussianNBModel(SampleClassMixin):
 
 
 @dataclass
-class BernoulliNBModel(SampleClassMixin):
+class BernoulliNBTuner(SampleClassMixin):
     alpha_space: Iterable[float] = (0.0, 1.0)
     force_alpha_space: Iterable[bool] = (True, False)
     binarize_space: Iterable[float] = (0.0, 1.0)
@@ -57,7 +58,7 @@ class BernoulliNBModel(SampleClassMixin):
         params = {}
 
         params['alpha'] = trial.suggest_float('alpha', *self.alpha_space, log=False)        
-        #params['force_alpha'] = trial.suggest_categorical("force_alpha", self.force_alpha_space)
+        params['force_alpha'] = trial.suggest_categorical("force_alpha", self.force_alpha_space)
         params['binarize'] = trial.suggest_float("binarize", *self.binarize_space, log=False)
         params['fit_prior'] = trial.suggest_categorical('fit_prior', self.fit_prior_space)
         params["class_prior"] = trial.suggest_categorical("class_prior", self.class_prior_space)
@@ -74,7 +75,7 @@ class BernoulliNBModel(SampleClassMixin):
 
         
 @dataclass
-class MultinomialNBModel(SampleClassMixin):
+class MultinomialNBTuner(SampleClassMixin):
     alpha_space: Iterable[float] = (0.0, 1.0)   
     force_alpha_space: Iterable[bool] = (True, False)
     fit_prior_space: Iterable[bool] = (True, False)
@@ -87,7 +88,7 @@ class MultinomialNBModel(SampleClassMixin):
         params = {}
 
         params['alpha'] = trial.suggest_float('alpha', *self.alpha_space, log=False)        
-        #params['force_alpha']  = trial.suggest_categorical('force_alpha', self.force_alpha_space)
+        params['force_alpha']  = trial.suggest_categorical('force_alpha', self.force_alpha_space)
         params['fit_prior'] = trial.suggest_categorical('fit_prior', self.fit_prior_space)
         params["class_prior"] = trial.suggest_categorical("class_prior", self.class_prior_space)
         
@@ -102,7 +103,7 @@ class MultinomialNBModel(SampleClassMixin):
         return model
 
 @dataclass
-class ComplementNBModel(SampleClassMixin):
+class ComplementNBTuner(SampleClassMixin):
     alpha_space: Iterable[float] = (0.0, 1.0)
     force_alpha_space: Iterable[bool] = (True, False)
     fit_prior_space: Iterable[bool] = (True, False)
@@ -115,7 +116,7 @@ class ComplementNBModel(SampleClassMixin):
         params = {}
 
         params['alpha'] = trial.suggest_float('alpha', *self.alpha_space, log=False)
-        #params['force_alpha']  = trial.suggest_categorical('force_alpha', self.force_alpha_space)
+        params['force_alpha']  = trial.suggest_categorical('force_alpha', self.force_alpha_space)
         params['fit_prior'] = trial.suggest_categorical('fit_prior', self.fit_prior_space)
         params["class_prior"] = trial.suggest_categorical("class_prior", self.class_prior_space)        
         params['norm'] = trial.suggest_categorical('norm', self.norm_space)
@@ -132,13 +133,12 @@ class ComplementNBModel(SampleClassMixin):
 
         
 @dataclass
-class CategoricalNBModel(SampleClassMixin):
+class CategoricalNBTuner(SampleClassMixin):
     alpha_space: Iterable[float] = (0.0, 1.0)
     force_alpha_space: Iterable[bool] = (True, False)
     fit_prior_space: Iterable[bool] = (True, False)
     class_prior_space: Iterable[Optional[Iterable]] = (None,)
-    #min_categories_space: Optional[Union[Iterable[int], Iterable[Iterable[int]]]] = None
-    min_category_space: Iterable[int] = (None,)
+    min_categories_space: Iterable[Optional[Union[int, Iterable[int]]]] = (None,)
 
     def _sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
         super()._sample_params(trial)
@@ -146,10 +146,10 @@ class CategoricalNBModel(SampleClassMixin):
         params = {}
 
         params['alpha'] = trial.suggest_float('alpha', *self.alpha_space, log=False)
-        #params['force_alpha']  = trial.suggest_categorical('force_alpha', self.force_alpha_space)
+        params['force_alpha']  = trial.suggest_categorical('force_alpha', self.force_alpha_space)
         params['fit_prior'] = trial.suggest_categorical('fit_prior', self.fit_prior_space)
         params["class_prior"] = trial.suggest_categorical("class_prior", self.class_prior_space)        
-        params['min_categories'] = trial.suggest_categorical('min_categories', self.min_category_space)    
+        params['min_categories'] = trial.suggest_categorical('min_categories', self.min_categories_space)    
         
         return params
     
@@ -160,3 +160,11 @@ class CategoricalNBModel(SampleClassMixin):
 
         self.model = model
         return model
+    
+tuner_model_class_dict: Dict[str, Callable] = {
+    GaussianNBTuner.__name__: GaussianNB,
+    BernoulliNBTuner.__name__: BernoulliNB,
+    MultinomialNBTuner.__name__: MultinomialNB,
+    ComplementNBTuner.__name__: ComplementNB,
+    CategoricalNBTuner.__name__: CategoricalNB,
+}
