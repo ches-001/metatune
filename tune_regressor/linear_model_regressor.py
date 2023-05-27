@@ -323,6 +323,48 @@ class LassoLarsICTuner(SampleClassMixin):
      
 
 @dataclass
+class BayesianRidgeTuner(SampleClassMixin):
+    n_iter_space: Iterable[int] = (100, 1000)
+    tol_space: Iterable[float] = (1e-6, 1e-3)
+    alpha_1_space: Iterable[float] = (1e-6, 1e-3)
+    alpha_2_space: Iterable[float] = (1e-6, 1e-3)
+    lambda_1_space: Iterable[float] = (1e-6, 1e-3)
+    lambda_2_space: Iterable[float] = (1e-6, 1e-3)
+    use_alpha_init_space: Iterable[bool] = (True, False)
+    alpha_init_space: Iterable[bool] = (1e-8, 1)
+    lambda_init_space: Iterable[float] = (1e-8, 1)
+    compute_score_space: Iterable[bool] = (True, False)
+    fit_intercept_space: Iterable[bool] = (True, False)
+    model: Any = None
+    
+    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super()._sample_params(trial)
+        
+        params = {}
+        params["n_iter"] = trial.suggest_int("n_iter", *self.n_iter_space, log=False)
+        params["alpha_1"] = trial.suggest_float("alpha_1", *self.alpha_1_space, log=False)
+        params["alpha_2"] = trial.suggest_float("tol", *self.alpha_2_space, log=False)
+        params["lambda_1"] = trial.suggest_float("tol", *self.lambda_1_space, log=False)
+        params["lambda_2"] = trial.suggest_float("tol", *self.lambda_2_space, log=False)
+        use_alpha_init = trial.suggest_categorical("use_alpha_init", self.use_alpha_init_space)
+        if use_alpha_init:
+            params["alpha_init"] = trial.suggest_float("alpha_init", *self.alpha_init_space, log=False)
+        params["lambda_init"] = trial.suggest_float("lambda_init", *self.lambda_init_space, log=False)
+        params["compute_score"] = trial.suggest_categorical("compute_score", self.compute_score_space)
+        params["fit_intercept"] = trial.suggest_categorical("fit_intercept", self.fit_intercept_space)
+
+        return params
+    
+    def sample_model(self, trial: Optional[Trial]=None) -> Any:
+        super().model(trial)
+        params = self._sample_params(trial)
+        model = super()._evaluate_sampled_model("regression", BayesianRidge, params)
+        self.model = model
+
+        return model
+
+
+@dataclass
 class PassiveAggressiveRegressorTuner(SampleClassMixin):
     C_space: Iterable[float] = (0.9, 1.0)
     fit_intercept_space: Iterable[bool] = (True, False)
@@ -432,4 +474,5 @@ tuner_model_class_dict: Dict[str, Callable] = {
     LassoLarsICTuner.__name__: LassoLarsIC,
     PassiveAggressiveRegressorTuner.__name__: PassiveAggressiveRegressor,
     SGDRegressorTuner.__name__: SGDRegressor,
+    BayesianRidgeTuner.__name__: BayesianRidge,
 }
