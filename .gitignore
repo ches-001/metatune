@@ -2,3 +2,5 @@
 temp.py
 .gitignore
 .pytest_cache
+metatune/
+assets/
