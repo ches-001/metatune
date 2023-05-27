@@ -1,3 +1,4 @@
+import numpy as np
 from baseline import SampleClassMixin
 from optuna.trial import Trial
 from dataclasses import dataclass, field
@@ -215,6 +216,39 @@ class MultiTaskElasticNetTuner(SampleClassMixin):
     
 
 @dataclass
+class LarsTuner(SampleClassMixin):
+    fit_intercept_space: Iterable[bool] = (True, False)
+    precompute_space: Iterable[bool] = (True, False)
+    n_nonzero_coefs_space: Iterable[int] = (10, 1000)
+    eps_space: Iterable[float] = (np.finfo(float).eps, 1e-10)
+    use_jitter_space: Iterable[bool] = (True, False)
+    jitter_space: Iterable[float] = (1e-8, 1e-3)
+    model: Any = None
+    
+    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super()._sample_params(trial)
+        
+        params = {}
+        params["fit_intercept"] = trial.suggest_categorical("fit_intercept", self.fit_intercept_space)
+        params["precompute"] = trial.suggest_categorical("precompute", self.precompute_space)
+        params["n_nonzero_coefs"] = trial.suggest_int("n_nonzero_coefs", *self.n_nonzero_coefs_space, log=False)
+        params["eps"] = trial.suggest_float("eps", *self.eps_space, log=False)
+        use_jitter = trial.suggest_categorical("use_jitter", self.use_jitter_space)
+        if use_jitter:
+            params["jitter"] = trial.suggest_float("jitter", *self.jitter_space, log=False)
+
+        return params
+    
+    def sample_model(self, trial: Optional[Trial]=None) -> Any:
+        super().model(trial)
+        params = self._sample_params(trial)
+        model = super()._evaluate_sampled_model("regression", Lars, params)
+        self.model = model
+
+        return model
+    
+
+@dataclass
 class PassiveAggressiveRegressorTuner(SampleClassMixin):
     C_space: Iterable[float] = (0.9, 1.0)
     fit_intercept_space: Iterable[bool] = (True, False)
@@ -319,6 +353,7 @@ tuner_model_class_dict: Dict[str, Callable] = {
     ElasticNetTuner.__name__: ElasticNet,
     MultiTaskLassoTuner.__name__: MultiTaskLasso,
     MultiTaskElasticNetTuner.__name__: MultiTaskElasticNet,
+    LarsTuner.__name__: Lars,
     PassiveAggressiveRegressorTuner.__name__: PassiveAggressiveRegressor,
     SGDRegressorTuner.__name__: SGDRegressor,
 }

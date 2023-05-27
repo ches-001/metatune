@@ -207,3 +207,8 @@ class TestHistGradientBoostingClassifier(BaseTest):
 class TestHistGradientBoostingRegressor(BaseTest):
     model: SampleClassMixin = tune_regressor.HistGradientBoostingRegressorTuner()
     task: str = "regression"
+
+
+class TestLars(BaseTest):
+    model: SampleClassMixin = tune_regressor.LarsTuner()
+    task: str = "regression"
