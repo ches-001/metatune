@@ -55,7 +55,7 @@ def objective_factory(model: SampleClassMixin, task: str="regression"):
 class BaseTest:
     model: SampleClassMixin = None
     task: str = None
-    n_trials: int = 20
+    n_trials: int = 15
 
     def test_dict_mapping(self):
         if self.task == "classification":

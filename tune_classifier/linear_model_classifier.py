@@ -37,7 +37,9 @@ class LogisticRegressionTuner(SampleClassMixin):
         params["solver"] = trial.suggest_categorical("solver", self.solver_space)
         params["max_iter"] = trial.suggest_int("max_iter", *self.max_iter_space, log=False)
         params["multi_class"] = trial.suggest_categorical("multi_class", self.multi_class_space)
-        params["l1_ratio"] = trial.suggest_float("l1_ratio", *self.l1_ratio_space, log=False)
+
+        if params["penalty"] == "elasticnet":
+            params["l1_ratio"] = trial.suggest_float("l1_ratio", *self.l1_ratio_space, log=False)
  
         return params
     

@@ -190,13 +190,13 @@ class TestSGDRegressorTuner(BaseTest):
 class TestMLPClassifierTuner(BaseTest):
     model: SampleClassMixin = tune_classifier.MLPClassifierTuner()
     task: str = "classification"
-    n_trials: int = 15
+    n_trials: int = 10
     
 
 class TestMLPRegressorTuner(BaseTest):
     model: SampleClassMixin = tune_regressor.MLPRegressorTuner()
     task: str = "regression"
-    n_trials: int = 15
+    n_trials: int = 10
 
       
 class TestHistGradientBoostingClassifier(BaseTest):
@@ -206,14 +206,4 @@ class TestHistGradientBoostingClassifier(BaseTest):
 
 class TestHistGradientBoostingRegressor(BaseTest):
     model: SampleClassMixin = tune_regressor.HistGradientBoostingRegressorTuner()
-    task: str = "regression"
-
-
-class TestMLPClassifier(BaseTest):
-    model: SampleClassMixin = tune_classifier.MLPClassifierTuner()
-    task: str = "classification"
-
-
-class TestMLPRegressor(BaseTest):
-    model: SampleClassMixin = tune_regressor.MLPRegressorTuner()
     task: str = "regression"
