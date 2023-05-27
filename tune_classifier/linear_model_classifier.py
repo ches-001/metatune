@@ -140,7 +140,7 @@ class PassiveAggressiveClassifierTuner(SampleClassMixin):
 class SGDClassifierTuner(SampleClassMixin):
     loss_space: Iterable[str] = (
         "hinge", 
-        "log", 
+        "log_loss", 
         "modified_huber", 
         "squared_hinge", 
         "perceptron", 
