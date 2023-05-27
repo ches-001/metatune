@@ -283,7 +283,44 @@ class LassoLarsTuner(SampleClassMixin):
         self.model = model
 
         return model
+
+
+@dataclass
+class LassoLarsICTuner(SampleClassMixin):
+    criterion_sapce: Iterable[str] = ("aic", "bic")
+    fit_intercept_space: Iterable[bool] = (True, False)
+    precompute_space: Iterable[bool] = (True, False)
+    max_iter_space: Iterable[int] = (100, 1000)
+    eps_space: Iterable[float] = (np.finfo(float).eps, 1e-10)
+    positive_space: Iterable[bool] = (True, False)
+    use_noise_variance_space: Iterable[bool] = (True, False)
+    noise_variance_space: Iterable[float] = (1e-8, 1e-3)
+    model: Any = None
     
+    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super()._sample_params(trial)
+        
+        params = {}
+        params["criterion"] = trial.suggest_categorical("criterion", self.criterion_sapce)
+        params["fit_intercept"] = trial.suggest_categorical("fit_intercept", self.fit_intercept_space)
+        params["precompute"] = trial.suggest_categorical("precompute", self.precompute_space)
+        params["max_iter"] = trial.suggest_int("max_iter", *self.max_iter_space, log=False)
+        params["eps"] = trial.suggest_float("eps", *self.eps_space, log=False)
+        params["positive"] = trial.suggest_categorical("positive", self.positive_space)
+        use_noise_variance = trial.suggest_categorical("use_noise_variance", self.use_noise_variance_space)
+        if use_noise_variance:
+            params["noise_variance"] = trial.suggest_float("noise_variance", *self.noise_variance_space, log=False)
+
+        return params
+    
+    def sample_model(self, trial: Optional[Trial]=None) -> Any:
+        super().model(trial)
+        params = self._sample_params(trial)
+        model = super()._evaluate_sampled_model("regression", LassoLarsIC, params)
+        self.model = model
+
+        return model
+     
 
 @dataclass
 class PassiveAggressiveRegressorTuner(SampleClassMixin):
@@ -392,6 +429,7 @@ tuner_model_class_dict: Dict[str, Callable] = {
     MultiTaskElasticNetTuner.__name__: MultiTaskElasticNet,
     LarsTuner.__name__: Lars,
     LassoLarsTuner.__name__: LassoLars,
+    LassoLarsICTuner.__name__: LassoLarsIC,
     PassiveAggressiveRegressorTuner.__name__: PassiveAggressiveRegressor,
     SGDRegressorTuner.__name__: SGDRegressor,
 }

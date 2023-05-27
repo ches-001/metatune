@@ -217,3 +217,8 @@ class TestLars(BaseTest):
 class TestLassoLars(BaseTest):
     model: SampleClassMixin = tune_regressor.LassoLarsTuner()
     task: str = "regression"
+
+
+class TestLassoLarsIC(BaseTest):
+    model: SampleClassMixin = tune_regressor.LassoLarsICTuner()
+    task: str = "regression"
