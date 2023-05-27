@@ -7,6 +7,7 @@ from sklearn.neural_network import MLPClassifier
 
 @dataclass
 class MLPClassifierTuner(SampleClassMixin):
+    n_hidden_space: Iterable[int] = (1, 5)
     hidden_layer_sizes_space: Iterable[int] = (100, 1000)
     activation_space: Iterable[str] = ("identity", "logistic", "tanh", "relu")
     solver_space: Iterable[str] = ("lbfgs", "sgd", "adam")
@@ -34,7 +35,7 @@ class MLPClassifierTuner(SampleClassMixin):
         super()._sample_params(trial)
 
         params = {}
-        n_hidden = trial.suggest_int("n_hidden", 1, 5)
+        n_hidden = trial.suggest_int("n_hidden", *self.n_hidden_space)
         params["hidden_layer_sizes"] = tuple(trial.suggest_int(f"hidden_layer_sizes_{i}", 
                                                           *self.hidden_layer_sizes_space) 
                                                           for i in range(n_hidden))
