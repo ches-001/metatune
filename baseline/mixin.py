@@ -24,17 +24,17 @@ class SampleClassMixin:
             
     def _random_classification_set(self, is_multitask: bool=False) -> Tuple[Iterable]:
         if not is_multitask:
-            return np.random.randn(25, 5), np.random.randint(0, 2, size=(25))
+            return np.abs(np.random.randn(25, 5)), np.random.randint(0, 2, size=(25))
         
         else:
-            return np.random.randn(25, 5), np.random.randint(0, 2, size=(25, 2))
+            return np.abs(np.random.randn(25, 5)), np.random.randint(0, 2, size=(25, 2))
     
     def _random_regression_set(self, is_multitask: bool=False) -> Tuple[Iterable]:
         if not is_multitask:
-            return np.random.randn(25, 5), np.random.randn(25)
+            return np.abs(np.random.randn(25, 5)), np.random.randn(25)
         
         else:
-            return np.random.randn(25, 5), np.random.randn(25, 2)
+            return np.abs(np.random.randn(25, 5)), np.random.randn(25, 2)
     
     def _evaluate_sampled_model(
             self, 
