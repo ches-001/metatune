@@ -1,17 +1,32 @@
 from baseline import SampleClassMixin
 from optuna.trial import Trial
 from dataclasses import dataclass, field
-from typing import Iterable, Optional, Dict, Any, Union
+from typing import Iterable, Optional, Dict, Any, Union, Callable
 from sklearn.linear_model import (
     LinearRegression,
     Lasso, 
     Ridge, 
     ElasticNet, 
     MultiTaskLasso, 
-    MultiTaskElasticNet)
+    MultiTaskElasticNet, 
+    Lars,
+    LassoLars,
+    LassoLarsIC,
+    HuberRegressor, 
+    TheilSenRegressor,
+    BayesianRidge,
+    OrthogonalMatchingPursuit,
+    ARDRegression,
+    PassiveAggressiveRegressor,
+    QuantileRegressor,
+    SGDRegressor, 
+    RANSACRegressor, 
+    PoissonRegressor, 
+    GammaRegressor, 
+    TweedieRegressor)
 
 @dataclass
-class LinearRegressionModel(SampleClassMixin):
+class LinearRegressionTuner(SampleClassMixin):
     fit_intercept_space: Iterable[bool] = (True, False)
     positive_space: Iterable[bool] = (True, False)
     model: Any = None
@@ -35,7 +50,7 @@ class LinearRegressionModel(SampleClassMixin):
     
 
 @dataclass
-class LassoModel(SampleClassMixin):
+class LassoTuner(SampleClassMixin):
     alpha_space: Iterable[float] = (0.01, 1.0)
     fit_intercept_space: Iterable[bool] = (True, False)
     max_iter_space: Iterable[int] = (100, 2000)
@@ -67,7 +82,7 @@ class LassoModel(SampleClassMixin):
 
  
 @dataclass
-class RidgeModel(SampleClassMixin):
+class RidgeTuner(SampleClassMixin):
     alpha_space: Iterable[float] = (0.01, 1.0)
     fit_intercept_space: Iterable[bool] = (True, False)
     max_iter_space: Iterable[int] = (100, 2000)
@@ -99,7 +114,7 @@ class RidgeModel(SampleClassMixin):
     
 
 @dataclass
-class ElasticNetModel(SampleClassMixin):
+class ElasticNetTuner(SampleClassMixin):
     alpha_space: Iterable[float] = (0.01, 1.0)
     l1_ratio_space: Iterable[float] = (0.0, 1.0)
     fit_intercept_space: Iterable[bool] = (True, False)
@@ -135,7 +150,7 @@ class ElasticNetModel(SampleClassMixin):
     
 
 @dataclass
-class MultiTaskLassoModel(SampleClassMixin):
+class MultiTaskLassoTuner(SampleClassMixin):
     alpha_space: Iterable[float] = (0.01, 1.0)
     fit_intercept_space: Iterable[bool] = (True, False)
     max_iter_space: Iterable[int] = (100, 2000)
@@ -159,14 +174,14 @@ class MultiTaskLassoModel(SampleClassMixin):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().model(trial)
         params = self._sample_params(trial)
-        model = super()._evaluate_sampled_model("regression", MultiTaskLasso, params, is_mulktitask=self.is_multitask)
+        model = super()._evaluate_sampled_model("regression", MultiTaskLasso, params, is_multitask=self.is_multitask)
         self.model = model
 
         return model
     
 
 @dataclass
-class MultiTaskElasticNetModel(SampleClassMixin):
+class MultiTaskElasticNetTuner(SampleClassMixin):
     alpha_space: Iterable[float] = (0.01, 1.0)
     l1_ratio_space: Iterable[float] = (0.0, 1.0)
     fit_intercept_space: Iterable[bool] = (True, False)
@@ -193,7 +208,117 @@ class MultiTaskElasticNetModel(SampleClassMixin):
         super().model(trial)
         params = self._sample_params(trial)
         model = super()._evaluate_sampled_model(
-            "regression", MultiTaskElasticNet, params, is_mulktitask=self.is_multitask)
+            "regression", MultiTaskElasticNet, params, is_multitask=self.is_multitask)
         self.model = model
 
         return model
+    
+
+@dataclass
+class PassiveAggressiveRegressorTuner(SampleClassMixin):
+    C_space: Iterable[float] = (0.9, 1.0)
+    fit_intercept_space: Iterable[bool] = (True, False)
+    max_iter_space: Iterable[int] = (100, 2000)
+    tol_space: Iterable[float] = (1e-6, 1e-3)
+    early_stopping_space: Iterable[bool] = (True, False)
+    validation_fraction_space: Iterable[float] = (0.1, 0.5)
+    n_iter_no_change_space: Iterable[int] = (1, 100)
+    shuffle_space: Iterable[bool] = (True, False)
+    loss_space: Iterable[str] = ("epsilon_insensitive", )
+    epsilon_space: Iterable[float] = (0.05, 0.5)
+    average_space: Iterable[bool] = (True, False)
+    model: Any = None
+    
+    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super()._sample_params(trial)
+        
+        params = {}
+        params["C"] = trial.suggest_float("C", *self.C_space, log=False)
+        params["fit_intercept"] = trial.suggest_categorical("fit_intercept", self.fit_intercept_space)
+        params["max_iter"] = trial.suggest_int("max_iter", *self.max_iter_space, log=False)
+        params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
+        params["early_stopping"] = trial.suggest_categorical("early_stopping", self.early_stopping_space)
+        params["validation_fraction"] = trial.suggest_float("validation_fraction", *self.validation_fraction_space, log=False)
+        params["n_iter_no_change"] = trial.suggest_int("n_iter_no_change", *self.n_iter_no_change_space, log=False)
+        params["shuffle"] = trial.suggest_categorical("shuffle", self.shuffle_space)
+        params["loss"] = trial.suggest_categorical("loss", self.loss_space)
+        params["epsilon"] = trial.suggest_float("epsilon", *self.epsilon_space, log=False)
+        params["average"] = trial.suggest_categorical("average", self.average_space)
+ 
+        return params
+    
+    def sample_model(self, trial: Optional[Trial]=None) -> Any:
+        super().model(trial)
+        params = self._sample_params(trial)
+        model = super()._evaluate_sampled_model("regression", PassiveAggressiveRegressor, params)
+        self.model = model
+
+        return model
+    
+
+@dataclass
+class SGDRegressorTuner(SampleClassMixin):
+    loss_space: Iterable[str] = (
+        "squared_error", 
+        "huber", 
+        "epsilon_insensitive", 
+        "squared_epsilon_insensitive")
+    penalty_space: Iterable[str] = ("l1", "l2", "elasticnet", None)
+    alpha_space: Iterable[float] = (1e-5, 1.0)
+    l1_ratio_space: Iterable[float] = (0.0, 1.0)
+    fit_intercept_space: Iterable[bool] = (True, False)
+    max_iter_space: Iterable[int] = (100, 2000)
+    tol_space: Iterable[float] = (1e-6, 1e-3)
+    shuffle_space: Iterable[bool] = (True, False)
+    epsilon_space: Iterable[float] = (0.1, 1.0)
+    learning_rate_space: Iterable[str] = ("constant", "optimal", "invscaling", "adaptive")
+    eta0_space: Iterable[float] = (0.1, 1.0)
+    power_t_space: Iterable[float] = (-1.0, 1.0)
+    early_stopping_space: Iterable[bool] = (True, False)
+    validation_fraction_space: Iterable[float] = (0.1, 0.5)
+    n_iter_no_change_space: Iterable[int] = (1, 100)
+    average_space: Iterable[bool] = (True, False)
+    model: Any = None
+    
+    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super()._sample_params(trial)
+        
+        params = {}
+        params["loss"] = trial.suggest_categorical("loss", self.loss_space)
+        params["penalty"] = trial.suggest_categorical("penalty", self.penalty_space)
+        params["alpha"] = trial.suggest_float("alpha", *self.alpha_space, log=False)
+        params["l1_ratio"] = trial.suggest_float("l1_ratio", *self.l1_ratio_space, log=False)
+        params["fit_intercept"] = trial.suggest_categorical("fit_intercept", self.fit_intercept_space)
+        params["max_iter"] = trial.suggest_int("max_iter", *self.max_iter_space, log=False)
+        params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
+        params["shuffle"] = trial.suggest_categorical("shuffle", self.shuffle_space)
+        params["epsilon"] = trial.suggest_float("epsilon", *self.epsilon_space, log=False)
+        params["learning_rate"] = trial.suggest_categorical("learning_rate", self.learning_rate_space)
+        params["eta0"] = trial.suggest_float("eta0", *self.eta0_space, log=False)
+        params["power_t"] = trial.suggest_float("power_t", *self.power_t_space, log=False)
+        params["early_stopping"] = trial.suggest_categorical("early_stopping", self.early_stopping_space)
+        params["validation_fraction"] = trial.suggest_float("validation_fraction", *self.validation_fraction_space, log=False)
+        params["n_iter_no_change"] = trial.suggest_int("n_iter_no_change", *self.n_iter_no_change_space, log=False)
+        params["average"] = trial.suggest_categorical("average", self.average_space)
+ 
+        return params
+    
+    def sample_model(self, trial: Optional[Trial]=None) -> Any:
+        super().model(trial)
+        params = self._sample_params(trial)
+        model = super()._evaluate_sampled_model("regression", SGDRegressor, params)
+        self.model = model
+
+        return model
+    
+
+tuner_model_class_dict: Dict[str, Callable] = {
+    LinearRegressionTuner.__name__: LinearRegression,
+    LassoTuner.__name__: Lasso,
+    RidgeTuner.__name__: Ridge,
+    ElasticNetTuner.__name__: ElasticNet,
+    MultiTaskLassoTuner.__name__: MultiTaskLasso,
+    MultiTaskElasticNetTuner.__name__: MultiTaskElasticNet,
+    PassiveAggressiveRegressorTuner.__name__: PassiveAggressiveRegressor,
+    SGDRegressorTuner.__name__: SGDRegressor,
+}
