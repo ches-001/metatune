@@ -8,7 +8,7 @@ from sklearn.neural_network import MLPClassifier
 @dataclass
 class MLPClassifierTuner(SampleClassMixin):
     n_hidden_space: Iterable[int] = (1, 5)
-    hidden_layer_sizes_space: Iterable[int] = (100, 1000)
+    hidden_layer_sizes_space: Iterable[int] = (100, 200)
     activation_space: Iterable[str] = ("identity", "logistic", "tanh", "relu")
     solver_space: Iterable[str] = ("lbfgs", "sgd", "adam")
     alpha_space: Iterable[float] = (1e-4, 100)
