@@ -208,7 +208,6 @@ class TestHistGradientBoostingRegressor(BaseTest):
     model: SampleClassMixin = tune_regressor.HistGradientBoostingRegressorTuner()
     task: str = "regression"
 
-
 class TestLars(BaseTest):
     model: SampleClassMixin = tune_regressor.LarsTuner()
     task: str = "regression"
@@ -222,3 +221,24 @@ class TestLassoLars(BaseTest):
 class TestLassoLarsIC(BaseTest):
     model: SampleClassMixin = tune_regressor.LassoLarsICTuner()
     task: str = "regression"
+
+class TestGaussianNBClassifier(BaseTest):
+    model: SampleClassMixin = tune_classifier.GaussianNBTuner()
+    task: str = "classification"
+
+class TestBernoulliNBClassifier(BaseTest):
+    model: SampleClassMixin = tune_classifier.BernoulliNBTuner()
+    task: str = "classification"
+
+class TestMultinomialNBClassifier(BaseTest):
+    model: SampleClassMixin = tune_classifier.MultinomialNBTuner()
+    task: str = "classification"
+
+class TestComplementNBClassifier(BaseTest):
+    model: SampleClassMixin = tune_classifier.ComplementNBTuner()
+    task: str = "classification"
+
+class TestCategoricalNBTuner(BaseTest):
+    model: SampleClassMixin = tune_classifier.CategoricalNBTuner()
+    task: str = "classification"
+
