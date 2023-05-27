@@ -10,6 +10,7 @@ from sklearn.ensemble import (
     BaggingRegressor, 
     HistGradientBoostingRegressor,
 )
+from tune_classifier.ensemble_classifier import BaggingClassifierTuner
 
 @dataclass
 class RandomForestRegressorTuner(SampleClassMixin):
@@ -183,45 +184,15 @@ class GradientBoostingRegressorTuner(SampleClassMixin):
 
 
 @dataclass
-class BaggingRegressorTuner(SampleClassMixin):
-    estimator_space: Iterable[Optional[object]] = (None, )
-    n_estimators_space: Iterable[int] = (1, 100)
-    max_samples_space: Iterable[Union[int, float]] = (0.1, 1.0)
-    max_features_space: Iterable[Union[int, float]] = (0.1, 1.0)
-    bootstrap_space: Iterable[bool] = (True, False)
-    bootstrap_features_space: Iterable[bool] = (True, False)
-    oob_score_space: Iterable[bool] = (True, False)
-    model: Any = None
+class BaggingRegressorTuner(BaggingClassifierTuner):
     
     def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
-
-        is_space_type: Callable = lambda space, type : all(list(map(lambda x: isinstance(x, type), space)))
-
-        params = {}
-        params["estimator"] = trial.suggest_categorical("estimator", self.estimator_space)
-        params["n_estimators"] = trial.suggest_int("n_estimators", *self.n_estimators_space, log=False)
-
-        if is_space_type(self.max_samples_space, float):
-            params["max_samples"] = trial.suggest_float("max_samples", *self.max_samples_space, log=False)
-        else:
-            params["max_samples"] = trial.suggest_int("max_samples", *self.max_samples_space, log=False)
-
-        if is_space_type(self.max_features_space, float):
-            params["max_features"] = trial.suggest_float("max_features", *self.max_features_space, log=False)
-        else:
-            params["max_features"] = trial.suggest_int("max_features", *self.max_features_space, log=False)
-
-        params["bootstrap"] = trial.suggest_categorical("bootstrap", self.bootstrap_space)
-        params["bootstrap_features"] = trial.suggest_categorical("bootstrap_features", self.bootstrap_features_space)
-        params["oob_score"] = trial.suggest_categorical("oob_score", self.oob_score_space)
-
-        return params
+        return super(BaggingRegressorTuner, self)._sample_params(trial)
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
+        super(BaggingClassifierTuner, self).model(trial)
         params = self._sample_params(trial)
-        model = super()._evaluate_sampled_model("regression", BaggingRegressor, params)
+        model = super(BaggingClassifierTuner, self)._evaluate_sampled_model("regression", BaggingRegressor, params)
         self.model = model
 
         return model
