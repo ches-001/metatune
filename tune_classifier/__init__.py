@@ -3,6 +3,7 @@ from tune_classifier.svc import *
 from tune_classifier.tree_classifier import *
 from tune_classifier.linear_model_classifier import *
 from tune_classifier.ensemble_classifier import *
+from tune_classifier.naive_bayes_classifier import *
 from tune_classifier.neighbor_classifier import *
 from tune_classifier.mlp_classifier import *
 from typing import Iterable, Tuple, Dict, Generator, Callable
@@ -12,6 +13,7 @@ __all__: Iterable[str] = [
     "tune_classifier.tree_classifier",
     "tune_classifier.linear_model_classifier",
     "tune_classifier.ensemble_classifier",
+    "tune_classifier.naive_bayes_classifier",
     "tune_classifier.neighbor_classifier",
     "tune_classifier.mlp_classifier",
 ]
