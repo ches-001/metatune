@@ -5,7 +5,7 @@ from tune_regressor.linear_model_regressor import *
 from tune_regressor.ensemble_regressor import *
 from tune_regressor.neighbor_regressor import *
 from tune_regressor.mlp_regressor import *
-from typing import Iterable, Tuple, Dict, Generator
+from typing import Iterable, Dict, Generator
 
 
 __modules__: Iterable[str] = [
