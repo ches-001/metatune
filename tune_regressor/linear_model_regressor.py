@@ -464,6 +464,36 @@ class PassiveAggressiveRegressorTuner(SampleClassMixin):
     
 
 @dataclass
+class QuantileRegressorTuner(SampleClassMixin):
+    quantile_space: Iterable[float] = (0.1, 1.0)
+    alpha_space: Iterable[float] = (0.01, 1.0)
+    fit_intercept_space: Iterable[bool] = (True, False)
+    solver_space: Iterable[str] = ("highs-ds", "highs-ipm", "highs", "interior-point", "revised simplex")
+    solver_options_space: Iterable[Optional[Dict[str, Any]]] = (None, )
+    model: Any = None
+    
+    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super()._sample_params(trial)
+        
+        params = {}
+        params["quantile"] = trial.suggest_float("tol", *self.quantile_space, log=False)
+        params["alpha"] = trial.suggest_float("alpha", *self.alpha_space, log=False)
+        params["fit_intercept"] = trial.suggest_categorical("fit_intercept", self.fit_intercept_space)
+        params["solver"] = trial.suggest_categorical("solver", self.solver_space)
+        params["solver_options"] = trial.suggest_categorical("solver_options", self.solver_options_space)
+
+        return params
+    
+    def sample_model(self, trial: Optional[Trial]=None) -> Any:
+        super().model(trial)
+        params = self._sample_params(trial)
+        model = super()._evaluate_sampled_model("regression", QuantileRegressor, params)
+        self.model = model
+
+        return model
+    
+
+@dataclass
 class SGDRegressorTuner(SampleClassMixin):
     loss_space: Iterable[str] = (
         "squared_error", 
@@ -614,6 +644,7 @@ tuner_model_class_dict: Dict[str, Callable] = {
     LassoLarsTuner.__name__: LassoLars,
     LassoLarsICTuner.__name__: LassoLarsIC,
     PassiveAggressiveRegressorTuner.__name__: PassiveAggressiveRegressor,
+    QuantileRegressorTuner.__name__: QuantileRegressor,
     SGDRegressorTuner.__name__: SGDRegressor,
     BayesianRidgeTuner.__name__: BayesianRidge,
     OrthogonalMatchingPursuitTuner.__name__: OrthogonalMatchingPursuit,

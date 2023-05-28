@@ -264,3 +264,8 @@ class TestPoissonRegressor(BaseTest):
 class TestGammaRegressor(BaseTest):
     model: SampleClassMixin = tune_regressor.GammaRegressorTuner()
     task: str = "regression"
+
+
+class TestQuantileRegressor(BaseTest):
+    model: SampleClassMixin = tune_regressor.QuantileRegressorTuner()
+    task: str = "regression"
