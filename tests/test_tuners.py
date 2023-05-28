@@ -246,3 +246,11 @@ class TestCategoricalNBTuner(BaseTest):
     model: SampleClassMixin = tune_classifier.CategoricalNBTuner()
     task: str = "classification"
 
+class TestTweedieRegressor(BaseTest):
+    model: SampleClassMixin = tune_regressor.TweedieRegressorTuner()
+    task: str = "regression"
+
+
+class TestOrthogonalMatchingPursuit(BaseTest):
+    model: SampleClassMixin = tune_regressor.OrthogonalMatchingPursuitTuner()
+    task: str = "regression"

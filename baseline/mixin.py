@@ -31,10 +31,10 @@ class SampleClassMixin:
     
     def _random_regression_set(self, is_multitask: bool=False) -> Tuple[Iterable]:
         if not is_multitask:
-            return np.abs(np.random.randn(25, 5)), np.random.randn(25)
+            return np.abs(np.random.randn(25, 5)), np.abs(np.random.randn(25)) + 1e-4
         
         else:
-            return np.abs(np.random.randn(25, 5)), np.random.randn(25, 2)
+            return np.abs(np.random.randn(25, 5)), np.abs(np.random.randn(25, 2)) + 1e-4
     
     def _evaluate_sampled_model(
             self, 

@@ -1,8 +1,7 @@
-import optuna
-import sklearn
+import optuna, sklearn
 import numpy as np
 from sklearn import datasets
-from sklearn.preprocessing import MinMaxScaler, scale
+from sklearn.preprocessing import MinMaxScaler
 from optuna.trial import Trial
 from baseline.mixin import SampleClassMixin
 from tune_classifier import classifier_tuner_model_class_dict
@@ -13,7 +12,7 @@ from tune_regressor import regressor_tuner_model_class_dict
 # regression
 REG_X, REG_y = datasets.load_diabetes(return_X_y=True)
 REG_X = MinMaxScaler().fit_transform(REG_X)
-REG_y = scale(REG_y)
+REG_y = ((REG_y - REG_y.min()) / (REG_y.max() - REG_y.min())) + 1e-4
 REG_DATA = sklearn.model_selection.train_test_split(REG_X, REG_y, random_state=0)
 
 # classification
@@ -24,6 +23,7 @@ CLS_DATA = sklearn.model_selection.train_test_split(CLS_X, CLS_y, random_state=0
 #multi-task regression
 MULTITASK_REG_X, MULTITASK_REG_y = np.random.randn(200, 20), np.random.randn(200, 5)
 MULTITASK_REG_X = MinMaxScaler().fit_transform(MULTITASK_REG_X)
+MULTITASK_REG_y = MinMaxScaler().fit_transform(MULTITASK_REG_y)
 MULTITASK_DATA = sklearn.model_selection.train_test_split(MULTITASK_REG_X, MULTITASK_REG_y, random_state=0)
 
 
@@ -66,9 +66,10 @@ class BaseTest:
 
         else: assert False
 
-    def test_methods(self):
+    def test_methods_and_attrs(self):
         assert hasattr(self.model, "_sample_params")
         assert hasattr(self.model, "sample_model")
+        assert hasattr(self.model, "model") and self.model.model is None
 
     def test_study(self):
         try:
