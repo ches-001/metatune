@@ -58,6 +58,7 @@ class LassoTuner(SampleClassMixin):
     tol_space: Iterable[float] = (1e-6, 1e-3)
     positive_space: Iterable[bool] = (True, False)
     selection_space: Iterable[str] = ("cyclic", "random")
+    random_state_space: Iterable[int] = (0, 10000)
     model: Any = None
     
     def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
@@ -70,6 +71,9 @@ class LassoTuner(SampleClassMixin):
         params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
         params["positive"] = trial.suggest_categorical("positive", self.positive_space)
         params["selection"] = trial.suggest_categorical("selection", self.selection_space)
+
+        if params["selection"] == "random":
+            params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)
 
         return params
     
@@ -90,6 +94,7 @@ class RidgeTuner(SampleClassMixin):
     tol_space: Iterable[float] = (1e-6, 1e-3)
     solver_space: Iterable[str] = ("auto", "svd", "cholesky", "lsqr", "sparse_cg", "sag", "saga", "lbfgs")
     positive_space: Iterable[bool] = (True, False)
+    random_state_space: Iterable[int] = (0, 10000)
     model: Any = None
     
     def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
@@ -102,7 +107,10 @@ class RidgeTuner(SampleClassMixin):
         params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
         params["positive"] = trial.suggest_categorical("positive", self.positive_space)
         params["solver"] = trial.suggest_categorical("solver", self.solver_space)
-            
+
+        if params["solver"] in ["sag", "saga"]:
+            params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)  
+        
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
@@ -124,6 +132,7 @@ class ElasticNetTuner(SampleClassMixin):
     tol_space: Iterable[float] = (1e-6, 1e-3)
     positive_space: Iterable[bool] = (True, False)
     selection_space: Iterable[str] = ("cyclic", "random")
+    random_state_space: Iterable[int] = (0, 10000)
     model: Any = None
     
     def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
@@ -138,6 +147,8 @@ class ElasticNetTuner(SampleClassMixin):
         params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
         params["positive"] = trial.suggest_categorical("positive", self.positive_space)
         params["selection"] = trial.suggest_categorical("selection", self.selection_space)
+        if params["selection"] == "random":
+            params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)
             
         return params
     
@@ -157,6 +168,7 @@ class MultiTaskLassoTuner(SampleClassMixin):
     max_iter_space: Iterable[int] = (100, 2000)
     tol_space: Iterable[float] = (1e-6, 1e-3)
     selection_space: Iterable[str] = ("cyclic", "random")
+    random_state_space: Iterable[int] = (0, 10000)
     is_multitask: str = field(init=False, default=True)
     model: Any = None
     
@@ -169,6 +181,8 @@ class MultiTaskLassoTuner(SampleClassMixin):
         params["max_iter"] = trial.suggest_int("max_iter", *self.max_iter_space, log=False)
         params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
         params["selection"] = trial.suggest_categorical("selection", self.selection_space)
+        if params["selection"] == "random":
+            params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)
 
         return params
     
@@ -189,6 +203,7 @@ class MultiTaskElasticNetTuner(SampleClassMixin):
     max_iter_space: Iterable[int] = (100, 2000)
     tol_space: Iterable[float] = (1e-6, 1e-3)
     selection_space: Iterable[str] = ("cyclic", "random")
+    random_state_space: Iterable[int] = (0, 10000)
     is_multitask: str = field(init=False, default=True)
     model: Any = None
     
@@ -202,6 +217,8 @@ class MultiTaskElasticNetTuner(SampleClassMixin):
         params["max_iter"] = trial.suggest_int("max_iter", *self.max_iter_space, log=False)
         params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
         params["selection"] = trial.suggest_categorical("selection", self.selection_space)
+        if params["selection"] == "random":
+            params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)
             
         return params
     
@@ -223,6 +240,7 @@ class LarsTuner(SampleClassMixin):
     eps_space: Iterable[float] = (np.finfo(float).eps, 1e-10)
     set_jitter_space: Iterable[bool] = (True, False)
     jitter_space: Iterable[float] = (1e-8, 1e-3)
+    random_state_space: Iterable[int] = (0, 10000)
     model: Any = None
     
     def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
@@ -236,6 +254,7 @@ class LarsTuner(SampleClassMixin):
         set_jitter = trial.suggest_categorical("set_jitter", self.set_jitter_space)
         if set_jitter:
             params["jitter"] = trial.suggest_float("jitter", *self.jitter_space, log=False)
+            params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)
 
         return params
     
@@ -258,6 +277,7 @@ class LassoLarsTuner(SampleClassMixin):
     positive_space: Iterable[bool] = (True, False)
     set_jitter_space: Iterable[bool] = (True, False)
     jitter_space: Iterable[float] = (1e-8, 1e-3)
+    random_state_space: Iterable[int] = (0, 10000)
     model: Any = None
     
     def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
@@ -273,6 +293,7 @@ class LassoLarsTuner(SampleClassMixin):
         set_jitter = trial.suggest_categorical("set_jitter", self.set_jitter_space)
         if set_jitter:
             params["jitter"] = trial.suggest_float("jitter", *self.jitter_space, log=False)
+            params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)
 
         return params
     
@@ -406,6 +427,7 @@ class PassiveAggressiveRegressorTuner(SampleClassMixin):
     n_iter_no_change_space: Iterable[int] = (1, 100)
     shuffle_space: Iterable[bool] = (True, False)
     loss_space: Iterable[str] = ("epsilon_insensitive", )
+    random_state_space: Iterable[int] = (0, 10000)
     epsilon_space: Iterable[float] = (0.05, 0.5)
     average_space: Iterable[bool] = (True, False)
     model: Any = None
@@ -423,6 +445,10 @@ class PassiveAggressiveRegressorTuner(SampleClassMixin):
         params["n_iter_no_change"] = trial.suggest_int("n_iter_no_change", *self.n_iter_no_change_space, log=False)
         params["shuffle"] = trial.suggest_categorical("shuffle", self.shuffle_space)
         params["loss"] = trial.suggest_categorical("loss", self.loss_space)
+
+        if params["shuffle"]:
+            params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)
+
         params["epsilon"] = trial.suggest_float("epsilon", *self.epsilon_space, log=False)
         params["average"] = trial.suggest_categorical("average", self.average_space)
  
@@ -452,6 +478,7 @@ class SGDRegressorTuner(SampleClassMixin):
     tol_space: Iterable[float] = (1e-6, 1e-3)
     shuffle_space: Iterable[bool] = (True, False)
     epsilon_space: Iterable[float] = (0.1, 1.0)
+    random_state_space: Iterable[int] = (0, 10000)
     learning_rate_space: Iterable[str] = ("constant", "optimal", "invscaling", "adaptive")
     eta0_space: Iterable[float] = (0.1, 1.0)
     power_t_space: Iterable[float] = (-1.0, 1.0)
@@ -474,6 +501,10 @@ class SGDRegressorTuner(SampleClassMixin):
         params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
         params["shuffle"] = trial.suggest_categorical("shuffle", self.shuffle_space)
         params["epsilon"] = trial.suggest_float("epsilon", *self.epsilon_space, log=False)
+
+        if params["shuffle"]:
+            params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)
+        
         params["learning_rate"] = trial.suggest_categorical("learning_rate", self.learning_rate_space)
         params["eta0"] = trial.suggest_float("eta0", *self.eta0_space, log=False)
         params["power_t"] = trial.suggest_float("power_t", *self.power_t_space, log=False)

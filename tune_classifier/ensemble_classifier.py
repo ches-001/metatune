@@ -27,6 +27,8 @@ class RandomForestClassifierTuner(SampleClassMixin):
     bootstrap_space: Iterable[bool] = (True, False)
     oob_score_space: Iterable[bool] = (True, False)
     class_weight_space: Iterable[str] = ("balanced", "balanced_subsample")
+    set_random_state_space: Iterable[bool] = (False, )
+    random_state_space: Iterable[int] = (0, 10000)
     ccp_alpha_space: Iterable[float] = (0.0, 1.0)
     set_max_samples_space: Iterable[bool] = (True, False)
     max_samples_space: Iterable[Union[int, float]] = (0.1, 1.0)
@@ -71,6 +73,11 @@ class RandomForestClassifierTuner(SampleClassMixin):
         params["oob_score"] = trial.suggest_categorical("oob_score", self.oob_score_space)
 
         params["class_weight"] = trial.suggest_categorical("class_weight", self.class_weight_space)
+
+        set_random_state = trial.suggest_categorical("set_random_state", self.set_random_state_space)
+        if set_random_state:
+            params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)
+
         params["ccp_alpha"] = trial.suggest_float("ccp_alpha", *self.ccp_alpha_space, log=False)
 
         set_max_samples = trial.suggest_categorical("set_max_samples", self.set_max_samples_space)
@@ -113,6 +120,7 @@ class AdaBoostClassifierTuner(SampleClassMixin):
     n_estimators_space: Iterable[int] = (1, 200)
     learning_rate_space: Iterable[float] = (0.01, 1.0)
     algorithm_space: Iterable[str] = ("SAMME", "SAMME.R")
+    random_state_space: Iterable[int] = (0, 10000)
     model: Any = None
     
     def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
@@ -123,6 +131,7 @@ class AdaBoostClassifierTuner(SampleClassMixin):
         params["n_estimators"] = trial.suggest_int("n_estimators", *self.n_estimators_space, log=False)
         params["learning_rate"] = trial.suggest_float("learning_rate", *self.learning_rate_space, log=False)
         params["algorithm"] = trial.suggest_categorical("algorithm", self.algorithm_space)
+        params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)
         
         return params
     
@@ -155,6 +164,7 @@ class GradientBoostingClassifierTuner(SampleClassMixin):
     validation_fraction_space: Iterable[float] = (0.1, 0.5)
     set_n_iter_no_change_space:Iterable[bool] = (True, False)
     n_iter_no_change_space: Iterable[int] = (1, 100)
+    random_state_space: Iterable[int] = (0, 10000)
     tol_space: Iterable[float] = (1e-6, 1e-3)
     ccp_alpha_space: Iterable[float] = (0.0, 1.0)
     model: Any = None
@@ -204,6 +214,7 @@ class GradientBoostingClassifierTuner(SampleClassMixin):
         set_n_iter_no_change = trial.suggest_categorical("set_n_iter_no_change", self.set_n_iter_no_change_space)
         if set_n_iter_no_change:
             params["n_iter_no_change"] = trial.suggest_int("n_iter_no_change", *self.n_iter_no_change_space, log=False)
+            params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)
 
         params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
         params["ccp_alpha"] = trial.suggest_float("ccp_alpha", *self.ccp_alpha_space, log=False)
@@ -228,6 +239,7 @@ class BaggingClassifierTuner(SampleClassMixin):
     bootstrap_space: Iterable[bool] = (True, False)
     bootstrap_features_space: Iterable[bool] = (True, False)
     oob_score_space: Iterable[bool] = (True, False)
+    random_state_space: Iterable[int] = (0, 10000)
     model: Any = None
     
     def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
@@ -250,6 +262,7 @@ class BaggingClassifierTuner(SampleClassMixin):
         params["bootstrap"] = trial.suggest_categorical("bootstrap", self.bootstrap_space)
         params["bootstrap_features"] = trial.suggest_categorical("bootstrap_features", self.bootstrap_features_space)
         params["oob_score"] = trial.suggest_categorical("oob_score", self.oob_score_space)
+        params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)
 
         return params
     
@@ -282,6 +295,7 @@ class HistGradientBoostingClassifierTuner(SampleClassMixin):
     validation_fraction_space: Iterable[float] = (0.1, 0.5)
     n_iter_no_change_space: Iterable[int] = (1, 100)
     tol_space: Iterable[float] = (1e-6, 1e-3)
+    random_state_space: Iterable[int] = (0, 10000)
     class_weight_space: Iterable[str] = ("balanced", )
     model: Any = None
     
@@ -312,6 +326,7 @@ class HistGradientBoostingClassifierTuner(SampleClassMixin):
         params["validation_fraction"] = trial.suggest_float("validation_fraction", *self.validation_fraction_space, log=False)
         params["n_iter_no_change"] = trial.suggest_int("n_iter_no_change", *self.n_iter_no_change_space, log=False)
         params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
+        params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)
         params["class_weight"] = trial.suggest_categorical("class_weight", self.class_weight_space)
 
         return params
