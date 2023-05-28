@@ -66,9 +66,10 @@ class BaseTest:
 
         else: assert False
 
-    def test_methods(self):
+    def test_methods_and_attrs(self):
         assert hasattr(self.model, "_sample_params")
         assert hasattr(self.model, "sample_model")
+        assert hasattr(self.model, "model") and self.model.model is None
 
     def test_study(self):
         try:
