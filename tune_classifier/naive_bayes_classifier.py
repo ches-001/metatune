@@ -114,6 +114,7 @@ class ComplementNBTuner(SampleClassMixin):
     fit_prior_space: Iterable[bool] = (True, False)
     class_prior_space: Iterable[Optional[Iterable[float]]] = (None, )
     norm_space: Iterable[bool] = (True, False)
+    model: Any = None
 
     def _sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
         super()._sample_params(trial)
@@ -144,6 +145,7 @@ class CategoricalNBTuner(SampleClassMixin):
     fit_prior_space: Iterable[bool] = (True, False)
     class_prior_space: Iterable[Optional[Iterable[float]]] = (None,)
     min_categories_space: Iterable[Optional[Union[int, Iterable[int]]]] = (None,)
+    model: Any = None
 
     def _sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
         super()._sample_params(trial)
