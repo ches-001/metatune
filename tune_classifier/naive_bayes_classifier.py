@@ -20,8 +20,8 @@ from sklearn.naive_bayes import (
 
 @dataclass
 class GaussianNBTuner(SampleClassMixin):
-    priors_space: Iterable[float] = (None,)  #TODO: implement array selection
-    var_smoothing_space: Iterable[float] = (1e-9, 1e-6)
+    priors_space: Iterable[Optional[Iterable[float]]] = (None,) 
+    var_smoothing_space: Iterable[float] = (1e-10, 1e-6)
     model: Any = None
 
     def _sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
@@ -47,9 +47,10 @@ class GaussianNBTuner(SampleClassMixin):
 class BernoulliNBTuner(SampleClassMixin):
     alpha_space: Iterable[float] = (0.0, 1.0)
     force_alpha_space: Iterable[bool] = (True, False)
+    set_binarize_space: Iterable[bool] = (True, False)
     binarize_space: Iterable[float] = (0.0, 1.0)
     fit_prior_space: Iterable[bool] = (True, False)
-    class_prior_space: Iterable[Optional[Iterable]] = (None, )    #TODO: Implement array selections
+    class_prior_space: Iterable[Optional[Iterable[float]]] = (None, )    #TODO: Implement array selections
     model: Any = None
 
     def _sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
@@ -59,7 +60,11 @@ class BernoulliNBTuner(SampleClassMixin):
 
         params['alpha'] = trial.suggest_float('alpha', *self.alpha_space, log=False)        
         params['force_alpha'] = trial.suggest_categorical("force_alpha", self.force_alpha_space)
-        params['binarize'] = trial.suggest_float("binarize", *self.binarize_space, log=False)
+
+        use_binarize = trial.suggest_categorical("set_binarize", self.set_binarize_space)
+        if use_binarize:
+            params['binarize'] = trial.suggest_float("binarize", *self.binarize_space, log=False)
+        
         params['fit_prior'] = trial.suggest_categorical('fit_prior', self.fit_prior_space)
         params["class_prior"] = trial.suggest_categorical("class_prior", self.class_prior_space)
         
@@ -79,7 +84,7 @@ class MultinomialNBTuner(SampleClassMixin):
     alpha_space: Iterable[float] = (0.0, 1.0)   
     force_alpha_space: Iterable[bool] = (True, False)
     fit_prior_space: Iterable[bool] = (True, False)
-    class_prior_space: Iterable[Optional[Iterable]] = (None, )     # TODO: Implement array selection
+    class_prior_space: Iterable[Optional[Iterable[float]]] = (None, )
     model: Any = None
 
     def _sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
@@ -107,7 +112,7 @@ class ComplementNBTuner(SampleClassMixin):
     alpha_space: Iterable[float] = (0.0, 1.0)
     force_alpha_space: Iterable[bool] = (True, False)
     fit_prior_space: Iterable[bool] = (True, False)
-    class_prior_space: Iterable[Optional[Iterable]] = (None, )
+    class_prior_space: Iterable[Optional[Iterable[float]]] = (None, )
     norm_space: Iterable[bool] = (True, False)
 
     def _sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
@@ -137,7 +142,7 @@ class CategoricalNBTuner(SampleClassMixin):
     alpha_space: Iterable[float] = (0.0, 1.0)
     force_alpha_space: Iterable[bool] = (True, False)
     fit_prior_space: Iterable[bool] = (True, False)
-    class_prior_space: Iterable[Optional[Iterable]] = (None,)
+    class_prior_space: Iterable[Optional[Iterable[float]]] = (None,)
     min_categories_space: Iterable[Optional[Union[int, Iterable[int]]]] = (None,)
 
     def _sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
