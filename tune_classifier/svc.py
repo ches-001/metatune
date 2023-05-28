@@ -16,6 +16,7 @@ class SVCTuner(SampleClassMixin):
     class_weight_space: Iterable[str] = ("balanced", )
     shrinking_space: Iterable[bool] = (True, )
     probability_space: Iterable[bool] = (True, )
+    random_state_space: Iterable[int] = (0, 10000)
     model: Any = None
     
     def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
@@ -31,6 +32,8 @@ class SVCTuner(SampleClassMixin):
         params["class_weight"] = trial.suggest_categorical("class_weight", self.class_weight_space)
         params["shrinking"] = trial.suggest_categorical("shrinking", self.shrinking_space)
         params["probability"] = trial.suggest_categorical("probability", self.probability_space)
+        if params["probability"]:
+            params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)
         
         return params
     
@@ -54,6 +57,7 @@ class LinearSVCTuner(SampleClassMixin):
     intercept_scaling_space: Iterable[float] = (0.5, 1.0)
     class_weight_space: Iterable[str] = ("balanced", )
     max_iter_space: Iterable[int] = (500, 2000)
+    random_state_space: Iterable[int] = (0, 10000)
     model: Any = None
     
     def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
@@ -70,6 +74,8 @@ class LinearSVCTuner(SampleClassMixin):
         params["intercept_scaling"] = trial.suggest_float("intercept_scaling", *self.intercept_scaling_space, log=False)
         params["class_weight"] = trial.suggest_categorical("class_weight", self.class_weight_space)
         params["max_iter"] = trial.suggest_int("max_iter", *self.max_iter_space, log=False)
+        if params["dual"]:
+            params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)
         
         return params
     
@@ -95,6 +101,7 @@ class NuSVCTuner(SampleClassMixin):
     class_weight_space: Iterable[str] = ("balanced", )
     decision_function_shape_space: Iterable[str] = ("ovo", "ovr")
     break_ties_space: Iterable[bool] = (False, )
+    random_state_space: Iterable[int] = (0, 10000)
     model: Any = None
     
     def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
@@ -112,6 +119,9 @@ class NuSVCTuner(SampleClassMixin):
         params["class_weight"] = trial.suggest_categorical("class_weight", self.class_weight_space)
         params["decision_function_shape"] = trial.suggest_categorical("decision_function_shape", self.decision_function_shape_space)
         params["break_ties"] = trial.suggest_categorical("break_ties", self.break_ties_space)
+
+        if params["probability"]:
+            params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)
         
         return params
     

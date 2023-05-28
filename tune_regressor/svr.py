@@ -51,6 +51,7 @@ class LinearSVRTuner(SampleClassMixin):
     intercept_scaling_space: Iterable[float] = (0.5, 1.0)
     dual_space: Iterable[bool] = (True, False)
     max_iter_space: Iterable[int] = (500, 2000)
+    random_state_space: Iterable[int] = (0, 10000)
     model: Any = None
     
     def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
@@ -65,6 +66,7 @@ class LinearSVRTuner(SampleClassMixin):
         params["intercept_scaling"] = trial.suggest_float("intercept_scaling", *self.intercept_scaling_space, log=False)
         params["dual"] = trial.suggest_categorical("dual", self.dual_space)
         params["max_iter"] = trial.suggest_int("max_iter", *self.max_iter_space, log=False)
+        params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)
         
         return params
     

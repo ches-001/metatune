@@ -14,6 +14,7 @@ class DecisionTreeRegressorTuner(SampleClassMixin):
     min_samples_leaf_space: Iterable[Union[int, float]] = (1e-4, 1.0)
     min_weight_fraction_leaf_space: Iterable[float] = (0.0, 0.5)
     max_features_space: Iterable[Optional[str]] = ("sqrt", "log2", None)
+    random_state_space: Iterable[int] = (0, 10000)
     max_leaf_nodes_space: Iterable[int] = (2, 1000)
     min_impurity_decrease_space: Iterable[float] = (0.0, 1.0)
     ccp_alpha_space: Iterable[float] = (0.0, 1.0)
@@ -39,6 +40,9 @@ class DecisionTreeRegressorTuner(SampleClassMixin):
 
         params["min_weight_fraction_leaf"] = trial.suggest_float("min_weight_fraction_leaf", *self.min_weight_fraction_leaf_space, log=False)
         params["max_features"] = trial.suggest_categorical("max_features", self.max_features_space)
+        if params["splitter"] == "random":
+            params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)
+
         params["max_leaf_nodes"] = trial.suggest_int("max_leaf_nodes", *self.max_leaf_nodes_space, log=False)
         params["min_impurity_decrease"] = trial.suggest_float("min_impurity_decrease", *self.min_impurity_decrease_space, log=False)
         params["ccp_alpha"] = trial.suggest_float("ccp_alpha", *self.ccp_alpha_space, log=False)
