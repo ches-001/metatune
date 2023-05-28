@@ -219,7 +219,7 @@ class MultiTaskElasticNetTuner(SampleClassMixin):
 class LarsTuner(SampleClassMixin):
     fit_intercept_space: Iterable[bool] = (True, False)
     precompute_space: Iterable[bool] = (True, False)
-    n_nonzero_coefs_space: Iterable[int] = (10, 1000)
+    n_nonzero_coefs_space: Iterable[int] = (1, 500)
     eps_space: Iterable[float] = (np.finfo(float).eps, 1e-10)
     use_jitter_space: Iterable[bool] = (True, False)
     jitter_space: Iterable[float] = (1e-8, 1e-3)
@@ -359,6 +359,37 @@ class BayesianRidgeTuner(SampleClassMixin):
         super().model(trial)
         params = self._sample_params(trial)
         model = super()._evaluate_sampled_model("regression", BayesianRidge, params)
+        self.model = model
+
+        return model
+    
+
+@dataclass
+class OrthogonalMatchingPursuitTuner(SampleClassMixin):
+    set_nonzero_coefs_space: Iterable[bool] = (True, False)
+    n_nonzero_coefs_space: Iterable[int] = (1, 500)
+    tol_space: Iterable[float] = (1e-6, 1e-3)
+    fit_intercept_space: Iterable[bool] = (True, False)
+    precompute_space: Iterable[bool] = (True, False)
+    model: Any = None
+    
+    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super()._sample_params(trial)
+        
+        params = {}
+        set_nonzero_coefs = trial.suggest_categorical("set_nonzero_coefs", self.set_nonzero_coefs_space)
+        if set_nonzero_coefs:
+            params["n_nonzero_coefs"] = trial.suggest_int("n_nonzero_coefs", *self.n_nonzero_coefs_space, log=False)
+        params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
+        params["fit_intercept"] = trial.suggest_categorical("fit_intercept", self.fit_intercept_space)
+        params["precompute"] = trial.suggest_categorical("precompute", self.precompute_space)
+
+        return params
+    
+    def sample_model(self, trial: Optional[Trial]=None) -> Any:
+        super().model(trial)
+        params = self._sample_params(trial)
+        model = super()._evaluate_sampled_model("regression", OrthogonalMatchingPursuit, params)
         self.model = model
 
         return model
@@ -509,5 +540,6 @@ tuner_model_class_dict: Dict[str, Callable] = {
     PassiveAggressiveRegressorTuner.__name__: PassiveAggressiveRegressor,
     SGDRegressorTuner.__name__: SGDRegressor,
     BayesianRidgeTuner.__name__: BayesianRidge,
+    OrthogonalMatchingPursuitTuner.__name__: OrthogonalMatchingPursuit,
     TweedieRegressorTuner.__name__: TweedieRegressor,
 }
