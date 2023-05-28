@@ -26,6 +26,7 @@ from sklearn.linear_model import (
     GammaRegressor, 
     TweedieRegressor)
 
+
 @dataclass
 class LinearRegressionTuner(SampleClassMixin):
     fit_intercept_space: Iterable[bool] = (True, False)
@@ -546,7 +547,7 @@ class TweedieRegressorTuner(SampleClassMixin):
     link_space: Iterable[str] = ("auto", "identity", "log")
     solver_space: Iterable[str] = ("lbfgs", "newton-cholesky")
     max_iter_space: Iterable[int] = (100, 1000)
-    tol_space: Iterable[int] = (1e-6, 1e-3)
+    tol_space: Iterable[float] = (1e-6, 1e-3)
     model: Any = None
     
     def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
@@ -570,7 +571,63 @@ class TweedieRegressorTuner(SampleClassMixin):
         self.model = model
 
         return model
+
+
+@dataclass
+class HuberRegressorTuner(SampleClassMixin):
+    epsilon_space: Iterable[float] = (1.0, 1e4)
+    max_iter_space: Iterable[int] = (100, 1000)
+    alpha_space: Iterable[float] = (0.0, 10.0)
+    fit_intercept_space: Iterable[bool] = (True, False)
+    tol_space: Iterable[float] = (1e-6, 1e-3)
+    model: Any = None
     
+    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super()._sample_params(trial)
+        
+        params = {}
+        params["epsilon"] = trial.suggest_float("epsilon", *self.epsilon_space, log=False)
+        params["max_iter"] = trial.suggest_int("max_iter", *self.max_iter_space, log=False)
+        params["alpha"] = trial.suggest_float("alpha", *self.alpha_space, log=False)
+        params["fit_intercept"] = trial.suggest_categorical("fit_intercept", self.fit_intercept_space)
+        params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
+        return params
+    
+    def sample_model(self, trial: Optional[Trial]=None) -> Any:
+        super().model(trial)
+
+        params = self._sample_params(trial)
+        model = super()._evaluate_sampled_model("regression", HuberRegressor, params)
+        self.model = model
+        return model
+    
+
+@dataclass
+class QuantileRegressorTuner(SampleClassMixin):
+    quantile_space: Iterable[float] = (0.0, 1.0)
+    alpha_space: Iterable[float] = (0.0, 10.0)
+    fit_intercept_space: Iterable[bool] = (True, False)
+    solver_space: Iterable[str] = ("highs-ds", "highs-ipm", "highs", "interior-point", "revised simplex")
+    model: Any = None
+    
+    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super()._sample_params(trial)
+        
+        params = {}
+        params["quantile"] = trial.suggest_float("quantile", *self.quantile_space, log=False)
+        params["alpha"] = trial.suggest_float("alpha", *self.alpha_space, log=False)
+        params["fit_intercept"] = trial.suggest_categorical("fit_intercept", self.fit_intercept_space)
+        params["solver"] = trial.suggest_categorical("solver", self.solver_space)
+        return params
+    
+    def sample_model(self, trial: Optional[Trial]=None) -> Any:
+        super().model(trial)
+
+        params = self._sample_params(trial)
+        model = super()._evaluate_sampled_model("regression", QuantileRegressor, params)
+        self.model = model
+        return model    
+
 
 tuner_model_class_dict: Dict[str, Callable] = {
     LinearRegressionTuner.__name__: LinearRegression,
