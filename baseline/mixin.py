@@ -6,6 +6,19 @@ from typing import Optional, Dict, Any, Tuple, Iterable, Callable
 
 @dataclass
 class SampleClassMixin:
+
+    def _is_space_type(self, space: Iterable, type: Callable) -> bool:
+        return all(list(map(lambda x: isinstance(x, type), space)))
+    
+    def is_valid_int_space(self, space: Iterable) -> bool:
+        return self._is_space_type(space, int) and len(space) == 2
+    
+    def is_valid_float_space(self, space: Iterable) -> bool:
+        return self._is_space_type(space, float) and len(space) == 2
+    
+    def is_valid_categorical_space(self, space: Iterable) -> bool:
+        return (not self.is_valid_float_space(space)) and (not self.is_valid_float_space(space))
+
     def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]: 
         if trial is None: raise ValueError("Method should be called in an optuna trial study")
     

@@ -237,3 +237,13 @@ class TestTweedieRegressor(BaseTest):
 class TestOrthogonalMatchingPursuit(BaseTest):
     model: SampleClassMixin = tune_regressor.OrthogonalMatchingPursuitTuner()
     task: str = "regression"
+
+
+class TestPoissonRegressor(BaseTest):
+    model: SampleClassMixin = tune_regressor.PoissonRegressorTuner()
+    task: str = "regression"
+
+
+class TestGammaRegressor(BaseTest):
+    model: SampleClassMixin = tune_regressor.GammaRegressorTuner()
+    task: str = "regression"

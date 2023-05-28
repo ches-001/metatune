@@ -494,6 +494,51 @@ class SGDRegressorTuner(SampleClassMixin):
     
 
 @dataclass
+class PoissonRegressorTuner(SampleClassMixin):
+    alpha_space: Iterable[float] = (0.01, 1.0)
+    fit_intercept_space: Iterable[bool] = (True, False)
+    solver_space: Iterable[str] = ("lbfgs", "newton-cholesky")
+    max_iter_space: Iterable[int] = (100, 2000)
+    tol_space: Iterable[float] = (1e-6, 1e-3)
+    model: Any = None
+    
+    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super()._sample_params(trial)
+        
+        params = {}
+        params["alpha"] = trial.suggest_float("alpha", *self.alpha_space, log=False)
+        params["fit_intercept"] = trial.suggest_categorical("fit_intercept", self.fit_intercept_space)
+        params["solver"] = trial.suggest_categorical("solver", self.solver_space)
+        params["max_iter"] = trial.suggest_int("max_iter", *self.max_iter_space, log=False)
+        params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
+
+        return params
+    
+    def sample_model(self, trial: Optional[Trial]=None) -> Any:
+        super().model(trial)
+        params = self._sample_params(trial)
+        model = super()._evaluate_sampled_model("regression", PoissonRegressor, params)
+        self.model = model
+
+        return model
+
+
+@dataclass
+class GammaRegressorTuner(PoissonRegressorTuner):
+
+    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        return super(GammaRegressorTuner, self)._sample_params(trial)
+    
+    def sample_model(self, trial: Optional[Trial]=None) -> Any:
+        super(PoissonRegressorTuner, self).model(trial)
+
+        params = self._sample_params(trial)
+        model = super(PoissonRegressorTuner, self)._evaluate_sampled_model("regression", GammaRegressor, params)
+        self.model = model
+        return model
+    
+
+@dataclass
 class TweedieRegressorTuner(SampleClassMixin):
     power_space: Iterable[float] = (0.0, 3.0)
     alpha_space: Iterable[float] = (0.7, 1.0)
@@ -541,5 +586,7 @@ tuner_model_class_dict: Dict[str, Callable] = {
     SGDRegressorTuner.__name__: SGDRegressor,
     BayesianRidgeTuner.__name__: BayesianRidge,
     OrthogonalMatchingPursuitTuner.__name__: OrthogonalMatchingPursuit,
+    PoissonRegressorTuner.__name__: PoissonRegressor,
+    GammaRegressorTuner.__name__: GammaRegressor,
     TweedieRegressorTuner.__name__: TweedieRegressor,
 }
