@@ -117,6 +117,11 @@ class TestKNNRegressor(BaseTest):
     task: str = "regression"
 
 
+class TestNearestCentroidClassifier(BaseTest):
+    model: SampleClassMixin = tune_classifier.NearestCentroidClassifierTuner()
+    task: str = "classification"
+
+
 class TestElasticNetRegressor(BaseTest):
     model: SampleClassMixin = tune_regressor.ElasticNetTuner()
     task: str = "regression"
@@ -149,6 +154,16 @@ class TestGradientBoostingClassifier(BaseTest):
 
 class TestGradientBoostingRegressor(BaseTest):
     model: SampleClassMixin = tune_regressor.GradientBoostingRegressorTuner()
+    task: str = "regression"
+
+
+class TestRadiusNeighborClassifier(BaseTest):
+    model: SampleClassMixin = tune_classifier.RadiusNeighborsClassifierTuner()
+    task: str = "classification"
+
+
+class TestRadiusNeighborRegressor(BaseTest):
+    model: SampleClassMixin = tune_regressor.RadiusNeighborsRegressorTuner()
     task: str = "regression"
 
 
@@ -269,3 +284,4 @@ class TestGammaRegressor(BaseTest):
 class TestQuantileRegressor(BaseTest):
     model: SampleClassMixin = tune_regressor.QuantileRegressorTuner()
     task: str = "regression"
+

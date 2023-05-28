@@ -56,5 +56,6 @@ __all__: Iterable[str] = [
     "BaggingRegressorTuner", 
     "HistGradientBoostingRegressorTuner", 
     "KNeighborsRegressorTuner", 
-    "MLPRegressorTuner"
+    "MLPRegressorTuner",
+    "RadiusNeighborsRegressorTuner"
 ]

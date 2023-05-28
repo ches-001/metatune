@@ -50,4 +50,6 @@ __all__: Iterable[str] = [
     "CategoricalNBTuner", 
     "KNeighborsClassifierTuner", 
     "MLPClassifierTuner",
+    "RadiusNeighborsClassifierTuner",
+    "NearestCentroidClassifierTuner"
 ]
