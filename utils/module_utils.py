@@ -3,7 +3,7 @@ from types import ModuleType
 from typing import Iterable, Tuple, Dict, Callable, Optional
 
 
-def get_entities(target_module: str) -> Iterable[Tuple[str, object]]:
+def get_tuner_entities(target_module: str) -> Iterable[Tuple[str, object]]:
     module: ModuleType = importlib.import_module(target_module)
     _entities: Iterable[Tuple[str, object]] = inspect.getmembers(module)
     _classes: object = filter(lambda entity : inspect.isclass(object=entity[1]), _entities)
