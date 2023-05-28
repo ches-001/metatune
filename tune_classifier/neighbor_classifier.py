@@ -2,7 +2,7 @@ from baseline import SampleClassMixin
 from optuna.trial import Trial
 from dataclasses import dataclass
 from typing import Iterable, Optional, Dict, Any, Callable
-from sklearn.neighbors import KNeighborsClassifier, RadiusNeighborsClassifier
+from sklearn.neighbors import KNeighborsClassifier, RadiusNeighborsClassifier, NearestCentroid
 
 
 @dataclass
@@ -43,7 +43,7 @@ class KNeighborsClassifierTuner(SampleClassMixin):
 
 
 @dataclass
-class RadiusNeighborClassifierTuner(SampleClassMixin):
+class RadiusNeighborsClassifierTuner(SampleClassMixin):
     radius_space: Iterable[int] = (1, 10)
     weight_space: Iterable[str] = ("uniform", "distance")
     algorithm_space: Iterable[str] = ("ball_tree", "kd_tree", "brute")
@@ -51,6 +51,7 @@ class RadiusNeighborClassifierTuner(SampleClassMixin):
     p_space: Iterable[int] = (3, 10)
     metric_space: Iterable[str] = ("cityblock", "cosine", "euclidean", "manhattan", "minkowski")
     outlier_label_space: Iterable[str] = (None, "most_frequent")
+    model: Any = None
 
     def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
         super()._sample_params(trial)
@@ -78,7 +79,35 @@ class RadiusNeighborClassifierTuner(SampleClassMixin):
         return model
 
 
+@dataclass
+class NearestCentroidClassifierTuner(SampleClassMixin):
+    metric_space: Iterable[str] = ("cityblock", "cosine", "euclidean", "manhattan")
+    shrink_threshold_space: Iterable[float] = (0.1, 0.9)
+    model: Any = None
+
+    def _sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
+        super()._sample_params(trial)
+
+        params = {}
+        params["metric"] = trial.suggest_categorical("metric", self.metric_space)
+        params["shrink_threshold"] = trial.suggest_float("shrink_threshold", *self.shrink_threshold_space)
+
+        return params
+
+    def sample_model(self, trial: Optional[Trial] = None) -> Any:
+        super().model(trial)
+
+        params = self._sample_params(trial)
+
+        model = super()._evaluate_sampled_model("classification", NearestCentroid, params)
+
+        self.model = model
+
+        return model
+
+
 tuner_model_class_dict: Dict[str, Callable] = {
     KNeighborsClassifierTuner.__name__: KNeighborsClassifier,
-    RadiusNeighborClassifierTuner.__name__: RadiusNeighborsClassifier
+    RadiusNeighborsClassifierTuner.__name__: RadiusNeighborsClassifier,
+    NearestCentroidClassifierTuner.__name__: NearestCentroid
 }
