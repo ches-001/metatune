@@ -221,7 +221,7 @@ class LarsTuner(SampleClassMixin):
     precompute_space: Iterable[bool] = (True, False)
     n_nonzero_coefs_space: Iterable[int] = (1, 500)
     eps_space: Iterable[float] = (np.finfo(float).eps, 1e-10)
-    use_jitter_space: Iterable[bool] = (True, False)
+    set_jitter_space: Iterable[bool] = (True, False)
     jitter_space: Iterable[float] = (1e-8, 1e-3)
     model: Any = None
     
@@ -233,8 +233,8 @@ class LarsTuner(SampleClassMixin):
         params["precompute"] = trial.suggest_categorical("precompute", self.precompute_space)
         params["n_nonzero_coefs"] = trial.suggest_int("n_nonzero_coefs", *self.n_nonzero_coefs_space, log=False)
         params["eps"] = trial.suggest_float("eps", *self.eps_space, log=False)
-        use_jitter = trial.suggest_categorical("use_jitter", self.use_jitter_space)
-        if use_jitter:
+        set_jitter = trial.suggest_categorical("set_jitter", self.set_jitter_space)
+        if set_jitter:
             params["jitter"] = trial.suggest_float("jitter", *self.jitter_space, log=False)
 
         return params
@@ -256,7 +256,7 @@ class LassoLarsTuner(SampleClassMixin):
     max_iter_space: Iterable[int] = (100, 1000)
     eps_space: Iterable[float] = (np.finfo(float).eps, 1e-10)
     positive_space: Iterable[bool] = (True, False)
-    use_jitter_space: Iterable[bool] = (True, False)
+    set_jitter_space: Iterable[bool] = (True, False)
     jitter_space: Iterable[float] = (1e-8, 1e-3)
     model: Any = None
     
@@ -270,8 +270,8 @@ class LassoLarsTuner(SampleClassMixin):
         params["max_iter"] = trial.suggest_int("max_iter", *self.max_iter_space, log=False)
         params["eps"] = trial.suggest_float("eps", *self.eps_space, log=False)
         params["positive"] = trial.suggest_categorical("positive", self.positive_space)
-        use_jitter = trial.suggest_categorical("use_jitter", self.use_jitter_space)
-        if use_jitter:
+        set_jitter = trial.suggest_categorical("set_jitter", self.set_jitter_space)
+        if set_jitter:
             params["jitter"] = trial.suggest_float("jitter", *self.jitter_space, log=False)
 
         return params
@@ -293,7 +293,7 @@ class LassoLarsICTuner(SampleClassMixin):
     max_iter_space: Iterable[int] = (100, 1000)
     eps_space: Iterable[float] = (np.finfo(float).eps, 1e-10)
     positive_space: Iterable[bool] = (True, False)
-    use_noise_variance_space: Iterable[bool] = (True, False)
+    set_noise_variance_space: Iterable[bool] = (True, False)
     noise_variance_space: Iterable[float] = (1e-8, 1e-3)
     model: Any = None
     
@@ -307,8 +307,8 @@ class LassoLarsICTuner(SampleClassMixin):
         params["max_iter"] = trial.suggest_int("max_iter", *self.max_iter_space, log=False)
         params["eps"] = trial.suggest_float("eps", *self.eps_space, log=False)
         params["positive"] = trial.suggest_categorical("positive", self.positive_space)
-        use_noise_variance = trial.suggest_categorical("use_noise_variance", self.use_noise_variance_space)
-        if use_noise_variance:
+        set_noise_variance = trial.suggest_categorical("set_noise_variance", self.set_noise_variance_space)
+        if set_noise_variance:
             params["noise_variance"] = trial.suggest_float("noise_variance", *self.noise_variance_space, log=False)
 
         return params
@@ -330,7 +330,7 @@ class BayesianRidgeTuner(SampleClassMixin):
     alpha_2_space: Iterable[float] = (1e-6, 1e-3)
     lambda_1_space: Iterable[float] = (1e-6, 1e-3)
     lambda_2_space: Iterable[float] = (1e-6, 1e-3)
-    use_alpha_init_space: Iterable[bool] = (True, False)
+    set_alpha_init_space: Iterable[bool] = (True, False)
     alpha_init_space: Iterable[bool] = (1e-8, 1)
     lambda_init_space: Iterable[float] = (1e-8, 1)
     compute_score_space: Iterable[bool] = (True, False)
@@ -346,8 +346,8 @@ class BayesianRidgeTuner(SampleClassMixin):
         params["alpha_2"] = trial.suggest_float("tol", *self.alpha_2_space, log=False)
         params["lambda_1"] = trial.suggest_float("tol", *self.lambda_1_space, log=False)
         params["lambda_2"] = trial.suggest_float("tol", *self.lambda_2_space, log=False)
-        use_alpha_init = trial.suggest_categorical("use_alpha_init", self.use_alpha_init_space)
-        if use_alpha_init:
+        set_alpha_init = trial.suggest_categorical("set_alpha_init", self.set_alpha_init_space)
+        if set_alpha_init:
             params["alpha_init"] = trial.suggest_float("alpha_init", *self.alpha_init_space, log=False)
         params["lambda_init"] = trial.suggest_float("lambda_init", *self.lambda_init_space, log=False)
         params["compute_score"] = trial.suggest_categorical("compute_score", self.compute_score_space)
