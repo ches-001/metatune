@@ -227,3 +227,8 @@ class TestLassoLarsIC(BaseTest):
 class TestBayesianRidge(BaseTest):
     model: SampleClassMixin = tune_regressor.BayesianRidgeTuner()
     task: str = "regression"
+
+
+class TestTweedieRegressor(BaseTest):
+    model: SampleClassMixin = tune_regressor.TweedieRegressorTuner()
+    task: str = "regression"
