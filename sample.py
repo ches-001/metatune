@@ -17,10 +17,10 @@ def sample_models_with_params(
     
     search_space = None
     if task == "regression":
-        search_space: Dict[str, object] = dict(regressor_tuning_entities)
+        search_space: Dict[str, object] = regressor_tuning_entities
 
     else:
-        search_space:  Dict[str, object] = dict(classifier_tuning_entities)
+        search_space:  Dict[str, object] = classifier_tuning_entities
 
     tuner_obj: SampleClassMixin = trial.suggest_categorical("model_tuner", list(search_space.values()))
     model = tuner_obj.sample_model(trial)
