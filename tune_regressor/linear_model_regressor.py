@@ -36,8 +36,8 @@ class LinearRegressionTuner(SampleClassMixin):
         super()._sample_params(trial)
         
         params = {}
-        params["fit_intercept"] = trial.suggest_categorical("fit_intercept", self.fit_intercept_space)
-        params["positive"] = trial.suggest_categorical("positive", self.positive_space)
+        params["fit_intercept"] = trial.suggest_categorical(f"{self.__class__.__name__}_fit_intercept", self.fit_intercept_space)
+        params["positive"] = trial.suggest_categorical(f"{self.__class__.__name__}_positive", self.positive_space)
 
         return params
     
@@ -65,15 +65,15 @@ class LassoTuner(SampleClassMixin):
         super()._sample_params(trial)
         
         params = {}
-        params["alpha"] = trial.suggest_float("alpha", *self.alpha_space, log=False)
-        params["fit_intercept"] = trial.suggest_categorical("fit_intercept", self.fit_intercept_space)
-        params["max_iter"] = trial.suggest_int("max_iter", *self.max_iter_space, log=False)
-        params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
-        params["positive"] = trial.suggest_categorical("positive", self.positive_space)
-        params["selection"] = trial.suggest_categorical("selection", self.selection_space)
+        params["alpha"] = trial.suggest_float(f"{self.__class__.__name__}_alpha", *self.alpha_space, log=False)
+        params["fit_intercept"] = trial.suggest_categorical(f"{self.__class__.__name__}_fit_intercept", self.fit_intercept_space)
+        params["max_iter"] = trial.suggest_int(f"{self.__class__.__name__}_max_iter", *self.max_iter_space, log=False)
+        params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.tol_space, log=False)
+        params["positive"] = trial.suggest_categorical(f"{self.__class__.__name__}_positive", self.positive_space)
+        params["selection"] = trial.suggest_categorical(f"{self.__class__.__name__}_selection", self.selection_space)
 
         if params["selection"] == "random":
-            params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)
+            params["random_state"] = trial.suggest_int(f"{self.__class__.__name__}_random_state", *self.random_state_space, log=False)
 
         return params
     
@@ -101,15 +101,15 @@ class RidgeTuner(SampleClassMixin):
         super()._sample_params(trial)
         
         params = {}
-        params["alpha"] = trial.suggest_float("alpha", *self.alpha_space, log=False)
-        params["fit_intercept"] = trial.suggest_categorical("fit_intercept", self.fit_intercept_space)
-        params["max_iter"] = trial.suggest_int("max_iter", *self.max_iter_space, log=False)
-        params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
-        params["positive"] = trial.suggest_categorical("positive", self.positive_space)
-        params["solver"] = trial.suggest_categorical("solver", self.solver_space)
+        params["alpha"] = trial.suggest_float(f"{self.__class__.__name__}_alpha", *self.alpha_space, log=False)
+        params["fit_intercept"] = trial.suggest_categorical(f"{self.__class__.__name__}_fit_intercept", self.fit_intercept_space)
+        params["max_iter"] = trial.suggest_int(f"{self.__class__.__name__}_max_iter", *self.max_iter_space, log=False)
+        params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.tol_space, log=False)
+        params["positive"] = trial.suggest_categorical(f"{self.__class__.__name__}_positive", self.positive_space)
+        params["solver"] = trial.suggest_categorical(f"{self.__class__.__name__}_solver", self.solver_space)
 
         if params["solver"] in ["sag", "saga"]:
-            params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)  
+            params["random_state"] = trial.suggest_int(f"{self.__class__.__name__}_random_state", *self.random_state_space, log=False)  
         
         return params
     
@@ -139,16 +139,16 @@ class ElasticNetTuner(SampleClassMixin):
         super()._sample_params(trial)
         
         params = {}
-        params["alpha"] = trial.suggest_float("alpha", *self.alpha_space, log=False)
-        params["l1_ratio"] = trial.suggest_float("l1_ratio", *self.l1_ratio_space, log=False)
-        params["precompute"] = trial.suggest_categorical("precompute", self.precompute_space)
-        params["fit_intercept"] = trial.suggest_categorical("fit_intercept", self.fit_intercept_space)
-        params["max_iter"] = trial.suggest_int("max_iter", *self.max_iter_space, log=False)
-        params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
-        params["positive"] = trial.suggest_categorical("positive", self.positive_space)
-        params["selection"] = trial.suggest_categorical("selection", self.selection_space)
+        params["alpha"] = trial.suggest_float(f"{self.__class__.__name__}_alpha", *self.alpha_space, log=False)
+        params["l1_ratio"] = trial.suggest_float(f"{self.__class__.__name__}_l1_ratio", *self.l1_ratio_space, log=False)
+        params["precompute"] = trial.suggest_categorical(f"{self.__class__.__name__}_precompute", self.precompute_space)
+        params["fit_intercept"] = trial.suggest_categorical(f"{self.__class__.__name__}_fit_intercept", self.fit_intercept_space)
+        params["max_iter"] = trial.suggest_int(f"{self.__class__.__name__}_max_iter", *self.max_iter_space, log=False)
+        params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.tol_space, log=False)
+        params["positive"] = trial.suggest_categorical(f"{self.__class__.__name__}_positive", self.positive_space)
+        params["selection"] = trial.suggest_categorical(f"{self.__class__.__name__}_selection", self.selection_space)
         if params["selection"] == "random":
-            params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)
+            params["random_state"] = trial.suggest_int(f"{self.__class__.__name__}_random_state", *self.random_state_space, log=False)
             
         return params
     
@@ -176,13 +176,13 @@ class MultiTaskLassoTuner(SampleClassMixin):
         super()._sample_params(trial)
         
         params = {}
-        params["alpha"] = trial.suggest_float("alpha", *self.alpha_space, log=False)
-        params["fit_intercept"] = trial.suggest_categorical("fit_intercept", self.fit_intercept_space)
-        params["max_iter"] = trial.suggest_int("max_iter", *self.max_iter_space, log=False)
-        params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
-        params["selection"] = trial.suggest_categorical("selection", self.selection_space)
+        params["alpha"] = trial.suggest_float(f"{self.__class__.__name__}_alpha", *self.alpha_space, log=False)
+        params["fit_intercept"] = trial.suggest_categorical(f"{self.__class__.__name__}_fit_intercept", self.fit_intercept_space)
+        params["max_iter"] = trial.suggest_int(f"{self.__class__.__name__}_max_iter", *self.max_iter_space, log=False)
+        params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.tol_space, log=False)
+        params["selection"] = trial.suggest_categorical(f"{self.__class__.__name__}_selection", self.selection_space)
         if params["selection"] == "random":
-            params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)
+            params["random_state"] = trial.suggest_int(f"{self.__class__.__name__}_random_state", *self.random_state_space, log=False)
 
         return params
     
@@ -211,14 +211,14 @@ class MultiTaskElasticNetTuner(SampleClassMixin):
         super()._sample_params(trial)
         
         params = {}
-        params["alpha"] = trial.suggest_float("alpha", *self.alpha_space, log=False)
-        params["l1_ratio"] = trial.suggest_float("l1_ratio", *self.l1_ratio_space, log=False)
-        params["fit_intercept"] = trial.suggest_categorical("fit_intercept", self.fit_intercept_space)
-        params["max_iter"] = trial.suggest_int("max_iter", *self.max_iter_space, log=False)
-        params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
-        params["selection"] = trial.suggest_categorical("selection", self.selection_space)
+        params["alpha"] = trial.suggest_float(f"{self.__class__.__name__}_alpha", *self.alpha_space, log=False)
+        params["l1_ratio"] = trial.suggest_float(f"{self.__class__.__name__}_l1_ratio", *self.l1_ratio_space, log=False)
+        params["fit_intercept"] = trial.suggest_categorical(f"{self.__class__.__name__}_fit_intercept", self.fit_intercept_space)
+        params["max_iter"] = trial.suggest_int(f"{self.__class__.__name__}_max_iter", *self.max_iter_space, log=False)
+        params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.tol_space, log=False)
+        params["selection"] = trial.suggest_categorical(f"{self.__class__.__name__}_selection", self.selection_space)
         if params["selection"] == "random":
-            params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)
+            params["random_state"] = trial.suggest_int(f"{self.__class__.__name__}_random_state", *self.random_state_space, log=False)
             
         return params
     
@@ -247,14 +247,14 @@ class LarsTuner(SampleClassMixin):
         super()._sample_params(trial)
         
         params = {}
-        params["fit_intercept"] = trial.suggest_categorical("fit_intercept", self.fit_intercept_space)
-        params["precompute"] = trial.suggest_categorical("precompute", self.precompute_space)
-        params["n_nonzero_coefs"] = trial.suggest_int("n_nonzero_coefs", *self.n_nonzero_coefs_space, log=False)
-        params["eps"] = trial.suggest_float("eps", *self.eps_space, log=False)
-        set_jitter = trial.suggest_categorical("set_jitter", self.set_jitter_space)
+        params["fit_intercept"] = trial.suggest_categorical(f"{self.__class__.__name__}_fit_intercept", self.fit_intercept_space)
+        params["precompute"] = trial.suggest_categorical(f"{self.__class__.__name__}_precompute", self.precompute_space)
+        params["n_nonzero_coefs"] = trial.suggest_int(f"{self.__class__.__name__}_n_nonzero_coefs", *self.n_nonzero_coefs_space, log=False)
+        params["eps"] = trial.suggest_float(f"{self.__class__.__name__}_eps", *self.eps_space, log=False)
+        set_jitter = trial.suggest_categorical(f"{self.__class__.__name__}_set_jitter", self.set_jitter_space)
         if set_jitter:
-            params["jitter"] = trial.suggest_float("jitter", *self.jitter_space, log=False)
-            params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)
+            params["jitter"] = trial.suggest_float(f"{self.__class__.__name__}_jitter", *self.jitter_space, log=False)
+            params["random_state"] = trial.suggest_int(f"{self.__class__.__name__}_random_state", *self.random_state_space, log=False)
 
         return params
     
@@ -284,16 +284,16 @@ class LassoLarsTuner(SampleClassMixin):
         super()._sample_params(trial)
         
         params = {}
-        params["alpha"] = trial.suggest_float("alpha", *self.alpha_space, log=False)
-        params["fit_intercept"] = trial.suggest_categorical("fit_intercept", self.fit_intercept_space)
-        params["precompute"] = trial.suggest_categorical("precompute", self.precompute_space)
-        params["max_iter"] = trial.suggest_int("max_iter", *self.max_iter_space, log=False)
-        params["eps"] = trial.suggest_float("eps", *self.eps_space, log=False)
-        params["positive"] = trial.suggest_categorical("positive", self.positive_space)
-        set_jitter = trial.suggest_categorical("set_jitter", self.set_jitter_space)
+        params["alpha"] = trial.suggest_float(f"{self.__class__.__name__}_alpha", *self.alpha_space, log=False)
+        params["fit_intercept"] = trial.suggest_categorical(f"{self.__class__.__name__}_fit_intercept", self.fit_intercept_space)
+        params["precompute"] = trial.suggest_categorical(f"{self.__class__.__name__}_precompute", self.precompute_space)
+        params["max_iter"] = trial.suggest_int(f"{self.__class__.__name__}_max_iter", *self.max_iter_space, log=False)
+        params["eps"] = trial.suggest_float(f"{self.__class__.__name__}_eps", *self.eps_space, log=False)
+        params["positive"] = trial.suggest_categorical(f"{self.__class__.__name__}_positive", self.positive_space)
+        set_jitter = trial.suggest_categorical(f"{self.__class__.__name__}_set_jitter", self.set_jitter_space)
         if set_jitter:
-            params["jitter"] = trial.suggest_float("jitter", *self.jitter_space, log=False)
-            params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)
+            params["jitter"] = trial.suggest_float(f"{self.__class__.__name__}_jitter", *self.jitter_space, log=False)
+            params["random_state"] = trial.suggest_int(f"{self.__class__.__name__}_random_state", *self.random_state_space, log=False)
 
         return params
     
@@ -322,15 +322,15 @@ class LassoLarsICTuner(SampleClassMixin):
         super()._sample_params(trial)
         
         params = {}
-        params["criterion"] = trial.suggest_categorical("criterion", self.criterion_sapce)
-        params["fit_intercept"] = trial.suggest_categorical("fit_intercept", self.fit_intercept_space)
-        params["precompute"] = trial.suggest_categorical("precompute", self.precompute_space)
-        params["max_iter"] = trial.suggest_int("max_iter", *self.max_iter_space, log=False)
-        params["eps"] = trial.suggest_float("eps", *self.eps_space, log=False)
-        params["positive"] = trial.suggest_categorical("positive", self.positive_space)
-        set_noise_variance = trial.suggest_categorical("set_noise_variance", self.set_noise_variance_space)
+        params["criterion"] = trial.suggest_categorical(f"{self.__class__.__name__}_criterion", self.criterion_sapce)
+        params["fit_intercept"] = trial.suggest_categorical(f"{self.__class__.__name__}_fit_intercept", self.fit_intercept_space)
+        params["precompute"] = trial.suggest_categorical(f"{self.__class__.__name__}_precompute", self.precompute_space)
+        params["max_iter"] = trial.suggest_int(f"{self.__class__.__name__}_max_iter", *self.max_iter_space, log=False)
+        params["eps"] = trial.suggest_float(f"{self.__class__.__name__}_eps", *self.eps_space, log=False)
+        params["positive"] = trial.suggest_categorical(f"{self.__class__.__name__}_positive", self.positive_space)
+        set_noise_variance = trial.suggest_categorical(f"{self.__class__.__name__}_set_noise_variance", self.set_noise_variance_space)
         if set_noise_variance:
-            params["noise_variance"] = trial.suggest_float("noise_variance", *self.noise_variance_space, log=False)
+            params["noise_variance"] = trial.suggest_float(f"{self.__class__.__name__}_noise_variance", *self.noise_variance_space, log=False)
 
         return params
     
@@ -362,17 +362,17 @@ class BayesianRidgeTuner(SampleClassMixin):
         super()._sample_params(trial)
         
         params = {}
-        params["n_iter"] = trial.suggest_int("n_iter", *self.n_iter_space, log=False)
-        params["alpha_1"] = trial.suggest_float("alpha_1", *self.alpha_1_space, log=False)
-        params["alpha_2"] = trial.suggest_float("tol", *self.alpha_2_space, log=False)
-        params["lambda_1"] = trial.suggest_float("tol", *self.lambda_1_space, log=False)
-        params["lambda_2"] = trial.suggest_float("tol", *self.lambda_2_space, log=False)
-        set_alpha_init = trial.suggest_categorical("set_alpha_init", self.set_alpha_init_space)
+        params["n_iter"] = trial.suggest_int(f"{self.__class__.__name__}_n_iter", *self.n_iter_space, log=False)
+        params["alpha_1"] = trial.suggest_float(f"{self.__class__.__name__}_alpha_1", *self.alpha_1_space, log=False)
+        params["alpha_2"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.alpha_2_space, log=False)
+        params["lambda_1"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.lambda_1_space, log=False)
+        params["lambda_2"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.lambda_2_space, log=False)
+        set_alpha_init = trial.suggest_categorical(f"{self.__class__.__name__}_set_alpha_init", self.set_alpha_init_space)
         if set_alpha_init:
-            params["alpha_init"] = trial.suggest_float("alpha_init", *self.alpha_init_space, log=False)
-        params["lambda_init"] = trial.suggest_float("lambda_init", *self.lambda_init_space, log=False)
-        params["compute_score"] = trial.suggest_categorical("compute_score", self.compute_score_space)
-        params["fit_intercept"] = trial.suggest_categorical("fit_intercept", self.fit_intercept_space)
+            params["alpha_init"] = trial.suggest_float(f"{self.__class__.__name__}_alpha_init", *self.alpha_init_space, log=False)
+        params["lambda_init"] = trial.suggest_float(f"{self.__class__.__name__}_lambda_init", *self.lambda_init_space, log=False)
+        params["compute_score"] = trial.suggest_categorical(f"{self.__class__.__name__}_compute_score", self.compute_score_space)
+        params["fit_intercept"] = trial.suggest_categorical(f"{self.__class__.__name__}_fit_intercept", self.fit_intercept_space)
 
         return params
     
@@ -398,12 +398,12 @@ class OrthogonalMatchingPursuitTuner(SampleClassMixin):
         super()._sample_params(trial)
         
         params = {}
-        set_nonzero_coefs = trial.suggest_categorical("set_nonzero_coefs", self.set_nonzero_coefs_space)
+        set_nonzero_coefs = trial.suggest_categorical(f"{self.__class__.__name__}_set_nonzero_coefs", self.set_nonzero_coefs_space)
         if set_nonzero_coefs:
-            params["n_nonzero_coefs"] = trial.suggest_int("n_nonzero_coefs", *self.n_nonzero_coefs_space, log=False)
-        params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
-        params["fit_intercept"] = trial.suggest_categorical("fit_intercept", self.fit_intercept_space)
-        params["precompute"] = trial.suggest_categorical("precompute", self.precompute_space)
+            params["n_nonzero_coefs"] = trial.suggest_int(f"{self.__class__.__name__}_n_nonzero_coefs", *self.n_nonzero_coefs_space, log=False)
+        params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.tol_space, log=False)
+        params["fit_intercept"] = trial.suggest_categorical(f"{self.__class__.__name__}_fit_intercept", self.fit_intercept_space)
+        params["precompute"] = trial.suggest_categorical(f"{self.__class__.__name__}_precompute", self.precompute_space)
 
         return params
     
@@ -436,21 +436,21 @@ class PassiveAggressiveRegressorTuner(SampleClassMixin):
         super()._sample_params(trial)
         
         params = {}
-        params["C"] = trial.suggest_float("C", *self.C_space, log=False)
-        params["fit_intercept"] = trial.suggest_categorical("fit_intercept", self.fit_intercept_space)
-        params["max_iter"] = trial.suggest_int("max_iter", *self.max_iter_space, log=False)
-        params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
-        params["early_stopping"] = trial.suggest_categorical("early_stopping", self.early_stopping_space)
-        params["validation_fraction"] = trial.suggest_float("validation_fraction", *self.validation_fraction_space, log=False)
-        params["n_iter_no_change"] = trial.suggest_int("n_iter_no_change", *self.n_iter_no_change_space, log=False)
-        params["shuffle"] = trial.suggest_categorical("shuffle", self.shuffle_space)
-        params["loss"] = trial.suggest_categorical("loss", self.loss_space)
+        params["C"] = trial.suggest_float(f"{self.__class__.__name__}_C", *self.C_space, log=False)
+        params["fit_intercept"] = trial.suggest_categorical(f"{self.__class__.__name__}_fit_intercept", self.fit_intercept_space)
+        params["max_iter"] = trial.suggest_int(f"{self.__class__.__name__}_max_iter", *self.max_iter_space, log=False)
+        params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.tol_space, log=False)
+        params["early_stopping"] = trial.suggest_categorical(f"{self.__class__.__name__}_early_stopping", self.early_stopping_space)
+        params["validation_fraction"] = trial.suggest_float(f"{self.__class__.__name__}_validation_fraction", *self.validation_fraction_space, log=False)
+        params["n_iter_no_change"] = trial.suggest_int(f"{self.__class__.__name__}_n_iter_no_change", *self.n_iter_no_change_space, log=False)
+        params["shuffle"] = trial.suggest_categorical(f"{self.__class__.__name__}_shuffle", self.shuffle_space)
+        params["loss"] = trial.suggest_categorical(f"{self.__class__.__name__}_loss", self.loss_space)
 
         if params["shuffle"]:
-            params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)
+            params["random_state"] = trial.suggest_int(f"{self.__class__.__name__}_random_state", *self.random_state_space, log=False)
 
-        params["epsilon"] = trial.suggest_float("epsilon", *self.epsilon_space, log=False)
-        params["average"] = trial.suggest_categorical("average", self.average_space)
+        params["epsilon"] = trial.suggest_float(f"{self.__class__.__name__}_epsilon", *self.epsilon_space, log=False)
+        params["average"] = trial.suggest_categorical(f"{self.__class__.__name__}_average", self.average_space)
  
         return params
     
@@ -476,11 +476,11 @@ class QuantileRegressorTuner(SampleClassMixin):
         super()._sample_params(trial)
         
         params = {}
-        params["quantile"] = trial.suggest_float("tol", *self.quantile_space, log=False)
-        params["alpha"] = trial.suggest_float("alpha", *self.alpha_space, log=False)
-        params["fit_intercept"] = trial.suggest_categorical("fit_intercept", self.fit_intercept_space)
-        params["solver"] = trial.suggest_categorical("solver", self.solver_space)
-        params["solver_options"] = trial.suggest_categorical("solver_options", self.solver_options_space)
+        params["quantile"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.quantile_space, log=False)
+        params["alpha"] = trial.suggest_float(f"{self.__class__.__name__}_alpha", *self.alpha_space, log=False)
+        params["fit_intercept"] = trial.suggest_categorical(f"{self.__class__.__name__}_fit_intercept", self.fit_intercept_space)
+        params["solver"] = trial.suggest_categorical(f"{self.__class__.__name__}_solver", self.solver_space)
+        params["solver_options"] = trial.suggest_categorical(f"{self.__class__.__name__}_solver_options", self.solver_options_space)
 
         return params
     
@@ -522,26 +522,26 @@ class SGDRegressorTuner(SampleClassMixin):
         super()._sample_params(trial)
         
         params = {}
-        params["loss"] = trial.suggest_categorical("loss", self.loss_space)
-        params["penalty"] = trial.suggest_categorical("penalty", self.penalty_space)
-        params["alpha"] = trial.suggest_float("alpha", *self.alpha_space, log=False)
-        params["l1_ratio"] = trial.suggest_float("l1_ratio", *self.l1_ratio_space, log=False)
-        params["fit_intercept"] = trial.suggest_categorical("fit_intercept", self.fit_intercept_space)
-        params["max_iter"] = trial.suggest_int("max_iter", *self.max_iter_space, log=False)
-        params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
-        params["shuffle"] = trial.suggest_categorical("shuffle", self.shuffle_space)
-        params["epsilon"] = trial.suggest_float("epsilon", *self.epsilon_space, log=False)
+        params["loss"] = trial.suggest_categorical(f"{self.__class__.__name__}_loss", self.loss_space)
+        params["penalty"] = trial.suggest_categorical(f"{self.__class__.__name__}_penalty", self.penalty_space)
+        params["alpha"] = trial.suggest_float(f"{self.__class__.__name__}_alpha", *self.alpha_space, log=False)
+        params["l1_ratio"] = trial.suggest_float(f"{self.__class__.__name__}_l1_ratio", *self.l1_ratio_space, log=False)
+        params["fit_intercept"] = trial.suggest_categorical(f"{self.__class__.__name__}_fit_intercept", self.fit_intercept_space)
+        params["max_iter"] = trial.suggest_int(f"{self.__class__.__name__}_max_iter", *self.max_iter_space, log=False)
+        params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.tol_space, log=False)
+        params["shuffle"] = trial.suggest_categorical(f"{self.__class__.__name__}_shuffle", self.shuffle_space)
+        params["epsilon"] = trial.suggest_float(f"{self.__class__.__name__}_epsilon", *self.epsilon_space, log=False)
 
         if params["shuffle"]:
-            params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)
+            params["random_state"] = trial.suggest_int(f"{self.__class__.__name__}_random_state", *self.random_state_space, log=False)
         
-        params["learning_rate"] = trial.suggest_categorical("learning_rate", self.learning_rate_space)
-        params["eta0"] = trial.suggest_float("eta0", *self.eta0_space, log=False)
-        params["power_t"] = trial.suggest_float("power_t", *self.power_t_space, log=False)
-        params["early_stopping"] = trial.suggest_categorical("early_stopping", self.early_stopping_space)
-        params["validation_fraction"] = trial.suggest_float("validation_fraction", *self.validation_fraction_space, log=False)
-        params["n_iter_no_change"] = trial.suggest_int("n_iter_no_change", *self.n_iter_no_change_space, log=False)
-        params["average"] = trial.suggest_categorical("average", self.average_space)
+        params["learning_rate"] = trial.suggest_categorical(f"{self.__class__.__name__}_learning_rate", self.learning_rate_space)
+        params["eta0"] = trial.suggest_float(f"{self.__class__.__name__}_eta0", *self.eta0_space, log=False)
+        params["power_t"] = trial.suggest_float(f"{self.__class__.__name__}_power_t", *self.power_t_space, log=False)
+        params["early_stopping"] = trial.suggest_categorical(f"{self.__class__.__name__}_early_stopping", self.early_stopping_space)
+        params["validation_fraction"] = trial.suggest_float(f"{self.__class__.__name__}_validation_fraction", *self.validation_fraction_space, log=False)
+        params["n_iter_no_change"] = trial.suggest_int(f"{self.__class__.__name__}_n_iter_no_change", *self.n_iter_no_change_space, log=False)
+        params["average"] = trial.suggest_categorical(f"{self.__class__.__name__}_average", self.average_space)
  
         return params
     
@@ -567,11 +567,11 @@ class PoissonRegressorTuner(SampleClassMixin):
         super()._sample_params(trial)
         
         params = {}
-        params["alpha"] = trial.suggest_float("alpha", *self.alpha_space, log=False)
-        params["fit_intercept"] = trial.suggest_categorical("fit_intercept", self.fit_intercept_space)
-        params["solver"] = trial.suggest_categorical("solver", self.solver_space)
-        params["max_iter"] = trial.suggest_int("max_iter", *self.max_iter_space, log=False)
-        params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
+        params["alpha"] = trial.suggest_float(f"{self.__class__.__name__}_alpha", *self.alpha_space, log=False)
+        params["fit_intercept"] = trial.suggest_categorical(f"{self.__class__.__name__}_fit_intercept", self.fit_intercept_space)
+        params["solver"] = trial.suggest_categorical(f"{self.__class__.__name__}_solver", self.solver_space)
+        params["max_iter"] = trial.suggest_int(f"{self.__class__.__name__}_max_iter", *self.max_iter_space, log=False)
+        params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.tol_space, log=False)
 
         return params
     
@@ -614,13 +614,13 @@ class TweedieRegressorTuner(SampleClassMixin):
         super()._sample_params(trial)
         
         params = {}
-        params["power"] = trial.suggest_float("power", *self.power_space, log=False)
-        params["alpha"] = trial.suggest_float("alpha", *self.alpha_space, log=False)
-        params["fit_intercept"] = trial.suggest_categorical("fit_intercept", self.fit_intercept_space)
-        params["link"] = trial.suggest_categorical("link", self.link_space)
-        params["solver"] = trial.suggest_categorical("solver", self.solver_space)
-        params["max_iter"] = trial.suggest_int("max_iter", *self.max_iter_space, log=False)
-        params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
+        params["power"] = trial.suggest_float(f"{self.__class__.__name__}_power", *self.power_space, log=False)
+        params["alpha"] = trial.suggest_float(f"{self.__class__.__name__}_alpha", *self.alpha_space, log=False)
+        params["fit_intercept"] = trial.suggest_categorical(f"{self.__class__.__name__}_fit_intercept", self.fit_intercept_space)
+        params["link"] = trial.suggest_categorical(f"{self.__class__.__name__}_link", self.link_space)
+        params["solver"] = trial.suggest_categorical(f"{self.__class__.__name__}_solver", self.solver_space)
+        params["max_iter"] = trial.suggest_int(f"{self.__class__.__name__}_max_iter", *self.max_iter_space, log=False)
+        params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.tol_space, log=False)
 
         return params
     

@@ -21,8 +21,8 @@ class GaussianNBTuner(SampleClassMixin):
 
         params = {}
         
-        params["priors"] = trial.suggest_categorical("priors", self.priors_space)
-        params["var_smoothing"] = trial.suggest_float("var_smoothing", *self.var_smoothing_space, log=False)
+        params["priors"] = trial.suggest_categorical(f"{self.__class__.__name__}_priors", self.priors_space)
+        params["var_smoothing"] = trial.suggest_float(f"{self.__class__.__name__}_var_smoothing", *self.var_smoothing_space, log=False)
         
         return params
 
@@ -50,15 +50,15 @@ class BernoulliNBTuner(SampleClassMixin):
 
         params = {}
 
-        params['alpha'] = trial.suggest_float('alpha', *self.alpha_space, log=False)        
-        params['force_alpha'] = trial.suggest_categorical("force_alpha", self.force_alpha_space)
+        params["alpha"] = trial.suggest_float(f"{self.__class__.__name__}_alpha", *self.alpha_space, log=False)        
+        params["force_alpha"] = trial.suggest_categorical(f"{self.__class__.__name__}_force_alpha", self.force_alpha_space)
 
-        use_binarize = trial.suggest_categorical("set_binarize", self.set_binarize_space)
+        use_binarize = trial.suggest_categorical(f"{self.__class__.__name__}_set_binarize", self.set_binarize_space)
         if use_binarize:
-            params['binarize'] = trial.suggest_float("binarize", *self.binarize_space, log=False)
+            params["binarize"] = trial.suggest_float(f"{self.__class__.__name__}_binarize", *self.binarize_space, log=False)
         
-        params['fit_prior'] = trial.suggest_categorical('fit_prior', self.fit_prior_space)
-        params["class_prior"] = trial.suggest_categorical("class_prior", self.class_prior_space)
+        params["fit_prior"] = trial.suggest_categorical("fit_prior", self.fit_prior_space)
+        params["class_prior"] = trial.suggest_categorical(f"{self.__class__.__name__}_class_prior", self.class_prior_space)
         
         return params
     
@@ -84,10 +84,10 @@ class MultinomialNBTuner(SampleClassMixin):
 
         params = {}
 
-        params['alpha'] = trial.suggest_float('alpha', *self.alpha_space, log=False)        
-        params['force_alpha']  = trial.suggest_categorical('force_alpha', self.force_alpha_space)
-        params['fit_prior'] = trial.suggest_categorical('fit_prior', self.fit_prior_space)
-        params["class_prior"] = trial.suggest_categorical("class_prior", self.class_prior_space)
+        params["alpha"] = trial.suggest_float(f"{self.__class__.__name__}_alpha", *self.alpha_space, log=False)        
+        params["force_alpha"]  = trial.suggest_categorical("force_alpha", self.force_alpha_space)
+        params["fit_prior"] = trial.suggest_categorical("fit_prior", self.fit_prior_space)
+        params["class_prior"] = trial.suggest_categorical(f"{self.__class__.__name__}_class_prior", self.class_prior_space)
         
         return params
 
@@ -113,11 +113,11 @@ class ComplementNBTuner(SampleClassMixin):
 
         params = {}
 
-        params['alpha'] = trial.suggest_float('alpha', *self.alpha_space, log=False)
-        params['force_alpha']  = trial.suggest_categorical('force_alpha', self.force_alpha_space)
-        params['fit_prior'] = trial.suggest_categorical('fit_prior', self.fit_prior_space)
-        params["class_prior"] = trial.suggest_categorical("class_prior", self.class_prior_space)        
-        params['norm'] = trial.suggest_categorical('norm', self.norm_space)
+        params["alpha"] = trial.suggest_float(f"{self.__class__.__name__}_alpha", *self.alpha_space, log=False)
+        params["force_alpha"]  = trial.suggest_categorical("force_alpha", self.force_alpha_space)
+        params["fit_prior"] = trial.suggest_categorical("fit_prior", self.fit_prior_space)
+        params["class_prior"] = trial.suggest_categorical(f"{self.__class__.__name__}_class_prior", self.class_prior_space)        
+        params["norm"] = trial.suggest_categorical("norm", self.norm_space)
         
         return params
 
@@ -144,11 +144,11 @@ class CategoricalNBTuner(SampleClassMixin):
 
         params = {}
 
-        params['alpha'] = trial.suggest_float('alpha', *self.alpha_space, log=False)
-        params['force_alpha']  = trial.suggest_categorical('force_alpha', self.force_alpha_space)
-        params['fit_prior'] = trial.suggest_categorical('fit_prior', self.fit_prior_space)
-        params["class_prior"] = trial.suggest_categorical("class_prior", self.class_prior_space)        
-        params['min_categories'] = trial.suggest_categorical('min_categories', self.min_categories_space)    
+        params["alpha"] = trial.suggest_float(f"{self.__class__.__name__}_alpha", *self.alpha_space, log=False)
+        params["force_alpha"]  = trial.suggest_categorical("force_alpha", self.force_alpha_space)
+        params["fit_prior"] = trial.suggest_categorical("fit_prior", self.fit_prior_space)
+        params["class_prior"] = trial.suggest_categorical(f"{self.__class__.__name__}_class_prior", self.class_prior_space)        
+        params["min_categories"] = trial.suggest_categorical("min_categories", self.min_categories_space)    
         
         return params
     

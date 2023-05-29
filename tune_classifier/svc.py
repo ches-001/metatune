@@ -23,17 +23,17 @@ class SVCTuner(SampleClassMixin):
         super()._sample_params(trial)
 
         params = {}
-        params["kernel"] = trial.suggest_categorical("kernel", self.kernel_space)
-        params["degree"] = trial.suggest_int("degree", *self.degree_space, log=False)
-        params["gamma"] = trial.suggest_categorical("gamma", self.gamma_space)
-        params["coef0"] = trial.suggest_float("coef0", *self.coef0_space, log=False)
-        params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
-        params["C"] = trial.suggest_float("C", *self.C_space, log=False)
-        params["class_weight"] = trial.suggest_categorical("class_weight", self.class_weight_space)
-        params["shrinking"] = trial.suggest_categorical("shrinking", self.shrinking_space)
-        params["probability"] = trial.suggest_categorical("probability", self.probability_space)
+        params["kernel"] = trial.suggest_categorical(f"{self.__class__.__name__}_kernel", self.kernel_space)
+        params["degree"] = trial.suggest_int(f"{self.__class__.__name__}_degree", *self.degree_space, log=False)
+        params["gamma"] = trial.suggest_categorical(f"{self.__class__.__name__}_gamma", self.gamma_space)
+        params["coef0"] = trial.suggest_float(f"{self.__class__.__name__}_coef0", *self.coef0_space, log=False)
+        params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.tol_space, log=False)
+        params["C"] = trial.suggest_float(f"{self.__class__.__name__}_C", *self.C_space, log=False)
+        params["class_weight"] = trial.suggest_categorical(f"{self.__class__.__name__}_class_weight", self.class_weight_space)
+        params["shrinking"] = trial.suggest_categorical(f"{self.__class__.__name__}_shrinking", self.shrinking_space)
+        params["probability"] = trial.suggest_categorical(f"{self.__class__.__name__}_probability", self.probability_space)
         if params["probability"]:
-            params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)
+            params["random_state"] = trial.suggest_int(f"{self.__class__.__name__}_random_state", *self.random_state_space, log=False)
         
         return params
     
@@ -64,18 +64,18 @@ class LinearSVCTuner(SampleClassMixin):
         super()._sample_params(trial)
         
         params = {}
-        params["penalty"] = trial.suggest_categorical("penalty", self.penalty_space)
-        params["loss"] = trial.suggest_categorical("loss", self.loss_space)
-        params["dual"] = trial.suggest_categorical("dual", self.dual_space)
-        params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
-        params["C"] = trial.suggest_float("C", *self.C_space, log=False)
-        params["multi_class"] = trial.suggest_categorical("multi_class", self.multi_class_space)
-        params["fit_intercept"] = trial.suggest_categorical("fit_intercept", self.fit_intercept_space)
-        params["intercept_scaling"] = trial.suggest_float("intercept_scaling", *self.intercept_scaling_space, log=False)
-        params["class_weight"] = trial.suggest_categorical("class_weight", self.class_weight_space)
-        params["max_iter"] = trial.suggest_int("max_iter", *self.max_iter_space, log=False)
+        params["penalty"] = trial.suggest_categorical(f"{self.__class__.__name__}_penalty", self.penalty_space)
+        params["loss"] = trial.suggest_categorical(f"{self.__class__.__name__}_loss", self.loss_space)
+        params["dual"] = trial.suggest_categorical(f"{self.__class__.__name__}_dual", self.dual_space)
+        params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.tol_space, log=False)
+        params["C"] = trial.suggest_float(f"{self.__class__.__name__}_C", *self.C_space, log=False)
+        params["multi_class"] = trial.suggest_categorical(f"{self.__class__.__name__}_multi_class", self.multi_class_space)
+        params["fit_intercept"] = trial.suggest_categorical(f"{self.__class__.__name__}_fit_intercept", self.fit_intercept_space)
+        params["intercept_scaling"] = trial.suggest_float(f"{self.__class__.__name__}_intercept_scaling", *self.intercept_scaling_space, log=False)
+        params["class_weight"] = trial.suggest_categorical(f"{self.__class__.__name__}_class_weight", self.class_weight_space)
+        params["max_iter"] = trial.suggest_int(f"{self.__class__.__name__}_max_iter", *self.max_iter_space, log=False)
         if params["dual"]:
-            params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)
+            params["random_state"] = trial.suggest_int(f"{self.__class__.__name__}_random_state", *self.random_state_space, log=False)
         
         return params
     
@@ -108,20 +108,20 @@ class NuSVCTuner(SampleClassMixin):
         super()._sample_params(trial)
 
         params = {}
-        params["nu"] = trial.suggest_float("nu", *self.nu_space, log=False)
-        params["kernel"] = trial.suggest_categorical("kernel", self.kernel_space)
-        params["degree"] = trial.suggest_int("degree", *self.degree_space, log=False)
-        params["gamma"] = trial.suggest_categorical("gamma", self.gamma_space)
-        params["coef0"] = trial.suggest_float("coef0", *self.coef0_space, log=False)
-        params["shrinking"] = trial.suggest_categorical("shrinking", self.shrinking_space)
-        params["probability"] = trial.suggest_categorical("probability", self.probability_space)
-        params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
-        params["class_weight"] = trial.suggest_categorical("class_weight", self.class_weight_space)
-        params["decision_function_shape"] = trial.suggest_categorical("decision_function_shape", self.decision_function_shape_space)
-        params["break_ties"] = trial.suggest_categorical("break_ties", self.break_ties_space)
+        params["nu"] = trial.suggest_float(f"{self.__class__.__name__}_nu", *self.nu_space, log=False)
+        params["kernel"] = trial.suggest_categorical(f"{self.__class__.__name__}_kernel", self.kernel_space)
+        params["degree"] = trial.suggest_int(f"{self.__class__.__name__}_degree", *self.degree_space, log=False)
+        params["gamma"] = trial.suggest_categorical(f"{self.__class__.__name__}_gamma", self.gamma_space)
+        params["coef0"] = trial.suggest_float(f"{self.__class__.__name__}_coef0", *self.coef0_space, log=False)
+        params["shrinking"] = trial.suggest_categorical(f"{self.__class__.__name__}_shrinking", self.shrinking_space)
+        params["probability"] = trial.suggest_categorical(f"{self.__class__.__name__}_probability", self.probability_space)
+        params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.tol_space, log=False)
+        params["class_weight"] = trial.suggest_categorical(f"{self.__class__.__name__}_class_weight", self.class_weight_space)
+        params["decision_function_shape"] = trial.suggest_categorical(f"{self.__class__.__name__}_decision_function_shape", self.decision_function_shape_space)
+        params["break_ties"] = trial.suggest_categorical(f"{self.__class__.__name__}_break_ties", self.break_ties_space)
 
         if params["probability"]:
-            params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)
+            params["random_state"] = trial.suggest_int(f"{self.__class__.__name__}_random_state", *self.random_state_space, log=False)
         
         return params
     

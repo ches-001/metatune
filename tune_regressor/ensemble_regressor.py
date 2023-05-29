@@ -38,53 +38,53 @@ class RandomForestRegressorTuner(SampleClassMixin):
         super()._sample_params(trial)
         
         params = {}
-        params["n_estimators"] = trial.suggest_int("n_estimators", *self.n_estimators_space, log=False)
-        params["criterion"] = trial.suggest_categorical("criterion", self.criterion_space)
-        set_max_depth = trial.suggest_categorical("set_max_depth", self.set_max_depth_space)
+        params["n_estimators"] = trial.suggest_int(f"{self.__class__.__name__}_n_estimators", *self.n_estimators_space, log=False)
+        params["criterion"] = trial.suggest_categorical(f"{self.__class__.__name__}_criterion", self.criterion_space)
+        set_max_depth = trial.suggest_categorical(f"{self.__class__.__name__}_set_max_depth", self.set_max_depth_space)
         if set_max_depth:
-            params["max_depth"] = trial.suggest_int("max_depth", *self.max_depth_space, log=False)
+            params["max_depth"] = trial.suggest_int(f"{self.__class__.__name__}_max_depth", *self.max_depth_space, log=False)
 
         if self._is_space_type(self.min_samples_split_space, float):
-            params["min_samples_split"] = trial.suggest_float("min_samples_split", *self.min_samples_split_space, log=False)
+            params["min_samples_split"] = trial.suggest_float(f"{self.__class__.__name__}_min_samples_split", *self.min_samples_split_space, log=False)
         else:
-            params["min_samples_split"] = trial.suggest_int("min_samples_split", *self.min_samples_split_space, log=False)
+            params["min_samples_split"] = trial.suggest_int(f"{self.__class__.__name__}_min_samples_split", *self.min_samples_split_space, log=False)
 
         if self._is_space_type(self.min_samples_leaf_space, float):
-            params["min_samples_leaf"] = trial.suggest_float("min_samples_leaf", *self.min_samples_leaf_space, log=False)
+            params["min_samples_leaf"] = trial.suggest_float(f"{self.__class__.__name__}_min_samples_leaf", *self.min_samples_leaf_space, log=False)
         else:
-            params["min_samples_leaf"] = trial.suggest_int("min_samples_leaf", *self.min_samples_leaf_space, log=False)
+            params["min_samples_leaf"] = trial.suggest_int(f"{self.__class__.__name__}_min_samples_leaf", *self.min_samples_leaf_space, log=False)
 
-        params["min_weight_fraction_leaf"] = trial.suggest_float("min_weight_fraction_leaf", *self.min_weight_fraction_leaf_space, log=False)
+        params["min_weight_fraction_leaf"] = trial.suggest_float(f"{self.__class__.__name__}_min_weight_fraction_leaf", *self.min_weight_fraction_leaf_space, log=False)
         
         if self.is_valid_categorical_space(self.max_features_space):
-            params["max_features"] = trial.suggest_categorical("max_features", self.max_features_space)
+            params["max_features"] = trial.suggest_categorical(f"{self.__class__.__name__}_max_features", self.max_features_space)
         else:
             if self.is_valid_float_space(self.max_features_space):
-                params["max_features"] = trial.suggest_float("max_features", *self.max_features_space, log=False)
+                params["max_features"] = trial.suggest_float(f"{self.__class__.__name__}_max_features", *self.max_features_space, log=False)
             else:
-                params["max_features"] = trial.suggest_int("max_features", *self.max_features_space, log=False)
+                params["max_features"] = trial.suggest_int(f"{self.__class__.__name__}_max_features", *self.max_features_space, log=False)
 
-        set_max_leaf_node = trial.suggest_categorical("set_max_leaf_nodes", self.set_max_leaf_nodes_space)
+        set_max_leaf_node = trial.suggest_categorical(f"{self.__class__.__name__}_set_max_leaf_nodes", self.set_max_leaf_nodes_space)
         if set_max_leaf_node:
-            params["max_leaf_nodes"] = trial.suggest_int("max_leaf_nodes", *self.max_leaf_nodes_space, log=False)
+            params["max_leaf_nodes"] = trial.suggest_int(f"{self.__class__.__name__}_max_leaf_nodes", *self.max_leaf_nodes_space, log=False)
 
-        params["min_impurity_decrease"] = trial.suggest_float("min_impurity_decrease", *self.min_impurity_decrease_space)
-        params["bootstrap"] = trial.suggest_categorical("bootstrap", self.bootstrap_space)
-        params["oob_score"] = trial.suggest_categorical("oob_score", self.oob_score_space)
+        params["min_impurity_decrease"] = trial.suggest_float(f"{self.__class__.__name__}_min_impurity_decrease", *self.min_impurity_decrease_space)
+        params["bootstrap"] = trial.suggest_categorical(f"{self.__class__.__name__}_bootstrap", self.bootstrap_space)
+        params["oob_score"] = trial.suggest_categorical(f"{self.__class__.__name__}_oob_score", self.oob_score_space)
 
-        set_random_state = trial.suggest_categorical("set_random_state", self.set_random_state_space)
+        set_random_state = trial.suggest_categorical(f"{self.__class__.__name__}_set_random_state", self.set_random_state_space)
         if set_random_state:
-            params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)
+            params["random_state"] = trial.suggest_int(f"{self.__class__.__name__}_random_state", *self.random_state_space, log=False)
 
-        params["ccp_alpha"] = trial.suggest_float("ccp_alpha", *self.ccp_alpha_space, log=False)
+        params["ccp_alpha"] = trial.suggest_float(f"{self.__class__.__name__}_ccp_alpha", *self.ccp_alpha_space, log=False)
 
-        set_max_samples = trial.suggest_categorical("set_max_samples", self.set_max_samples_space)
+        set_max_samples = trial.suggest_categorical(f"{self.__class__.__name__}_set_max_samples", self.set_max_samples_space)
         if set_max_samples:
             if self._is_space_type(self.max_samples_space, float):
-                params["max_samples"] = trial.suggest_float("max_samples", *self.max_samples_space, log=False)
+                params["max_samples"] = trial.suggest_float(f"{self.__class__.__name__}_max_samples", *self.max_samples_space, log=False)
 
             else:
-                params["max_samples"] = trial.suggest_int("max_samples", *self.max_samples_space, log=False)
+                params["max_samples"] = trial.suggest_int(f"{self.__class__.__name__}_max_samples", *self.max_samples_space, log=False)
         
         return params
     
@@ -125,11 +125,11 @@ class AdaBoostRegressorTuner(SampleClassMixin):
         super()._sample_params(trial)
         
         params = {}
-        params["estimator"] = trial.suggest_categorical("estimator", self.estimator_space)
-        params["n_estimators"] = trial.suggest_int("n_estimators", *self.n_estimators_space, log=False)
-        params["learning_rate"] = trial.suggest_float("learning_rate", *self.learning_rate_space, log=False)
-        params["loss"] = trial.suggest_categorical("loss", self.loss_space)
-        params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)
+        params["estimator"] = trial.suggest_categorical(f"{self.__class__.__name__}_estimator", self.estimator_space)
+        params["n_estimators"] = trial.suggest_int(f"{self.__class__.__name__}_n_estimators", *self.n_estimators_space, log=False)
+        params["learning_rate"] = trial.suggest_float(f"{self.__class__.__name__}_learning_rate", *self.learning_rate_space, log=False)
+        params["loss"] = trial.suggest_categorical(f"{self.__class__.__name__}_loss", self.loss_space)
+        params["random_state"] = trial.suggest_int(f"{self.__class__.__name__}_random_state", *self.random_state_space, log=False)
         
         return params
     
@@ -172,53 +172,53 @@ class GradientBoostingRegressorTuner(SampleClassMixin):
         super()._sample_params(trial)
 
         params = {}
-        params["loss"] = trial.suggest_categorical("loss", self.loss_space)
-        params["learning_rate"] = trial.suggest_float("learning_rate", *self.learning_rate_space, log=False)
-        params["n_estimators"] = trial.suggest_int("n_estimators", *self.n_estimators_space, log=False)
-        params["subsample"] = trial.suggest_float("subsample", *self.subsample_space, log=False)
-        params["criterion"] = trial.suggest_categorical("criterion", self.criterion_space)
+        params["loss"] = trial.suggest_categorical(f"{self.__class__.__name__}_loss", self.loss_space)
+        params["learning_rate"] = trial.suggest_float(f"{self.__class__.__name__}_learning_rate", *self.learning_rate_space, log=False)
+        params["n_estimators"] = trial.suggest_int(f"{self.__class__.__name__}_n_estimators", *self.n_estimators_space, log=False)
+        params["subsample"] = trial.suggest_float(f"{self.__class__.__name__}_subsample", *self.subsample_space, log=False)
+        params["criterion"] = trial.suggest_categorical(f"{self.__class__.__name__}_criterion", self.criterion_space)
         if self._is_space_type(self.min_samples_split_space, float):
-            params["min_samples_split"] = trial.suggest_float("min_samples_split", *self.min_samples_split_space, log=False)
+            params["min_samples_split"] = trial.suggest_float(f"{self.__class__.__name__}_min_samples_split", *self.min_samples_split_space, log=False)
         else:
-            params["min_samples_split"] = trial.suggest_int("min_samples_split", *self.min_samples_split_space, log=False)
+            params["min_samples_split"] = trial.suggest_int(f"{self.__class__.__name__}_min_samples_split", *self.min_samples_split_space, log=False)
 
         if self._is_space_type(self.min_samples_leaf_space, float):
-            params["min_samples_leaf"] = trial.suggest_float("min_samples_leaf", *self.min_samples_leaf_space, log=False)
+            params["min_samples_leaf"] = trial.suggest_float(f"{self.__class__.__name__}_min_samples_leaf", *self.min_samples_leaf_space, log=False)
         else:
-            params["min_samples_leaf"] = trial.suggest_int("min_samples_leaf", *self.min_samples_leaf_space, log=False)
+            params["min_samples_leaf"] = trial.suggest_int(f"{self.__class__.__name__}_min_samples_leaf", *self.min_samples_leaf_space, log=False)
 
-        params["min_weight_fraction_leaf"] = trial.suggest_float("min_weight_fraction_leaf", *self.min_weight_fraction_leaf_space, log=False)
+        params["min_weight_fraction_leaf"] = trial.suggest_float(f"{self.__class__.__name__}_min_weight_fraction_leaf", *self.min_weight_fraction_leaf_space, log=False)
 
-        set_max_depth = trial.suggest_categorical("set_max_depth", self.set_max_depth_space)
+        set_max_depth = trial.suggest_categorical(f"{self.__class__.__name__}_set_max_depth", self.set_max_depth_space)
         if set_max_depth:
-            params["max_depth"] = trial.suggest_int("max_depth", *self.max_depth_space, log=False)
+            params["max_depth"] = trial.suggest_int(f"{self.__class__.__name__}_max_depth", *self.max_depth_space, log=False)
 
-        params["min_impurity_decrease"] = trial.suggest_float("min_impurity_decrease", *self.min_impurity_decrease_space)
-        params["init"] = trial.suggest_categorical("init", self.init_space)
+        params["min_impurity_decrease"] = trial.suggest_float(f"{self.__class__.__name__}_min_impurity_decrease", *self.min_impurity_decrease_space)
+        params["init"] = trial.suggest_categorical(f"{self.__class__.__name__}_init", self.init_space)
         
         if self.is_valid_categorical_space(self.max_features_space):
-            params["max_features"] = trial.suggest_categorical("max_features", self.max_features_space)
+            params["max_features"] = trial.suggest_categorical(f"{self.__class__.__name__}_max_features", self.max_features_space)
         else:
             if self.is_valid_float_space(self.max_features_space):
-                params["max_features"] = trial.suggest_float("max_features", *self.max_features_space, log=False)
+                params["max_features"] = trial.suggest_float(f"{self.__class__.__name__}_max_features", *self.max_features_space, log=False)
             else:
-                params["max_features"] = trial.suggest_int("max_features", *self.max_features_space, log=False)
+                params["max_features"] = trial.suggest_int(f"{self.__class__.__name__}_max_features", *self.max_features_space, log=False)
 
-        set_max_leaf_nodes = trial.suggest_categorical("set_max_leaf_nodes", self.set_max_leaf_nodes_space)
+        set_max_leaf_nodes = trial.suggest_categorical(f"{self.__class__.__name__}_set_max_leaf_nodes", self.set_max_leaf_nodes_space)
         if set_max_leaf_nodes:
-            params["max_leaf_nodes"] = trial.suggest_int("max_leaf_nodes", *self.max_leaf_nodes_space, log=False)
+            params["max_leaf_nodes"] = trial.suggest_int(f"{self.__class__.__name__}_max_leaf_nodes", *self.max_leaf_nodes_space, log=False)
 
-        params["alpha"] = trial.suggest_float("alpha", *self.alpha_space, log=False)
-        params["max_leaf_nodes"] = trial.suggest_int("max_leaf_nodes", *self.max_leaf_nodes_space, log=False)
-        params["validation_fraction"] = trial.suggest_float("validation_fraction", *self.validation_fraction_space, log=False)
+        params["alpha"] = trial.suggest_float(f"{self.__class__.__name__}_alpha", *self.alpha_space, log=False)
+        params["max_leaf_nodes"] = trial.suggest_int(f"{self.__class__.__name__}_max_leaf_nodes", *self.max_leaf_nodes_space, log=False)
+        params["validation_fraction"] = trial.suggest_float(f"{self.__class__.__name__}_validation_fraction", *self.validation_fraction_space, log=False)
         
-        set_n_iter_no_change = trial.suggest_categorical("set_n_iter_no_change", self.set_n_iter_no_change_space)
+        set_n_iter_no_change = trial.suggest_categorical(f"{self.__class__.__name__}_set_n_iter_no_change", self.set_n_iter_no_change_space)
         if set_n_iter_no_change:
-            params["n_iter_no_change"] = trial.suggest_int("n_iter_no_change", *self.n_iter_no_change_space, log=False)
-            params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)
+            params["n_iter_no_change"] = trial.suggest_int(f"{self.__class__.__name__}_n_iter_no_change", *self.n_iter_no_change_space, log=False)
+            params["random_state"] = trial.suggest_int(f"{self.__class__.__name__}_random_state", *self.random_state_space, log=False)
 
-        params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
-        params["ccp_alpha"] = trial.suggest_float("ccp_alpha", *self.ccp_alpha_space, log=False)
+        params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.tol_space, log=False)
+        params["ccp_alpha"] = trial.suggest_float(f"{self.__class__.__name__}_ccp_alpha", *self.ccp_alpha_space, log=False)
         
         return params
     
@@ -274,34 +274,34 @@ class HistGradientBoostingRegressorTuner(SampleClassMixin):
         super()._sample_params(trial)
 
         params = {}
-        params["loss"] = trial.suggest_categorical("loss", self.loss_space)
+        params["loss"] = trial.suggest_categorical(f"{self.__class__.__name__}_loss", self.loss_space)
 
         if params["loss"] == "quantile":
-            params["quantile"] = trial.suggest_float("quantile", *self.quantile_space, log=False)
+            params["quantile"] = trial.suggest_float(f"{self.__class__.__name__}_quantile", *self.quantile_space, log=False)
 
-        params["learning_rate"] = trial.suggest_float("learning_rate", *self.learning_rate_space, log=False)
-        params["max_iter"] = trial.suggest_int("max_iter", *self.max_iter_space, log=False)
+        params["learning_rate"] = trial.suggest_float(f"{self.__class__.__name__}_learning_rate", *self.learning_rate_space, log=False)
+        params["max_iter"] = trial.suggest_int(f"{self.__class__.__name__}_max_iter", *self.max_iter_space, log=False)
         
-        set_max_leaf_nodes = trial.suggest_categorical("set_max_leaf_nodes", self.set_max_leaf_nodes_space)
+        set_max_leaf_nodes = trial.suggest_categorical(f"{self.__class__.__name__}_set_max_leaf_nodes", self.set_max_leaf_nodes_space)
         if set_max_leaf_nodes:
-            params["max_leaf_nodes"] = trial.suggest_int("max_leaf_nodes", *self.max_leaf_nodes_space, log=False)
+            params["max_leaf_nodes"] = trial.suggest_int(f"{self.__class__.__name__}_max_leaf_nodes", *self.max_leaf_nodes_space, log=False)
         
-        set_max_depth = trial.suggest_categorical("set_max_depth", self.set_max_depth_space)
+        set_max_depth = trial.suggest_categorical(f"{self.__class__.__name__}_set_max_depth", self.set_max_depth_space)
         if set_max_depth:
-            params["max_depth"] = trial.suggest_int("max_depth", *self.max_depth_space, log=False)
+            params["max_depth"] = trial.suggest_int(f"{self.__class__.__name__}_max_depth", *self.max_depth_space, log=False)
         
-        params["min_samples_leaf"] = trial.suggest_int("min_samples_leaf", *self.min_samples_leaf_space, log=False)
-        params["l2_regularization"] = trial.suggest_float("l2_regularization", *self.l2_regularization_space, log=False)
-        params["max_bins"] = trial.suggest_int("max_bins", *self.max_bins_space, log=False)
-        params["categorical_features"] = trial.suggest_categorical("categorical_features", self.categorical_features_space)
-        params["monotonic_cst"] = trial.suggest_categorical("monotonic_cst", self.monotonic_cst_space)
-        params["interaction_cst"] = trial.suggest_categorical("interaction_cst", self.interaction_cst_space)
-        params["early_stopping"] = trial.suggest_categorical("early_stopping", self.early_stopping_space)
-        params["scoring"] = trial.suggest_categorical("scoring", self.scoring_space)
-        params["validation_fraction"] = trial.suggest_float("validation_fraction", *self.validation_fraction_space, log=False)
-        params["n_iter_no_change"] = trial.suggest_int("n_iter_no_change", *self.n_iter_no_change_space, log=False)
-        params["tol"] = trial.suggest_float("tol", *self.tol_space, log=False)
-        params["random_state"] = trial.suggest_int("random_state", *self.random_state_space, log=False)
+        params["min_samples_leaf"] = trial.suggest_int(f"{self.__class__.__name__}_min_samples_leaf", *self.min_samples_leaf_space, log=False)
+        params["l2_regularization"] = trial.suggest_float(f"{self.__class__.__name__}_l2_regularization", *self.l2_regularization_space, log=False)
+        params["max_bins"] = trial.suggest_int(f"{self.__class__.__name__}_max_bins", *self.max_bins_space, log=False)
+        params["categorical_features"] = trial.suggest_categorical(f"{self.__class__.__name__}_categorical_features", self.categorical_features_space)
+        params["monotonic_cst"] = trial.suggest_categorical(f"{self.__class__.__name__}_monotonic_cst", self.monotonic_cst_space)
+        params["interaction_cst"] = trial.suggest_categorical(f"{self.__class__.__name__}_interaction_cst", self.interaction_cst_space)
+        params["early_stopping"] = trial.suggest_categorical(f"{self.__class__.__name__}_early_stopping", self.early_stopping_space)
+        params["scoring"] = trial.suggest_categorical(f"{self.__class__.__name__}_scoring", self.scoring_space)
+        params["validation_fraction"] = trial.suggest_float(f"{self.__class__.__name__}_validation_fraction", *self.validation_fraction_space, log=False)
+        params["n_iter_no_change"] = trial.suggest_int(f"{self.__class__.__name__}_n_iter_no_change", *self.n_iter_no_change_space, log=False)
+        params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.tol_space, log=False)
+        params["random_state"] = trial.suggest_int(f"{self.__class__.__name__}_random_state", *self.random_state_space, log=False)
 
         return params
     
