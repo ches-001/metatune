@@ -1,4 +1,4 @@
-from baseline import SampleClassMixin
+from baseline import BaseTuner
 from optuna.trial import Trial
 from dataclasses import dataclass
 from typing import Iterable, Optional, Dict, Any, Union, Callable
@@ -12,7 +12,7 @@ from sklearn.ensemble import (
 )
 
 @dataclass
-class RandomForestClassifierTuner(SampleClassMixin):
+class RandomForestClassifierTuner(BaseTuner):
     n_estimators_space: Iterable[int] = (1, 200)
     criterion_space: Iterable[str] = ("gini", "entropy", "log_loss")
     set_max_depth_space: Iterable[bool] = (True, False)
@@ -32,10 +32,9 @@ class RandomForestClassifierTuner(SampleClassMixin):
     ccp_alpha_space: Iterable[float] = (0.0, 1.0)
     set_max_samples_space: Iterable[bool] = (True, False)
     max_samples_space: Iterable[Union[int, float]] = (0.1, 1.0)
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
         
         params = {}
         params["n_estimators"] = trial.suggest_int(f"{self.__class__.__name__}_n_estimators", *self.n_estimators_space, log=False)
@@ -91,8 +90,8 @@ class RandomForestClassifierTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("classification", RandomForestClassifier, params)
         self.model = model
 
@@ -102,12 +101,12 @@ class RandomForestClassifierTuner(SampleClassMixin):
 @dataclass
 class ExtraTreesClassifierTuner(RandomForestClassifierTuner):
      
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        return super(ExtraTreesClassifierTuner, self)._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        return super(ExtraTreesClassifierTuner, self).sample_params(trial)
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super(RandomForestClassifierTuner, self).model(trial)
-        params = self._sample_params(trial)
+        super(RandomForestClassifierTuner, self).sample_model(trial)
+        params = self.sample_params(trial)
         model = super(RandomForestClassifierTuner, self)._evaluate_sampled_model("classification", ExtraTreesClassifier, params)
         self.model = model
         
@@ -115,16 +114,15 @@ class ExtraTreesClassifierTuner(RandomForestClassifierTuner):
     
 
 @dataclass
-class AdaBoostClassifierTuner(SampleClassMixin):
+class AdaBoostClassifierTuner(BaseTuner):
     estimator_space: Iterable[Optional[object]] = (None, )
     n_estimators_space: Iterable[int] = (1, 200)
     learning_rate_space: Iterable[float] = (0.01, 1.0)
     algorithm_space: Iterable[str] = ("SAMME", "SAMME.R")
     random_state_space: Iterable[int] = (0, 10000)
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
         
         params = {}
         params["estimator"] = trial.suggest_categorical(f"{self.__class__.__name__}_estimator", self.estimator_space)
@@ -136,8 +134,8 @@ class AdaBoostClassifierTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("classification", AdaBoostClassifier, params)
         self.model = model
 
@@ -145,7 +143,7 @@ class AdaBoostClassifierTuner(SampleClassMixin):
     
 
 @dataclass
-class GradientBoostingClassifierTuner(SampleClassMixin):
+class GradientBoostingClassifierTuner(BaseTuner):
     loss_space: Iterable[str] = ("log_loss", )
     learning_rate_space: Iterable[float] = (0.001, 1.0)
     n_estimators_space: Iterable[int] = (1, 100)
@@ -167,10 +165,9 @@ class GradientBoostingClassifierTuner(SampleClassMixin):
     random_state_space: Iterable[int] = (0, 10000)
     tol_space: Iterable[float] = (1e-6, 1e-3)
     ccp_alpha_space: Iterable[float] = (0.0, 1.0)
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)        
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)        
 
         params = {}
         params["loss"] = trial.suggest_categorical(f"{self.__class__.__name__}_loss", self.loss_space)
@@ -222,8 +219,8 @@ class GradientBoostingClassifierTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("classification", GradientBoostingClassifier, params)
         self.model = model
 
@@ -231,7 +228,7 @@ class GradientBoostingClassifierTuner(SampleClassMixin):
     
 
 @dataclass
-class BaggingClassifierTuner(SampleClassMixin):
+class BaggingClassifierTuner(BaseTuner):
     estimator_space: Iterable[Optional[object]] = (None, )
     n_estimators_space: Iterable[int] = (1, 100)
     max_samples_space: Iterable[Union[int, float]] = (0.1, 1.0)
@@ -240,10 +237,9 @@ class BaggingClassifierTuner(SampleClassMixin):
     bootstrap_features_space: Iterable[bool] = (True, False)
     oob_score_space: Iterable[bool] = (True, False)
     random_state_space: Iterable[int] = (0, 10000)
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
 
         params = {}
         params["estimator"] = trial.suggest_categorical(f"{self.__class__.__name__}_estimator", self.estimator_space)
@@ -267,8 +263,8 @@ class BaggingClassifierTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("classification", BaggingClassifier, params)
         self.model = model
 
@@ -276,7 +272,7 @@ class BaggingClassifierTuner(SampleClassMixin):
     
 
 @dataclass
-class HistGradientBoostingClassifierTuner(SampleClassMixin):
+class HistGradientBoostingClassifierTuner(BaseTuner):
     loss_space: Iterable[str] = ("log_loss", )
     learning_rate_space: Iterable[float] = (0.001, 1.0)
     max_iter_space: Iterable[int] = (10, 1000)
@@ -297,10 +293,9 @@ class HistGradientBoostingClassifierTuner(SampleClassMixin):
     tol_space: Iterable[float] = (1e-6, 1e-3)
     random_state_space: Iterable[int] = (0, 10000)
     class_weight_space: Iterable[str] = ("balanced", )
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
 
         params = {}
         params["loss"] = trial.suggest_categorical(f"{self.__class__.__name__}_loss", self.loss_space)
@@ -332,8 +327,8 @@ class HistGradientBoostingClassifierTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("classification", HistGradientBoostingClassifier, params)
         self.model = model
 

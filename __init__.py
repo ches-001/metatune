@@ -1,11 +1,12 @@
 from .tune_classifier import *
 from .tune_regressor import *
+from .baseline import *
 from .sample import *
 from typing import Iterable
 
 
 __all__: Iterable[str] = [
-    "baseline.mixin",
+    "base",
     "tests.test_tuners",
     "tests.utils",
     "ensemble_classifier",

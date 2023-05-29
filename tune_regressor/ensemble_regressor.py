@@ -1,4 +1,4 @@
-from baseline import SampleClassMixin
+from baseline import BaseTuner
 from optuna.trial import Trial
 from dataclasses import dataclass
 from typing import Iterable, Optional, Dict, Any, Union, Callable
@@ -13,7 +13,7 @@ from sklearn.ensemble import (
 from tune_classifier import BaggingClassifierTuner
 
 @dataclass
-class RandomForestRegressorTuner(SampleClassMixin):
+class RandomForestRegressorTuner(BaseTuner):
     n_estimators_space: Iterable[int] = (1, 200)
     criterion_space: Iterable[str] = ("squared_error", "absolute_error", "friedman_mse", "poisson")
     set_max_depth_space: Iterable[bool] = (True, False)
@@ -32,10 +32,9 @@ class RandomForestRegressorTuner(SampleClassMixin):
     ccp_alpha_space: Iterable[float] = (0.0, 1.0)
     set_max_samples_space: Iterable[bool] = (True, False)
     max_samples_space: Iterable[Union[int, float]] = (0.1, 1.0)
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
         
         params = {}
         params["n_estimators"] = trial.suggest_int(f"{self.__class__.__name__}_n_estimators", *self.n_estimators_space, log=False)
@@ -89,8 +88,8 @@ class RandomForestRegressorTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("regression", RandomForestRegressor, params)
         self.model = model
         
@@ -100,12 +99,12 @@ class RandomForestRegressorTuner(SampleClassMixin):
 @dataclass
 class ExtraTreesRegressorTuner(RandomForestRegressorTuner):
      
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        return super(ExtraTreesRegressorTuner, self)._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        return super(ExtraTreesRegressorTuner, self).sample_params(trial)
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super(RandomForestRegressorTuner, self).model(trial)
-        params = self._sample_params(trial)
+        super(RandomForestRegressorTuner, self).sample_model(trial)
+        params = self.sample_params(trial)
         model = super(RandomForestRegressorTuner, self)._evaluate_sampled_model("regression", ExtraTreesRegressor, params)
         self.model = model
         
@@ -113,16 +112,15 @@ class ExtraTreesRegressorTuner(RandomForestRegressorTuner):
     
 
 @dataclass
-class AdaBoostRegressorTuner(SampleClassMixin):
+class AdaBoostRegressorTuner(BaseTuner):
     estimator_space: Iterable[Optional[object]] = (None, )
     n_estimators_space: Iterable[int] = (1, 200)
     learning_rate_space: Iterable[float] = (0.01, 1.0)
     loss_space: Iterable[str] = ("linear", "square", "exponential")
     random_state_space: Iterable[int] = (0, 10000)
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
         
         params = {}
         params["estimator"] = trial.suggest_categorical(f"{self.__class__.__name__}_estimator", self.estimator_space)
@@ -134,8 +132,8 @@ class AdaBoostRegressorTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("regression", AdaBoostRegressor, params)
         self.model = model
 
@@ -143,7 +141,7 @@ class AdaBoostRegressorTuner(SampleClassMixin):
     
 
 @dataclass
-class GradientBoostingRegressorTuner(SampleClassMixin):
+class GradientBoostingRegressorTuner(BaseTuner):
     loss_space: Iterable[str] = ("squared_error", "absolute_error", "huber", "quantile")
     learning_rate_space: Iterable[float] = (0.001, 1.0)
     n_estimators_space: Iterable[int] = (1, 100)
@@ -166,10 +164,9 @@ class GradientBoostingRegressorTuner(SampleClassMixin):
     random_state_space: Iterable[int] = (0, 10000)
     tol_space: Iterable[float] = (1e-6, 1e-3)
     ccp_alpha_space: Iterable[float] = (0.0, 1.0)
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
 
         params = {}
         params["loss"] = trial.suggest_categorical(f"{self.__class__.__name__}_loss", self.loss_space)
@@ -223,8 +220,8 @@ class GradientBoostingRegressorTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("regression", GradientBoostingRegressor, params)
         self.model = model
 
@@ -234,12 +231,12 @@ class GradientBoostingRegressorTuner(SampleClassMixin):
 @dataclass
 class BaggingRegressorTuner(BaggingClassifierTuner):
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        return super(BaggingRegressorTuner, self)._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        return super(BaggingRegressorTuner, self).sample_params(trial)
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super(BaggingClassifierTuner, self).model(trial)
-        params = self._sample_params(trial)
+        super(BaggingClassifierTuner, self).sample_model(trial)
+        params = self.sample_params(trial)
         model = super(BaggingClassifierTuner, self)._evaluate_sampled_model("regression", BaggingRegressor, params)
         self.model = model
 
@@ -247,7 +244,7 @@ class BaggingRegressorTuner(BaggingClassifierTuner):
     
 
 @dataclass
-class HistGradientBoostingRegressorTuner(SampleClassMixin):
+class HistGradientBoostingRegressorTuner(BaseTuner):
     loss_space: Iterable[str] = ("squared_error", "absolute_error", "poisson", "quantile")
     quantile_space: Iterable[float] = (0.0, 1.0)
     learning_rate_space: Iterable[float] = (0.001, 1.0)
@@ -268,10 +265,9 @@ class HistGradientBoostingRegressorTuner(SampleClassMixin):
     n_iter_no_change_space: Iterable[int] = (1, 100)
     tol_space: Iterable[float] = (1e-6, 1e-3)
     random_state_space: Iterable[int] = (0, 10000)
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
 
         params = {}
         params["loss"] = trial.suggest_categorical(f"{self.__class__.__name__}_loss", self.loss_space)
@@ -306,8 +302,8 @@ class HistGradientBoostingRegressorTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("regression", HistGradientBoostingRegressor, params)
         self.model = model
 

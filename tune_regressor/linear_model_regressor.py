@@ -1,5 +1,5 @@
 import numpy as np
-from baseline import SampleClassMixin
+from baseline import BaseTuner
 from optuna.trial import Trial
 from dataclasses import dataclass, field
 from typing import Iterable, Optional, Dict, Any, Union, Callable
@@ -27,13 +27,13 @@ from sklearn.linear_model import (
     TweedieRegressor)
 
 @dataclass
-class LinearRegressionTuner(SampleClassMixin):
+class LinearRegressionTuner(BaseTuner):
     fit_intercept_space: Iterable[bool] = (True, False)
     positive_space: Iterable[bool] = (True, False)
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
         
         params = {}
         params["fit_intercept"] = trial.suggest_categorical(f"{self.__class__.__name__}_fit_intercept", self.fit_intercept_space)
@@ -42,8 +42,8 @@ class LinearRegressionTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("regression", LinearRegression, params)
         self.model = model
 
@@ -51,7 +51,7 @@ class LinearRegressionTuner(SampleClassMixin):
     
 
 @dataclass
-class LassoTuner(SampleClassMixin):
+class LassoTuner(BaseTuner):
     alpha_space: Iterable[float] = (0.01, 1.0)
     fit_intercept_space: Iterable[bool] = (True, False)
     max_iter_space: Iterable[int] = (100, 2000)
@@ -59,10 +59,9 @@ class LassoTuner(SampleClassMixin):
     positive_space: Iterable[bool] = (True, False)
     selection_space: Iterable[str] = ("cyclic", "random")
     random_state_space: Iterable[int] = (0, 10000)
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
         
         params = {}
         params["alpha"] = trial.suggest_float(f"{self.__class__.__name__}_alpha", *self.alpha_space, log=False)
@@ -78,8 +77,8 @@ class LassoTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("regression", Lasso, params)
         self.model = model
 
@@ -87,7 +86,7 @@ class LassoTuner(SampleClassMixin):
 
  
 @dataclass
-class RidgeTuner(SampleClassMixin):
+class RidgeTuner(BaseTuner):
     alpha_space: Iterable[float] = (0.01, 1.0)
     fit_intercept_space: Iterable[bool] = (True, False)
     max_iter_space: Iterable[int] = (100, 2000)
@@ -95,10 +94,9 @@ class RidgeTuner(SampleClassMixin):
     solver_space: Iterable[str] = ("auto", "svd", "cholesky", "lsqr", "sparse_cg", "sag", "saga", "lbfgs")
     positive_space: Iterable[bool] = (True, False)
     random_state_space: Iterable[int] = (0, 10000)
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
         
         params = {}
         params["alpha"] = trial.suggest_float(f"{self.__class__.__name__}_alpha", *self.alpha_space, log=False)
@@ -114,8 +112,8 @@ class RidgeTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("regression", Ridge, params)
         self.model = model
 
@@ -123,7 +121,7 @@ class RidgeTuner(SampleClassMixin):
     
 
 @dataclass
-class ElasticNetTuner(SampleClassMixin):
+class ElasticNetTuner(BaseTuner):
     alpha_space: Iterable[float] = (0.01, 1.0)
     l1_ratio_space: Iterable[float] = (0.0, 1.0)
     fit_intercept_space: Iterable[bool] = (True, False)
@@ -133,10 +131,9 @@ class ElasticNetTuner(SampleClassMixin):
     positive_space: Iterable[bool] = (True, False)
     selection_space: Iterable[str] = ("cyclic", "random")
     random_state_space: Iterable[int] = (0, 10000)
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
         
         params = {}
         params["alpha"] = trial.suggest_float(f"{self.__class__.__name__}_alpha", *self.alpha_space, log=False)
@@ -153,8 +150,8 @@ class ElasticNetTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("regression", ElasticNet, params)
         self.model = model
 
@@ -162,7 +159,7 @@ class ElasticNetTuner(SampleClassMixin):
     
 
 @dataclass
-class MultiTaskLassoTuner(SampleClassMixin):
+class MultiTaskLassoTuner(BaseTuner):
     alpha_space: Iterable[float] = (0.01, 1.0)
     fit_intercept_space: Iterable[bool] = (True, False)
     max_iter_space: Iterable[int] = (100, 2000)
@@ -170,10 +167,9 @@ class MultiTaskLassoTuner(SampleClassMixin):
     selection_space: Iterable[str] = ("cyclic", "random")
     random_state_space: Iterable[int] = (0, 10000)
     is_multitask: str = field(init=False, default=True)
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
         
         params = {}
         params["alpha"] = trial.suggest_float(f"{self.__class__.__name__}_alpha", *self.alpha_space, log=False)
@@ -187,8 +183,8 @@ class MultiTaskLassoTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("regression", MultiTaskLasso, params, is_multitask=self.is_multitask)
         self.model = model
 
@@ -196,7 +192,7 @@ class MultiTaskLassoTuner(SampleClassMixin):
     
 
 @dataclass
-class MultiTaskElasticNetTuner(SampleClassMixin):
+class MultiTaskElasticNetTuner(BaseTuner):
     alpha_space: Iterable[float] = (0.01, 1.0)
     l1_ratio_space: Iterable[float] = (0.0, 1.0)
     fit_intercept_space: Iterable[bool] = (True, False)
@@ -205,10 +201,9 @@ class MultiTaskElasticNetTuner(SampleClassMixin):
     selection_space: Iterable[str] = ("cyclic", "random")
     random_state_space: Iterable[int] = (0, 10000)
     is_multitask: str = field(init=False, default=True)
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
         
         params = {}
         params["alpha"] = trial.suggest_float(f"{self.__class__.__name__}_alpha", *self.alpha_space, log=False)
@@ -223,8 +218,8 @@ class MultiTaskElasticNetTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model(
             "regression", MultiTaskElasticNet, params, is_multitask=self.is_multitask)
         self.model = model
@@ -233,7 +228,7 @@ class MultiTaskElasticNetTuner(SampleClassMixin):
     
 
 @dataclass
-class LarsTuner(SampleClassMixin):
+class LarsTuner(BaseTuner):
     fit_intercept_space: Iterable[bool] = (True, False)
     precompute_space: Iterable[bool] = (True, False)
     n_nonzero_coefs_space: Iterable[int] = (1, 500)
@@ -241,10 +236,9 @@ class LarsTuner(SampleClassMixin):
     set_jitter_space: Iterable[bool] = (True, False)
     jitter_space: Iterable[float] = (1e-8, 1e-3)
     random_state_space: Iterable[int] = (0, 10000)
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
         
         params = {}
         params["fit_intercept"] = trial.suggest_categorical(f"{self.__class__.__name__}_fit_intercept", self.fit_intercept_space)
@@ -259,8 +253,8 @@ class LarsTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("regression", Lars, params)
         self.model = model
 
@@ -268,7 +262,7 @@ class LarsTuner(SampleClassMixin):
     
 
 @dataclass
-class LassoLarsTuner(SampleClassMixin):
+class LassoLarsTuner(BaseTuner):
     alpha_space: Iterable[float] = (0.1, 1.0)
     fit_intercept_space: Iterable[bool] = (True, False)
     precompute_space: Iterable[bool] = (True, False)
@@ -278,10 +272,9 @@ class LassoLarsTuner(SampleClassMixin):
     set_jitter_space: Iterable[bool] = (True, False)
     jitter_space: Iterable[float] = (1e-8, 1e-3)
     random_state_space: Iterable[int] = (0, 10000)
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
         
         params = {}
         params["alpha"] = trial.suggest_float(f"{self.__class__.__name__}_alpha", *self.alpha_space, log=False)
@@ -298,8 +291,8 @@ class LassoLarsTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("regression", LassoLars, params)
         self.model = model
 
@@ -307,7 +300,7 @@ class LassoLarsTuner(SampleClassMixin):
 
 
 @dataclass
-class LassoLarsICTuner(SampleClassMixin):
+class LassoLarsICTuner(BaseTuner):
     criterion_sapce: Iterable[str] = ("aic", "bic")
     fit_intercept_space: Iterable[bool] = (True, False)
     precompute_space: Iterable[bool] = (True, False)
@@ -316,10 +309,9 @@ class LassoLarsICTuner(SampleClassMixin):
     positive_space: Iterable[bool] = (True, False)
     set_noise_variance_space: Iterable[bool] = (True, False)
     noise_variance_space: Iterable[float] = (1e-8, 1e-3)
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
         
         params = {}
         params["criterion"] = trial.suggest_categorical(f"{self.__class__.__name__}_criterion", self.criterion_sapce)
@@ -335,8 +327,8 @@ class LassoLarsICTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("regression", LassoLarsIC, params)
         self.model = model
 
@@ -344,7 +336,7 @@ class LassoLarsICTuner(SampleClassMixin):
      
 
 @dataclass
-class BayesianRidgeTuner(SampleClassMixin):
+class BayesianRidgeTuner(BaseTuner):
     n_iter_space: Iterable[int] = (100, 1000)
     tol_space: Iterable[float] = (1e-6, 1e-3)
     alpha_1_space: Iterable[float] = (1e-6, 1e-3)
@@ -356,10 +348,9 @@ class BayesianRidgeTuner(SampleClassMixin):
     lambda_init_space: Iterable[float] = (1e-8, 1)
     compute_score_space: Iterable[bool] = (True, False)
     fit_intercept_space: Iterable[bool] = (True, False)
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
         
         params = {}
         params["n_iter"] = trial.suggest_int(f"{self.__class__.__name__}_n_iter", *self.n_iter_space, log=False)
@@ -377,8 +368,8 @@ class BayesianRidgeTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("regression", BayesianRidge, params)
         self.model = model
 
@@ -386,16 +377,15 @@ class BayesianRidgeTuner(SampleClassMixin):
     
 
 @dataclass
-class OrthogonalMatchingPursuitTuner(SampleClassMixin):
+class OrthogonalMatchingPursuitTuner(BaseTuner):
     set_nonzero_coefs_space: Iterable[bool] = (True, False)
     n_nonzero_coefs_space: Iterable[int] = (1, 500)
     tol_space: Iterable[float] = (1e-6, 1e-3)
     fit_intercept_space: Iterable[bool] = (True, False)
     precompute_space: Iterable[bool] = (True, False)
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
         
         params = {}
         set_nonzero_coefs = trial.suggest_categorical(f"{self.__class__.__name__}_set_nonzero_coefs", self.set_nonzero_coefs_space)
@@ -408,8 +398,8 @@ class OrthogonalMatchingPursuitTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("regression", OrthogonalMatchingPursuit, params)
         self.model = model
 
@@ -417,7 +407,7 @@ class OrthogonalMatchingPursuitTuner(SampleClassMixin):
 
 
 @dataclass
-class PassiveAggressiveRegressorTuner(SampleClassMixin):
+class PassiveAggressiveRegressorTuner(BaseTuner):
     C_space: Iterable[float] = (0.9, 1.0)
     fit_intercept_space: Iterable[bool] = (True, False)
     max_iter_space: Iterable[int] = (100, 2000)
@@ -430,10 +420,9 @@ class PassiveAggressiveRegressorTuner(SampleClassMixin):
     random_state_space: Iterable[int] = (0, 10000)
     epsilon_space: Iterable[float] = (0.05, 0.5)
     average_space: Iterable[bool] = (True, False)
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
         
         params = {}
         params["C"] = trial.suggest_float(f"{self.__class__.__name__}_C", *self.C_space, log=False)
@@ -455,8 +444,8 @@ class PassiveAggressiveRegressorTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("regression", PassiveAggressiveRegressor, params)
         self.model = model
 
@@ -464,16 +453,15 @@ class PassiveAggressiveRegressorTuner(SampleClassMixin):
     
 
 @dataclass
-class QuantileRegressorTuner(SampleClassMixin):
+class QuantileRegressorTuner(BaseTuner):
     quantile_space: Iterable[float] = (0.1, 1.0)
     alpha_space: Iterable[float] = (0.01, 1.0)
     fit_intercept_space: Iterable[bool] = (True, False)
     solver_space: Iterable[str] = ("highs-ds", "highs-ipm", "highs", "interior-point", "revised simplex")
     solver_options_space: Iterable[Optional[Dict[str, Any]]] = (None, )
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
         
         params = {}
         params["quantile"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.quantile_space, log=False)
@@ -485,8 +473,8 @@ class QuantileRegressorTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("regression", QuantileRegressor, params)
         self.model = model
 
@@ -494,7 +482,7 @@ class QuantileRegressorTuner(SampleClassMixin):
     
 
 @dataclass
-class SGDRegressorTuner(SampleClassMixin):
+class SGDRegressorTuner(BaseTuner):
     loss_space: Iterable[str] = (
         "squared_error", 
         "huber", 
@@ -516,10 +504,9 @@ class SGDRegressorTuner(SampleClassMixin):
     validation_fraction_space: Iterable[float] = (0.1, 0.5)
     n_iter_no_change_space: Iterable[int] = (1, 100)
     average_space: Iterable[bool] = (True, False)
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
         
         params = {}
         params["loss"] = trial.suggest_categorical(f"{self.__class__.__name__}_loss", self.loss_space)
@@ -546,8 +533,8 @@ class SGDRegressorTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("regression", SGDRegressor, params)
         self.model = model
 
@@ -555,16 +542,15 @@ class SGDRegressorTuner(SampleClassMixin):
     
 
 @dataclass
-class PoissonRegressorTuner(SampleClassMixin):
+class PoissonRegressorTuner(BaseTuner):
     alpha_space: Iterable[float] = (0.01, 1.0)
     fit_intercept_space: Iterable[bool] = (True, False)
     solver_space: Iterable[str] = ("lbfgs", "newton-cholesky")
     max_iter_space: Iterable[int] = (100, 2000)
     tol_space: Iterable[float] = (1e-6, 1e-3)
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
         
         params = {}
         params["alpha"] = trial.suggest_float(f"{self.__class__.__name__}_alpha", *self.alpha_space, log=False)
@@ -576,8 +562,8 @@ class PoissonRegressorTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("regression", PoissonRegressor, params)
         self.model = model
 
@@ -587,20 +573,20 @@ class PoissonRegressorTuner(SampleClassMixin):
 @dataclass
 class GammaRegressorTuner(PoissonRegressorTuner):
 
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        return super(GammaRegressorTuner, self)._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        return super(GammaRegressorTuner, self).sample_params(trial)
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super(PoissonRegressorTuner, self).model(trial)
+        super(PoissonRegressorTuner, self).sample_model(trial)
 
-        params = self._sample_params(trial)
+        params = self.sample_params(trial)
         model = super(PoissonRegressorTuner, self)._evaluate_sampled_model("regression", GammaRegressor, params)
         self.model = model
         return model
     
 
 @dataclass
-class TweedieRegressorTuner(SampleClassMixin):
+class TweedieRegressorTuner(BaseTuner):
     power_space: Iterable[float] = (0.0, 3.0)
     alpha_space: Iterable[float] = (0.7, 1.0)
     fit_intercept_space: Iterable[bool] = (True, False)
@@ -608,10 +594,9 @@ class TweedieRegressorTuner(SampleClassMixin):
     solver_space: Iterable[str] = ("lbfgs", "newton-cholesky")
     max_iter_space: Iterable[int] = (100, 1000)
     tol_space: Iterable[int] = (1e-6, 1e-3)
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
         
         params = {}
         params["power"] = trial.suggest_float(f"{self.__class__.__name__}_power", *self.power_space, log=False)
@@ -625,8 +610,8 @@ class TweedieRegressorTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("regression", TweedieRegressor, params)
         self.model = model
 

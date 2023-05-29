@@ -1,4 +1,4 @@
-from baseline import SampleClassMixin
+from baseline import BaseTuner
 from optuna.trial import Trial
 from dataclasses import dataclass
 from typing import Iterable, Optional, Dict, Any, Callable
@@ -6,7 +6,7 @@ from sklearn.svm import SVR, LinearSVR, NuSVR
 
 
 @dataclass
-class SVRTuner(SampleClassMixin):
+class SVRTuner(BaseTuner):
     kernel_space: Iterable[str] = ("linear", "poly", "rbf", "sigmoid")
     degree_space: Iterable[int] = (1, 5)
     gamma_space: Iterable[str] = ("scale", "auto")
@@ -15,10 +15,9 @@ class SVRTuner(SampleClassMixin):
     C_space: Iterable[float] = (0.5, 1.0)
     shrinking_space: Iterable[bool] = (True, )
     epsilon_space: Iterable[float] = (0.1, 0.5)
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
+        super().sample_params(trial)
 
         params = {}
         params["kernel"] = trial.suggest_categorical(f"{self.__class__.__name__}_kernel", self.kernel_space)
@@ -33,8 +32,8 @@ class SVRTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial] = None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("regression", SVR, params)
         self.model = model
 
@@ -42,7 +41,7 @@ class SVRTuner(SampleClassMixin):
 
 
 @dataclass
-class LinearSVRTuner(SampleClassMixin):
+class LinearSVRTuner(BaseTuner):
     epsilon_space: Iterable[float] = (0.0, 0.5)
     tol_space: Iterable[float] = (1e-6, 1e-3)
     C_space: Iterable[float] = (0.5, 1.0)
@@ -52,10 +51,9 @@ class LinearSVRTuner(SampleClassMixin):
     dual_space: Iterable[bool] = (True, False)
     max_iter_space: Iterable[int] = (500, 2000)
     random_state_space: Iterable[int] = (0, 10000)
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
         
         params = {}
         params["epsilon"] = trial.suggest_float(f"{self.__class__.__name__}_epsilon", *self.tol_space, log=False)
@@ -71,8 +69,8 @@ class LinearSVRTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("regression", LinearSVR, params)
         self.model = model
 
@@ -80,7 +78,7 @@ class LinearSVRTuner(SampleClassMixin):
     
     
 @dataclass
-class NuSVRTuner(SampleClassMixin):
+class NuSVRTuner(BaseTuner):
     nu_space: Iterable[float] = (0.1, 1.0)
     C_space: Iterable[float] = (0.5, 1.0)
     kernel_space: Iterable[str] = ("linear", "poly", "rbf", "sigmoid")
@@ -89,10 +87,9 @@ class NuSVRTuner(SampleClassMixin):
     coef0_space: Iterable[float] = (0.0, 0.5)
     shrinking_space: Iterable[bool] = (True, )
     tol_space: Iterable[float] = (1e-6, 1e-3)
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
 
         params = {}
         params["nu"] = trial.suggest_float(f"{self.__class__.__name__}_nu", *self.nu_space, log=False)
@@ -107,9 +104,9 @@ class NuSVRTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
+        super().sample_model(trial)
 
-        params = self._sample_params(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("regression", NuSVR, params)
         return model
     

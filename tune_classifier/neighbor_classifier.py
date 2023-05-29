@@ -1,4 +1,4 @@
-from baseline import SampleClassMixin
+from baseline import BaseTuner
 from optuna.trial import Trial
 from dataclasses import dataclass
 from typing import Iterable, Optional, Dict, Any, Callable
@@ -6,7 +6,7 @@ from sklearn.neighbors import KNeighborsClassifier, RadiusNeighborsClassifier, N
 
 
 @dataclass
-class KNeighborsClassifierTuner(SampleClassMixin):
+class KNeighborsClassifierTuner(BaseTuner):
     radius_space: Iterable[int] = (1, 20)
     n_neighbors_space: Iterable[int] = (1, 10)
     weights_space: Iterable[str] = ("uniform", "distance")
@@ -14,10 +14,9 @@ class KNeighborsClassifierTuner(SampleClassMixin):
     leaf_size_space: Iterable[int] = (2, 60)
     p_space: Iterable[int] = (3, 8)
     metric_space: Iterable[str] = ("cityblock", "cosine", "euclidean", "manhattan", "minkowski")
-    model: Any = None
-
-    def _sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    
+    def sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
+        super().sample_params(trial)
 
         params = {}
         params["n_neighbors"] = trial.suggest_categorical(
@@ -31,9 +30,9 @@ class KNeighborsClassifierTuner(SampleClassMixin):
         return params
 
     def sample_model(self, trial: Optional[Trial] = None) -> Any:
-        super().model(trial)
+        super().sample_model(trial)
 
-        params = self._sample_params(trial)
+        params = self.sample_params(trial)
 
         model = super()._evaluate_sampled_model("classification", KNeighborsClassifier, params)
 
@@ -43,7 +42,7 @@ class KNeighborsClassifierTuner(SampleClassMixin):
 
 
 @dataclass
-class RadiusNeighborsClassifierTuner(SampleClassMixin):
+class RadiusNeighborsClassifierTuner(BaseTuner):
     radius_space: Iterable[int] = (1, 10)
     weight_space: Iterable[str] = ("uniform", "distance")
     algorithm_space: Iterable[str] = ("ball_tree", "kd_tree", "brute")
@@ -51,10 +50,9 @@ class RadiusNeighborsClassifierTuner(SampleClassMixin):
     p_space: Iterable[int] = (3, 10)
     metric_space: Iterable[str] = ("cityblock", "cosine", "euclidean", "manhattan", "minkowski")
     outlier_label_space: Iterable[str] = (None, "most_frequent")
-    model: Any = None
-
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
 
         params = {}
         params["radius"] = trial.suggest_int(f"{self.__class__.__name__}_radius", *self.radius_space)
@@ -68,9 +66,9 @@ class RadiusNeighborsClassifierTuner(SampleClassMixin):
         return params
 
     def sample_model(self, trial: Optional[Trial] = None) -> Any:
-        super().model(trial)
+        super().sample_model(trial)
 
-        params = self._sample_params(trial)
+        params = self.sample_params(trial)
 
         model = super()._evaluate_sampled_model("classification", RadiusNeighborsClassifier, params)
 
@@ -80,13 +78,12 @@ class RadiusNeighborsClassifierTuner(SampleClassMixin):
 
 
 @dataclass
-class NearestCentroidClassifierTuner(SampleClassMixin):
+class NearestCentroidClassifierTuner(BaseTuner):
     metric_space: Iterable[str] = ("cityblock", "cosine", "euclidean", "manhattan")
     shrink_threshold_space: Iterable[float] = (0.1, 0.9)
-    model: Any = None
 
-    def _sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
+        super().sample_params(trial)
 
         params = {}
         params["metric"] = trial.suggest_categorical(f"{self.__class__.__name__}_metric", self.metric_space)
@@ -95,9 +92,9 @@ class NearestCentroidClassifierTuner(SampleClassMixin):
         return params
 
     def sample_model(self, trial: Optional[Trial] = None) -> Any:
-        super().model(trial)
+        super().sample_model(trial)
 
-        params = self._sample_params(trial)
+        params = self.sample_params(trial)
 
         model = super()._evaluate_sampled_model("classification", NearestCentroid, params)
 

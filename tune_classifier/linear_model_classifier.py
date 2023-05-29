@@ -1,4 +1,4 @@
-from baseline import SampleClassMixin
+from baseline import BaseTuner
 from optuna.trial import Trial
 from dataclasses import dataclass
 from typing import Iterable, Optional, Dict, Any, Callable
@@ -9,7 +9,7 @@ from sklearn.linear_model import (
     SGDClassifier)
 
 @dataclass
-class LogisticRegressionTuner(SampleClassMixin):
+class LogisticRegressionTuner(BaseTuner):
     penalty_space: Iterable[Optional[str]] = ("l1", "l2", "elasticnet", None)
     dual_space: Iterable[bool] = (True, False)
     tol_space: Iterable[float] = (1e-6, 1e-3)
@@ -22,10 +22,9 @@ class LogisticRegressionTuner(SampleClassMixin):
     multi_class_space: Iterable[str] = ("auto", )
     l1_ratio_space: Iterable[float] = (0.0, 1.0)
     random_state_space: Iterable[int] = (0, 10000)
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
         
         params = {}
         params["penalty"] = trial.suggest_categorical(f"{self.__class__.__name__}_penalty", self.penalty_space)
@@ -48,8 +47,8 @@ class LogisticRegressionTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("classification", LogisticRegression, params)
         self.model = model
 
@@ -57,7 +56,7 @@ class LogisticRegressionTuner(SampleClassMixin):
     
 
 @dataclass
-class PerceptronTuner(SampleClassMixin):
+class PerceptronTuner(BaseTuner):
     penalty_space: Iterable[Optional[str]] = ("l1", "l2", "elasticnet", None)
     alpha_space: Iterable[float] = (1e-5, 1.0)
     l1_ratio_space: Iterable[float] = (0.0, 1.0)
@@ -71,10 +70,9 @@ class PerceptronTuner(SampleClassMixin):
     validation_fraction_space: Iterable[float] = (0.1, 0.5)
     n_iter_no_change_space: Iterable[int] = (1, 100)
     class_weight_space: Iterable[str] = ("balanced", )
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
         
         params = {}
         params["penalty"] = trial.suggest_categorical(f"{self.__class__.__name__}_penalty", self.penalty_space)
@@ -96,8 +94,8 @@ class PerceptronTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("classification", Perceptron, params)
         self.model = model
 
@@ -105,7 +103,7 @@ class PerceptronTuner(SampleClassMixin):
 
 
 @dataclass
-class PassiveAggressiveClassifierTuner(SampleClassMixin):
+class PassiveAggressiveClassifierTuner(BaseTuner):
     C_space: Iterable[float] = (0.9, 1.0)
     fit_intercept_space: Iterable[bool] = (True, False)
     max_iter_space: Iterable[int] = (100, 2000)
@@ -118,10 +116,9 @@ class PassiveAggressiveClassifierTuner(SampleClassMixin):
     random_state_space: Iterable[int] = (0, 10000)
     class_weight_space: Iterable[str] = ("balanced", )
     average_space: Iterable[bool] = (True, False)
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
         
         params = {}
         params["C"] = trial.suggest_float(f"{self.__class__.__name__}_C", *self.C_space, log=False)
@@ -142,8 +139,8 @@ class PassiveAggressiveClassifierTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("classification", PassiveAggressiveClassifier, params)
         self.model = model
 
@@ -151,7 +148,7 @@ class PassiveAggressiveClassifierTuner(SampleClassMixin):
 
 
 @dataclass
-class SGDClassifierTuner(SampleClassMixin):
+class SGDClassifierTuner(BaseTuner):
     loss_space: Iterable[str] = (
         "hinge", 
         "log_loss", 
@@ -179,10 +176,9 @@ class SGDClassifierTuner(SampleClassMixin):
     n_iter_no_change_space: Iterable[int] = (1, 100)
     class_weight_space: Iterable[str] = ("balanced", )
     average_space: Iterable[bool] = (True, False)
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
         
         params = {}
         params["loss"] = trial.suggest_categorical(f"{self.__class__.__name__}_loss", self.loss_space)
@@ -209,8 +205,8 @@ class SGDClassifierTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("classification", SGDClassifier, params)
         self.model = model
 

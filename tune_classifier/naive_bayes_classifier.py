@@ -1,4 +1,4 @@
-from baseline import SampleClassMixin
+from baseline import BaseTuner
 from optuna.trial import Trial
 from dataclasses import dataclass
 from typing import Callable,Iterable, Optional, Dict, Any, Union
@@ -11,13 +11,12 @@ from sklearn.naive_bayes import (
     )
 
 @dataclass
-class GaussianNBTuner(SampleClassMixin):
+class GaussianNBTuner(BaseTuner):
     priors_space: Iterable[Optional[Iterable[float]]] = (None,) 
     var_smoothing_space: Iterable[float] = (1e-10, 1e-6)
-    model: Any = None
-
-    def _sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    
+    def sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
+        super().sample_params(trial)
 
         params = {}
         
@@ -27,26 +26,25 @@ class GaussianNBTuner(SampleClassMixin):
         return params
 
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
+        super().sample_model(trial)
 
-        params = self._sample_params(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("classification", GaussianNB, params)
         self.model = model
         return model
 
 
 @dataclass
-class BernoulliNBTuner(SampleClassMixin):
+class BernoulliNBTuner(BaseTuner):
     alpha_space: Iterable[float] = (0.0, 1.0)
     force_alpha_space: Iterable[bool] = (True, False)
     set_binarize_space: Iterable[bool] = (True, False)
     binarize_space: Iterable[float] = (0.0, 1.0)
     fit_prior_space: Iterable[bool] = (True, False)
     class_prior_space: Iterable[Optional[Iterable[float]]] = (None, )    #TODO: Implement array selections
-    model: Any = None
 
-    def _sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
+        super().sample_params(trial)
 
         params = {}
 
@@ -63,8 +61,8 @@ class BernoulliNBTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial] = None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("classification", BernoulliNB, params)
 
         self.model = model
@@ -72,15 +70,14 @@ class BernoulliNBTuner(SampleClassMixin):
 
         
 @dataclass
-class MultinomialNBTuner(SampleClassMixin):
+class MultinomialNBTuner(BaseTuner):
     alpha_space: Iterable[float] = (0.0, 1.0)   
     force_alpha_space: Iterable[bool] = (True, False)
     fit_prior_space: Iterable[bool] = (True, False)
     class_prior_space: Iterable[Optional[Iterable[float]]] = (None, )
-    model: Any = None
 
-    def _sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
+        super().sample_params(trial)
 
         params = {}
 
@@ -92,24 +89,23 @@ class MultinomialNBTuner(SampleClassMixin):
         return params
 
     def sample_model(self, trial: Optional[Trial] = None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("classification", MultinomialNB, params)
 
         self.model = model
         return model
 
 @dataclass
-class ComplementNBTuner(SampleClassMixin):
+class ComplementNBTuner(BaseTuner):
     alpha_space: Iterable[float] = (0.0, 1.0)
     force_alpha_space: Iterable[bool] = (True, False)
     fit_prior_space: Iterable[bool] = (True, False)
     class_prior_space: Iterable[Optional[Iterable[float]]] = (None, )
     norm_space: Iterable[bool] = (True, False)
-    model: Any = None
-
-    def _sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    
+    def sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
+        super().sample_params(trial)
 
         params = {}
 
@@ -122,8 +118,8 @@ class ComplementNBTuner(SampleClassMixin):
         return params
 
     def sample_model(self, trial: Optional[Trial] = None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("classification", ComplementNB, params)
 
         self.model = model
@@ -131,16 +127,15 @@ class ComplementNBTuner(SampleClassMixin):
 
         
 @dataclass
-class CategoricalNBTuner(SampleClassMixin):
+class CategoricalNBTuner(BaseTuner):
     alpha_space: Iterable[float] = (0.0, 1.0)
     force_alpha_space: Iterable[bool] = (True, False)
     fit_prior_space: Iterable[bool] = (True, False)
     class_prior_space: Iterable[Optional[Iterable[float]]] = (None,)
     min_categories_space: Iterable[Optional[Union[int, Iterable[int]]]] = (None,)
-    model: Any = None
 
-    def _sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
+        super().sample_params(trial)
 
         params = {}
 
@@ -153,8 +148,8 @@ class CategoricalNBTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial] = None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("classification", CategoricalNB, params)
 
         self.model = model

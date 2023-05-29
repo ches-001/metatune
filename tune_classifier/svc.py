@@ -1,4 +1,4 @@
-from baseline import SampleClassMixin
+from baseline import BaseTuner
 from optuna.trial import Trial
 from dataclasses import dataclass
 from typing import Iterable, Optional, Dict, Any, Callable
@@ -6,7 +6,7 @@ from sklearn.svm import SVC, LinearSVC, NuSVC
 
 
 @dataclass
-class SVCTuner(SampleClassMixin):
+class SVCTuner(BaseTuner):
     kernel_space: Iterable[str] = ("linear", "poly", "rbf", "sigmoid")
     degree_space: Iterable[int] = (1, 5)
     gamma_space: Iterable[str] = ("scale", "auto")
@@ -17,10 +17,9 @@ class SVCTuner(SampleClassMixin):
     shrinking_space: Iterable[bool] = (True, )
     probability_space: Iterable[bool] = (True, )
     random_state_space: Iterable[int] = (0, 10000)
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
 
         params = {}
         params["kernel"] = trial.suggest_categorical(f"{self.__class__.__name__}_kernel", self.kernel_space)
@@ -38,15 +37,15 @@ class SVCTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
+        super().sample_model(trial)
 
-        params = self._sample_params(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("classification", SVC, params)
         return model
     
 
 @dataclass
-class LinearSVCTuner(SampleClassMixin):
+class LinearSVCTuner(BaseTuner):
     penalty_space: Iterable[str] = ("l1", "l2")
     loss_space: Iterable[str] = ("hinge", "squared_hinge")
     dual_space: Iterable[bool] = (True, False)
@@ -58,10 +57,9 @@ class LinearSVCTuner(SampleClassMixin):
     class_weight_space: Iterable[str] = ("balanced", )
     max_iter_space: Iterable[int] = (500, 2000)
     random_state_space: Iterable[int] = (0, 10000)
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
         
         params = {}
         params["penalty"] = trial.suggest_categorical(f"{self.__class__.__name__}_penalty", self.penalty_space)
@@ -80,8 +78,8 @@ class LinearSVCTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
-        params = self._sample_params(trial)
+        super().sample_model(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("classification", LinearSVC, params)
         self.model = model
 
@@ -89,7 +87,7 @@ class LinearSVCTuner(SampleClassMixin):
     
 
 @dataclass
-class NuSVCTuner(SampleClassMixin):
+class NuSVCTuner(BaseTuner):
     nu_space: Iterable[float] = (0.1, 0.5)
     kernel_space: Iterable[str] = ("linear", "poly", "rbf", "sigmoid")
     degree_space: Iterable[int] = (1, 5)
@@ -102,10 +100,9 @@ class NuSVCTuner(SampleClassMixin):
     decision_function_shape_space: Iterable[str] = ("ovo", "ovr")
     break_ties_space: Iterable[bool] = (False, )
     random_state_space: Iterable[int] = (0, 10000)
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
 
         params = {}
         params["nu"] = trial.suggest_float(f"{self.__class__.__name__}_nu", *self.nu_space, log=False)
@@ -126,9 +123,9 @@ class NuSVCTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
+        super().sample_model(trial)
 
-        params = self._sample_params(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("classification", NuSVC, params)
         return model
 

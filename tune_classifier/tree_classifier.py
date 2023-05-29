@@ -1,4 +1,4 @@
-from baseline import SampleClassMixin
+from baseline import BaseTuner
 from optuna.trial import Trial
 from dataclasses import dataclass
 from typing import Iterable, Optional, Dict, Any, Union, Callable
@@ -6,7 +6,7 @@ from sklearn.tree import DecisionTreeClassifier, ExtraTreeClassifier
 
 
 @dataclass
-class DecisionTreeClassifierTuner(SampleClassMixin):
+class DecisionTreeClassifierTuner(BaseTuner):
     criterion_space: Iterable[str] = ("gini", "entropy", "log_loss")
     splitter_space: Iterable[str] = ("best", "random")
     max_depth_space: Iterable[int] = (2, 1000)
@@ -19,10 +19,9 @@ class DecisionTreeClassifierTuner(SampleClassMixin):
     min_impurity_decrease_space: Iterable[float] = (0.0, 1.0)
     ccp_alpha_space: Iterable[float] = (0.0, 1.0)
     class_weight_space: Iterable[Optional[str]] = ("balanced", None)
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
                 
         params = {}
         params["criterion"] = trial.suggest_categorical(f"{self.__class__.__name__}_criterion", self.criterion_space)
@@ -53,9 +52,9 @@ class DecisionTreeClassifierTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
+        super().sample_model(trial)
         
-        params = self._sample_params(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("classification", DecisionTreeClassifier, params)
         self.model = model
         return model
@@ -64,13 +63,13 @@ class DecisionTreeClassifierTuner(SampleClassMixin):
 @dataclass
 class ExtraTreeClassifierTuner(DecisionTreeClassifierTuner):
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        return super(ExtraTreeClassifierTuner, self)._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        return super(ExtraTreeClassifierTuner, self).sample_params(trial)
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super(DecisionTreeClassifierTuner, self).model(trial)
+        super(DecisionTreeClassifierTuner, self).sample_model(trial)
 
-        params = self._sample_params(trial)
+        params = self.sample_params(trial)
         model = super(DecisionTreeClassifierTuner, self)._evaluate_sampled_model("classification", ExtraTreeClassifier, params)
         self.model = model
         return model

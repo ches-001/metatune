@@ -1,4 +1,4 @@
-from baseline import SampleClassMixin
+from baseline import BaseTuner
 from optuna.trial import Trial
 from dataclasses import dataclass
 from typing import Iterable, Optional, Dict, Any, Callable, Union
@@ -6,7 +6,7 @@ from sklearn.neural_network import MLPClassifier
 
 
 @dataclass
-class MLPClassifierTuner(SampleClassMixin):
+class MLPClassifierTuner(BaseTuner):
     n_hidden_space: Iterable[int] = (1, 5)
     hidden_layer_sizes_space: Iterable[int] = (100, 200)
     activation_space: Iterable[str] = ("identity", "logistic", "tanh", "relu")
@@ -29,10 +29,9 @@ class MLPClassifierTuner(SampleClassMixin):
     epsilon_space: Iterable[float] = (1e-8, 1e-5)
     n_iter_no_change_space: Iterable[int] = (3, 50)
     max_fun_space: Iterable[int] = (10000, 20000)
-    model: Any = None
-
-    def _sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    
+    def sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
+        super().sample_params(trial)
 
         params = {}
         n_hidden = trial.suggest_int(f"{self.__class__.__name__}_n_hidden", *self.n_hidden_space)
@@ -68,9 +67,9 @@ class MLPClassifierTuner(SampleClassMixin):
         return params
 
     def sample_model(self, trial: Optional[Trial] = None) -> Any:
-        super().model(trial)
+        super().sample_model(trial)
 
-        params = self._sample_params(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("classification", MLPClassifier, params)
         self.model = model
         return model

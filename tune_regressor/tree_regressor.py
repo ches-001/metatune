@@ -1,4 +1,4 @@
-from baseline import SampleClassMixin
+from baseline import BaseTuner
 from optuna.trial import Trial
 from dataclasses import dataclass
 from typing import Iterable, Optional, Dict, Any, Union, Callable
@@ -6,7 +6,7 @@ from sklearn.tree import DecisionTreeRegressor, ExtraTreeRegressor
 
 
 @dataclass
-class DecisionTreeRegressorTuner(SampleClassMixin):
+class DecisionTreeRegressorTuner(BaseTuner):
     criterion_space: Iterable[str] = ("squared_error", "friedman_mse", "absolute_error", "poisson")
     splitter_space: Iterable[str] = ("best", "random")
     max_depth_space: Iterable[int] = (2, 1000)
@@ -18,10 +18,9 @@ class DecisionTreeRegressorTuner(SampleClassMixin):
     max_leaf_nodes_space: Iterable[int] = (2, 1000)
     min_impurity_decrease_space: Iterable[float] = (0.0, 1.0)
     ccp_alpha_space: Iterable[float] = (0.0, 1.0)
-    model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
         
         params = {}
         params["criterion"] = trial.suggest_categorical(f"{self.__class__.__name__}_criterion", self.criterion_space)
@@ -49,9 +48,9 @@ class DecisionTreeRegressorTuner(SampleClassMixin):
         return params
     
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super().model(trial)
+        super().sample_model(trial)
         
-        params = self._sample_params(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("regression", DecisionTreeRegressor, params)
         self.model = model
         return model
@@ -60,13 +59,13 @@ class DecisionTreeRegressorTuner(SampleClassMixin):
 @dataclass
 class ExtraTreeRegressorTuner(DecisionTreeRegressorTuner):
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
-        return super(ExtraTreeRegressorTuner, self)._sample_params(trial)
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        return super(ExtraTreeRegressorTuner, self).sample_params(trial)
         
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
-        super(DecisionTreeRegressorTuner, self).model(trial)
+        super(DecisionTreeRegressorTuner, self).sample_model(trial)
         
-        params = self._sample_params(trial)
+        params = self.sample_params(trial)
         model = super(DecisionTreeRegressorTuner, self)._evaluate_sampled_model("regression", ExtraTreeRegressor, params)
         self.model = model
         return model
