@@ -76,3 +76,7 @@ class SampleClassMixin:
         model = model_class(**params)
         
         return model
+
+
+    def sample_model(self, trial: Trial) -> Any:
+        pass

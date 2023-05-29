@@ -1,4 +1,4 @@
-from utils.module_utils import *
+from .module_utils import *
 from typing import Iterable
 
 __all__: Iterable[str] = [

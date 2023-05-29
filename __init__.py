@@ -1,5 +1,6 @@
 from .tune_classifier import *
 from .tune_regressor import *
+from .sample import *
 from typing import Iterable
 
 

@@ -1,4 +1,6 @@
 **/__pycache__/
+**/data/
+nb_test.ipynb
 temp.py
 .gitignore
 .pytest_cache
