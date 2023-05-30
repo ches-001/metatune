@@ -8,9 +8,10 @@ on:
   push:
     branches:
       - 'main'
+  workflow_dispatch:
 
 jobs:
-  check:
+  Test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -20,6 +21,7 @@ jobs:
         with:
           python-version: '3.8'
           cache: 'pip'
-      - run: pip install -r requirements.txt
+      - name: Install Requirements
+        run: pip install -r requirements.txt
       - name: Run Tests
         run: python -m pytest -v

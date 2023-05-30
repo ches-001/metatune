@@ -1,40 +1,55 @@
-from baseline import SampleClassMixin
+from baseline import BaseTuner
 from optuna.trial import Trial
 from dataclasses import dataclass
 from typing import Iterable, Optional, Dict, Any, Callable
-from sklearn.neighbors import KNeighborsRegressor
+from sklearn.neighbors import KNeighborsRegressor, RadiusNeighborsRegressor
+from tune_classifier import KNeighborsClassifierTuner
 
 
 @dataclass
-class KNeighborsRegressorTuner(SampleClassMixin):
-    n_neighbors_space: Iterable[int] = (1, 10)
-    weights_space: Iterable[str] = ("uniform", "distance")
+class KNeighborsRegressorTuner(KNeighborsClassifierTuner):
+
+    def sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
+        return super(KNeighborsRegressorTuner, self).sample_params(trial)
+
+    def sample_model(self, trial: Optional[Trial] = None) -> Any:
+        super(KNeighborsClassifierTuner, self).sample_model(trial)
+        
+        params = self.sample_params(trial)
+        model = super(KNeighborsClassifierTuner, self)._evaluate_sampled_model("regression", KNeighborsRegressor, params)
+        self.model = model
+
+        return model
+
+
+@dataclass
+class RadiusNeighborsRegressorTuner(BaseTuner):
+    radius_space: Iterable[int] = (2, 20)
+    weight_space: Iterable[str] = ("uniform", "distance")
     algorithm_space: Iterable[str] = ("ball_tree", "kd_tree", "brute")
     leaf_size_space: Iterable[int] = (2, 60)
-    p_space: Iterable[int] = (3, 8)
+    p_space: Iterable[int] = (3, 10)
     metric_space: Iterable[str] = ("cityblock", "cosine", "euclidean", "manhattan", "minkowski")
-    model: Any = None
-
-    def _sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
-        super()._sample_params(trial)
+    
+    def sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
+        super().sample_params(trial)
 
         params = {}
-        params["n_neighbors"] = trial.suggest_categorical(
-            "n_neighbors", [i for i in range(*self.n_neighbors_space) if i % 2 != 0 and i != 1])
-        params["weights"] = trial.suggest_categorical("weight", self.weights_space)
-        params["algorithm"] = trial.suggest_categorical("algorithm", self.algorithm_space)
-        params["leaf_size"] = trial.suggest_int("leaf_size", *self.leaf_size_space)
-        params["p"] = trial.suggest_int("p", *self.p_space)
-        params["metric"] = trial.suggest_categorical("metric", self.metric_space)
+        params["radius"] = trial.suggest_int(f"{self.__class__.__name__}_radius", *self.radius_space)
+        params["weights"] = trial.suggest_categorical(f"{self.__class__.__name__}_weight", self.weight_space)
+        params["algorithm"] = trial.suggest_categorical(f"{self.__class__.__name__}_algorithm", self.algorithm_space)
+        params["leaf_size"] = trial.suggest_int(f"{self.__class__.__name__}_leaf_size", *self.leaf_size_space)
+        params["p"] = trial.suggest_int(f"{self.__class__.__name__}_p", *self.p_space)
+        params["metric"] = trial.suggest_categorical(f"{self.__class__.__name__}_metric", self.metric_space)
 
         return params
 
     def sample_model(self, trial: Optional[Trial] = None) -> Any:
-        super().model(trial)
+        super().sample_model(trial)
 
-        params = self._sample_params(trial)
+        params = self.sample_params(trial)
 
-        model = super()._evaluate_sampled_model("regression", KNeighborsRegressor, params)
+        model = super()._evaluate_sampled_model("regression", RadiusNeighborsRegressor, params)
 
         self.model = model
 
@@ -43,4 +58,5 @@ class KNeighborsRegressorTuner(SampleClassMixin):
 
 tuner_model_class_dict: Dict[str, Callable] = {
     KNeighborsRegressorTuner.__name__: KNeighborsRegressor,
+    RadiusNeighborsRegressorTuner.__name__: RadiusNeighborsRegressor
 }

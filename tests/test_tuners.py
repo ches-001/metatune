@@ -1,4 +1,4 @@
-from baseline.mixin import SampleClassMixin
+from baseline.base import BaseTuner
 import tune_classifier
 import tune_regressor
 from tests.utils import BaseTest
@@ -8,259 +8,280 @@ from tests.utils import BaseTest
 
 
 class TestSVR(BaseTest):
-    model: SampleClassMixin = tune_regressor.SVRTuner()
+    model: BaseTuner = tune_regressor.SVRTuner()
     task: str = "regression"
 
 
 class TestDecisionTreeRegressor(BaseTest):
-    model: SampleClassMixin = tune_regressor.DecisionTreeRegressorTuner()
+    model: BaseTuner = tune_regressor.DecisionTreeRegressorTuner()
     task: str = "regression"
 
 
 class TestSVC(BaseTest):
-    model: SampleClassMixin = tune_classifier.SVCTuner()
+    model: BaseTuner = tune_classifier.SVCTuner()
     task: str = "classification"
 
 
 class TestDecisionTreeClassifier(BaseTest):
-    model: SampleClassMixin = tune_classifier.DecisionTreeClassifierTuner()
+    model: BaseTuner = tune_classifier.DecisionTreeClassifierTuner()
     task: str = "classification"
 
 
 class TestLinearRegressor(BaseTest):
-    model: SampleClassMixin = tune_regressor.LinearRegressionTuner()
+    model: BaseTuner = tune_regressor.LinearRegressionTuner()
     task: str = "regression"
 
 
 class TestLassoRegressor(BaseTest):
-    model: SampleClassMixin = tune_regressor.LassoTuner()
+    model: BaseTuner = tune_regressor.LassoTuner()
     task: str = "regression"
 
 
 class TestRidgeRegressor(BaseTest):
-    model: SampleClassMixin = tune_regressor.RidgeTuner()
+    model: BaseTuner = tune_regressor.RidgeTuner()
     task: str = "regression"
 
 
 class TestLogisticRegressor(BaseTest):
-    model: SampleClassMixin = tune_classifier.LogisticRegressionTuner()
+    model: BaseTuner = tune_classifier.LogisticRegressionTuner()
     task: str = "classification"
 
 
 class TestLinearSVC(BaseTest):
-    model: SampleClassMixin = tune_classifier.LinearSVCTuner()
+    model: BaseTuner = tune_classifier.LinearSVCTuner()
     task: str = "classification"
 
 
 class TestLinearSVR(BaseTest):
-    model: SampleClassMixin = tune_regressor.LinearSVRTuner()
+    model: BaseTuner = tune_regressor.LinearSVRTuner()
     task: str = "regression"
 
 
 class TestExtraTreeClassifier(BaseTest):
-    model: SampleClassMixin = tune_classifier.ExtraTreeClassifierTuner()
+    model: BaseTuner = tune_classifier.ExtraTreeClassifierTuner()
     task: str = "classification"
 
 
 class TestExtraTreeRegressor(BaseTest):
-    model: SampleClassMixin = tune_regressor.ExtraTreeRegressorTuner()
+    model: BaseTuner = tune_regressor.ExtraTreeRegressorTuner()
     task: str = "regression"
 
 
 class TestRandomForestClassifier(BaseTest):
-    model: SampleClassMixin = tune_classifier.RandomForestClassifierTuner()
+    model: BaseTuner = tune_classifier.RandomForestClassifierTuner()
     task: str = "classification"
 
 
 class TestRandomForestRegressor(BaseTest):
-    model: SampleClassMixin = tune_regressor.RandomForestRegressorTuner()
+    model: BaseTuner = tune_regressor.RandomForestRegressorTuner()
     task: str = "regression"
 
 
 class TestExtraTreesClassifier(BaseTest):
-    model: SampleClassMixin = tune_classifier.ExtraTreesClassifierTuner()
+    model: BaseTuner = tune_classifier.ExtraTreesClassifierTuner()
     task: str = "classification"
 
 
 class TestExtraTreesRegressor(BaseTest):
-    model: SampleClassMixin = tune_regressor.ExtraTreesRegressorTuner()
+    model: BaseTuner = tune_regressor.ExtraTreesRegressorTuner()
     task: str = "regression"
 
 
 class TestExtraTreeClassifier(BaseTest):
-    model: SampleClassMixin = tune_classifier.ExtraTreeClassifierTuner()
+    model: BaseTuner = tune_classifier.ExtraTreeClassifierTuner()
     task: str = "classification"
 
 
 class TestExtraTreeRegressor(BaseTest):
-    model: SampleClassMixin = tune_regressor.ExtraTreeRegressorTuner()
+    model: BaseTuner = tune_regressor.ExtraTreeRegressorTuner()
     task: str = "regression"
 
 
 class TestAdaBoostClassifier(BaseTest):
-    model: SampleClassMixin = tune_classifier.AdaBoostClassifierTuner()
+    model: BaseTuner = tune_classifier.AdaBoostClassifierTuner()
     task: str = "classification"
 
     
 class TestAdaBoostRegressor(BaseTest):
-    model: SampleClassMixin = tune_regressor.AdaBoostRegressorTuner()
+    model: BaseTuner = tune_regressor.AdaBoostRegressorTuner()
     task: str = "regression"
 
 
 class TestKNNClassifier(BaseTest):
-    model: SampleClassMixin = tune_classifier.KNeighborsClassifierTuner()
+    model: BaseTuner = tune_classifier.KNeighborsClassifierTuner()
     task: str = "classification"
 
 
 class TestKNNRegressor(BaseTest):
-    model: SampleClassMixin = tune_regressor.KNeighborsRegressorTuner()
+    model: BaseTuner = tune_regressor.KNeighborsRegressorTuner()
     task: str = "regression"
 
 
+class TestNearestCentroidClassifier(BaseTest):
+    model: BaseTuner = tune_classifier.NearestCentroidClassifierTuner()
+    task: str = "classification"
+
+
 class TestElasticNetRegressor(BaseTest):
-    model: SampleClassMixin = tune_regressor.ElasticNetTuner()
+    model: BaseTuner = tune_regressor.ElasticNetTuner()
     task: str = "regression"
 
 
 class TestMultiTaskLassoRegressor(BaseTest):
-    model: SampleClassMixin = tune_regressor.MultiTaskLassoTuner()
+    model: BaseTuner = tune_regressor.MultiTaskLassoTuner()
     task: str = "regression"
 
 
 class TestMultiTaskElasticNetRegressor(BaseTest):
-    model: SampleClassMixin = tune_regressor.MultiTaskElasticNetTuner()
+    model: BaseTuner = tune_regressor.MultiTaskElasticNetTuner()
     task: str = "regression"
 
 
 class TestBaggingClassifier(BaseTest):
-    model: SampleClassMixin = tune_classifier.BaggingClassifierTuner()
+    model: BaseTuner = tune_classifier.BaggingClassifierTuner()
     task: str = "classification"
 
 
 class TestBaggingRegressor(BaseTest):
-    model: SampleClassMixin = tune_regressor.BaggingRegressorTuner()
+    model: BaseTuner = tune_regressor.BaggingRegressorTuner()
     task: str = "regression"
 
 
 class TestGradientBoostingClassifier(BaseTest):
-    model: SampleClassMixin = tune_classifier.GradientBoostingClassifierTuner()
+    model: BaseTuner = tune_classifier.GradientBoostingClassifierTuner()
     task: str = "classification"
 
 
 class TestGradientBoostingRegressor(BaseTest):
-    model: SampleClassMixin = tune_regressor.GradientBoostingRegressorTuner()
+    model: BaseTuner = tune_regressor.GradientBoostingRegressorTuner()
+    task: str = "regression"
+
+
+class TestRadiusNeighborClassifier(BaseTest):
+    model: BaseTuner = tune_classifier.RadiusNeighborsClassifierTuner()
+    task: str = "classification"
+
+
+class TestRadiusNeighborRegressor(BaseTest):
+    model: BaseTuner = tune_regressor.RadiusNeighborsRegressorTuner()
     task: str = "regression"
 
 
 class TestNuSVC(BaseTest):
-    model: SampleClassMixin = tune_classifier.NuSVCTuner()
+    model: BaseTuner = tune_classifier.NuSVCTuner()
     task: str = "classification"
 
 
 class TestNuSVR(BaseTest):
-    model: SampleClassMixin = tune_regressor.NuSVRTuner()
+    model: BaseTuner = tune_regressor.NuSVRTuner()
     task: str = "regression"
 
 
 class TestPerceptron(BaseTest):
-    model: SampleClassMixin = tune_classifier.PerceptronTuner()
+    model: BaseTuner = tune_classifier.PerceptronTuner()
     task: str = "classification"
 
 
 class TestPassiveAggressiveClassifier(BaseTest):
-    model: SampleClassMixin = tune_classifier.PassiveAggressiveClassifierTuner()
+    model: BaseTuner = tune_classifier.PassiveAggressiveClassifierTuner()
     task: str = "classification"
 
 
 class TestPassiveAggressiveRegressorTuner(BaseTest):
-    model: SampleClassMixin = tune_regressor.PassiveAggressiveRegressorTuner()
+    model: BaseTuner = tune_regressor.PassiveAggressiveRegressorTuner()
     task: str = "regression"
 
 
 class TestSGDClassifier(BaseTest):
-    model: SampleClassMixin = tune_classifier.SGDClassifierTuner()
+    model: BaseTuner = tune_classifier.SGDClassifierTuner()
     task: str = "classification"
 
 
 class TestSGDRegressorTuner(BaseTest):
-    model: SampleClassMixin = tune_regressor.SGDRegressorTuner()
+    model: BaseTuner = tune_regressor.SGDRegressorTuner()
     task: str = "regression"
 
 
 class TestMLPClassifierTuner(BaseTest):
-    model: SampleClassMixin = tune_classifier.MLPClassifierTuner()
+    model: BaseTuner = tune_classifier.MLPClassifierTuner()
     task: str = "classification"
     n_trials: int = 10
     
 
 class TestMLPRegressorTuner(BaseTest):
-    model: SampleClassMixin = tune_regressor.MLPRegressorTuner()
+    model: BaseTuner = tune_regressor.MLPRegressorTuner()
     task: str = "regression"
     n_trials: int = 10
 
       
 class TestHistGradientBoostingClassifier(BaseTest):
-    model: SampleClassMixin = tune_classifier.HistGradientBoostingClassifierTuner()
+    model: BaseTuner = tune_classifier.HistGradientBoostingClassifierTuner()
     task: str = "classification"
 
 
 class TestHistGradientBoostingRegressor(BaseTest):
-    model: SampleClassMixin = tune_regressor.HistGradientBoostingRegressorTuner()
+    model: BaseTuner = tune_regressor.HistGradientBoostingRegressorTuner()
     task: str = "regression"
 
 class TestLars(BaseTest):
-    model: SampleClassMixin = tune_regressor.LarsTuner()
+    model: BaseTuner = tune_regressor.LarsTuner()
     task: str = "regression"
 
 
 class TestLassoLars(BaseTest):
-    model: SampleClassMixin = tune_regressor.LassoLarsTuner()
+    model: BaseTuner = tune_regressor.LassoLarsTuner()
     task: str = "regression"
 
 
 class TestLassoLarsIC(BaseTest):
-    model: SampleClassMixin = tune_regressor.LassoLarsICTuner()
+    model: BaseTuner = tune_regressor.LassoLarsICTuner()
     task: str = "regression"
 
 class TestBayesianRidge(BaseTest):
-    model: SampleClassMixin = tune_regressor.BayesianRidgeTuner()
+    model: BaseTuner = tune_regressor.BayesianRidgeTuner()
     task: str = "regression"
 
 class TestGaussianNBClassifier(BaseTest):
-    model: SampleClassMixin = tune_classifier.GaussianNBTuner()
+    model: BaseTuner = tune_classifier.GaussianNBTuner()
     task: str = "classification"
 
 class TestBernoulliNBClassifier(BaseTest):
-    model: SampleClassMixin = tune_classifier.BernoulliNBTuner()
+    model: BaseTuner = tune_classifier.BernoulliNBTuner()
     task: str = "classification"
 
 class TestMultinomialNBClassifier(BaseTest):
-    model: SampleClassMixin = tune_classifier.MultinomialNBTuner()
+    model: BaseTuner = tune_classifier.MultinomialNBTuner()
     task: str = "classification"
 
 class TestComplementNBClassifier(BaseTest):
-    model: SampleClassMixin = tune_classifier.ComplementNBTuner()
+    model: BaseTuner = tune_classifier.ComplementNBTuner()
     task: str = "classification"
 
 class TestCategoricalNBTuner(BaseTest):
-    model: SampleClassMixin = tune_classifier.CategoricalNBTuner()
+    model: BaseTuner = tune_classifier.CategoricalNBTuner()
     task: str = "classification"
 
 class TestTweedieRegressor(BaseTest):
-    model: SampleClassMixin = tune_regressor.TweedieRegressorTuner()
+    model: BaseTuner = tune_regressor.TweedieRegressorTuner()
     task: str = "regression"
 
 
 class TestOrthogonalMatchingPursuit(BaseTest):
-    model: SampleClassMixin = tune_regressor.OrthogonalMatchingPursuitTuner()
+    model: BaseTuner = tune_regressor.OrthogonalMatchingPursuitTuner()
     task: str = "regression"
 
 
 class TestPoissonRegressor(BaseTest):
-    model: SampleClassMixin = tune_regressor.PoissonRegressorTuner()
+    model: BaseTuner = tune_regressor.PoissonRegressorTuner()
     task: str = "regression"
 
 
 class TestGammaRegressor(BaseTest):
-    model: SampleClassMixin = tune_regressor.GammaRegressorTuner()
+    model: BaseTuner = tune_regressor.GammaRegressorTuner()
     task: str = "regression"
+
+
+class TestQuantileRegressor(BaseTest):
+    model: BaseTuner = tune_regressor.QuantileRegressorTuner()
+    task: str = "regression"
+

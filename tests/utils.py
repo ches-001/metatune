@@ -3,7 +3,7 @@ import numpy as np
 from sklearn import datasets
 from sklearn.preprocessing import MinMaxScaler
 from optuna.trial import Trial
-from baseline.mixin import SampleClassMixin
+from baseline.base import BaseTuner
 from tune_classifier import classifier_tuner_model_class_dict
 from tune_regressor import regressor_tuner_model_class_dict
 
@@ -28,7 +28,7 @@ MULTITASK_DATA = sklearn.model_selection.train_test_split(MULTITASK_REG_X, MULTI
 
 
 # Define an objective function to be minimized.
-def objective_factory(model: SampleClassMixin, task: str="regression"):
+def objective_factory(model: BaseTuner, task: str="regression"):
     """ generate objective function for given model """
     # unpack data
     if task == "regression":
@@ -53,7 +53,7 @@ def objective_factory(model: SampleClassMixin, task: str="regression"):
 
 
 class BaseTest:
-    model: SampleClassMixin = None
+    model: BaseTuner = None
     task: str = None
     n_trials: int = 20
 
@@ -67,7 +67,7 @@ class BaseTest:
         else: assert False
 
     def test_methods_and_attrs(self):
-        assert hasattr(self.model, "_sample_params")
+        assert hasattr(self.model, "sample_params")
         assert hasattr(self.model, "sample_model")
         assert hasattr(self.model, "model") and self.model.model is None
 

@@ -4,7 +4,7 @@ from optuna.trial import Trial
 from dataclasses import dataclass
 from typing import Optional, Dict, Any, Tuple, Iterable, Callable
 
-@dataclass
+
 class SampleClassMixin:
 
     def _is_space_type(self, space: Iterable, type: Callable) -> bool:
@@ -19,10 +19,7 @@ class SampleClassMixin:
     def is_valid_categorical_space(self, space: Iterable) -> bool:
         return (not self.is_valid_float_space(space)) and (not self.is_valid_float_space(space))
 
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]: 
-        if trial is None: raise ValueError("Method should be called in an optuna trial study")
-    
-    def model(self, trial: Optional[Trial]) -> Any:
+    def _in_trial(self, trial: Optional[Trial]=None) -> Dict[str, Any]: 
         if trial is None: raise ValueError("Method should be called in an optuna trial study")
 
     def _evaluate_params(self, model_class: Callable, params: Dict[str, Any]):
@@ -76,3 +73,16 @@ class SampleClassMixin:
         model = model_class(**params)
         
         return model
+
+
+
+@dataclass
+class BaseTuner(SampleClassMixin):
+
+    model: Any = None
+
+    def sample_params(self, trial: Trial) -> Dict[str, Any]:
+        super()._in_trial(trial)
+
+    def sample_model(self, trial: Trial) -> Any:
+        super()._in_trial(trial)

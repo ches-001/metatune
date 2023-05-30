@@ -1,5 +1,7 @@
+from .module_utils import *
 from typing import Iterable
 
 __all__: Iterable[str] = [
-    "utils.module_utils",
+    "get_tuner_entities",
+    "get_tuner_model_dict"
 ]
