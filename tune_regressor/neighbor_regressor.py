@@ -35,11 +35,11 @@ class RadiusNeighborsRegressorTuner(BaseTuner):
         super().sample_params(trial)
 
         params = {}
-        params["radius"] = trial.suggest_int(f"{self.__class__.__name__}_radius", *self.radius_space)
+        params["radius"] = trial.suggest_int(f"{self.__class__.__name__}_radius", *self.radius_space, log=False)
         params["weights"] = trial.suggest_categorical(f"{self.__class__.__name__}_weight", self.weight_space)
         params["algorithm"] = trial.suggest_categorical(f"{self.__class__.__name__}_algorithm", self.algorithm_space)
         params["leaf_size"] = trial.suggest_int(f"{self.__class__.__name__}_leaf_size", *self.leaf_size_space, log=True)
-        params["p"] = trial.suggest_int(f"{self.__class__.__name__}_p", *self.p_space)
+        params["p"] = trial.suggest_int(f"{self.__class__.__name__}_p", *self.p_space, log=False)
         params["metric"] = trial.suggest_categorical(f"{self.__class__.__name__}_metric", self.metric_space)
 
         return params

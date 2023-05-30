@@ -19,7 +19,7 @@ class LDAClassifierTuner(BaseTuner):
         if self.is_valid_categorical_space(self.shrinkage_space):
             params["shrinkage"] = trial.suggest_categorical(f"{self.__class__.__name__}_shrinkage", self.shrinkage_space)
         else:
-            params["shrinkage"] = trial.suggest_float(f"{self.__class__.__name__}_shrinkage", *self.shrinkage_space)
+            params["shrinkage"] = trial.suggest_float(f"{self.__class__.__name__}_shrinkage", *self.shrinkage_space, log=False)
 
         params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.tol_space, log=True)
 
@@ -45,7 +45,7 @@ class QDAClassifierTuner(BaseTuner):
         super().sample_params(trial)
 
         params = {}
-        params["reg_param"] = trial.suggest_float(f"{self.__class__.__name__}_reg_param", *self.reg_param_space)
+        params["reg_param"] = trial.suggest_float(f"{self.__class__.__name__}_reg_param", *self.reg_param_space, log=False)
         params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.tol_space, log=True)
 
         return params
