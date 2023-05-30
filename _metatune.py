@@ -150,17 +150,19 @@ class MetaTune(TrialCheckMixin):
         
         _search_space: Dict[str, BaseTuner] = {tuner.__class__.__name__: tuner}
 
-        # check if tuner object name exists in the default self.tuner_model_class_map, if it does, it is a good indication
-        # that the custom tuner (BaseTuner type) is on that already exists in the system, whose default space parameters
-        # were probably edited by the user.
+        # check if tuner object name exists in the default self.tuner_model_class_map, 
+        # if it does, it is a good indication that the custom tuner (BaseTuner type) is
+        # on that already exists in the system, whose default space parameters were 
+        # probably edited by the user.
         if tuner.__class__.__name__ in self.tuner_model_class_map.keys():
             _tuner_model_class_map = {
                 tuner.__class__.__name__ : self.tuner_model_class_map[tuner.__class__.__name__]
             }
 
-        # if tuner object name does not exist in the self.tuner_model_class_map, it indicates that the tuner (baseTuner type)
-        # is a custom tuner that is not part of the library of tuners in this framework. This tuner is expected to have a 
-        # 'model_class' (Callable type) attribute which corresponds to the class of the model being tuned.
+        # if tuner object name does not exist in the self.tuner_model_class_map, it indicates
+        # that the tuner (baseTuner type) is a custom tuner that is not part of the library of
+        # tuners in this framework. This tuner is expected to have a 'model_class' (Callable type) 
+        # attribute which corresponds to the class of the model being tuned.
         else:
             if not hasattr(tuner, "model_class"):
                 raise AttributeError(
@@ -175,7 +177,6 @@ class MetaTune(TrialCheckMixin):
             _tuner_model_class_map = {tuner.__class__.__name__: getattr(tuner, "model_class")}
 
         return _search_space, _tuner_model_class_map
-
             
 
     def only_compatible_with_data(self, X: Iterable, y: Iterable, probability_score: bool=False) -> Iterable[str]:
