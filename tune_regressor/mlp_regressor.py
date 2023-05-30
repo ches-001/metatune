@@ -15,7 +15,7 @@ class MLPRegressorTuner(MLPClassifierTuner):
         super(MLPClassifierTuner, self).sample_model(trial)
 
         params = self.sample_params(trial)
-        model = super(MLPClassifierTuner, self)._evaluate_sampled_model("regression", MLPRegressor, params)
+        model = super(MLPClassifierTuner, self).evaluate_sampled_model("regression", MLPRegressor, params)
         self.model = model
         return model
 

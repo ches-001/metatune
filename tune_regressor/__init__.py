@@ -5,7 +5,7 @@ from .linear_model_regressor import *
 from .ensemble_regressor import *
 from .neighbor_regressor import *
 from .mlp_regressor import *
-from typing import Iterable, Dict, Generator
+from typing import Iterable, Dict, Callable
 
 
 __modules__: Iterable[str] = [

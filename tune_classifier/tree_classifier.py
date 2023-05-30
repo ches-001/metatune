@@ -28,12 +28,12 @@ class DecisionTreeClassifierTuner(BaseTuner):
         params["splitter"] = trial.suggest_categorical(f"{self.__class__.__name__}_splitter", self.splitter_space)
         params["max_depth"] = trial.suggest_int(f"{self.__class__.__name__}_max_depth", *self.max_depth_space, log=False)
 
-        if self._is_space_type(self.min_samples_split_space, float):
+        if self.is_space_type(self.min_samples_split_space, float):
             params["min_samples_split"] = trial.suggest_float(f"{self.__class__.__name__}_min_samples_split", *self.min_samples_split_space, log=False)
         else:
             params["min_samples_split"] = trial.suggest_int(f"{self.__class__.__name__}_min_samples_split", *self.min_samples_split_space, log=False)
 
-        if self._is_space_type(self.min_samples_leaf_space, float):
+        if self.is_space_type(self.min_samples_leaf_space, float):
             params["min_samples_leaf"] = trial.suggest_float(f"{self.__class__.__name__}_min_samples_leaf", *self.min_samples_leaf_space, log=False)
         else:
             params["min_samples_leaf"] = trial.suggest_int(f"{self.__class__.__name__}_min_samples_leaf", *self.min_samples_leaf_space, log=False)
@@ -55,7 +55,7 @@ class DecisionTreeClassifierTuner(BaseTuner):
         super().sample_model(trial)
         
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("classification", DecisionTreeClassifier, params)
+        model = super().evaluate_sampled_model("classification", DecisionTreeClassifier, params)
         self.model = model
         return model
     
@@ -70,7 +70,7 @@ class ExtraTreeClassifierTuner(DecisionTreeClassifierTuner):
         super(DecisionTreeClassifierTuner, self).sample_model(trial)
 
         params = self.sample_params(trial)
-        model = super(DecisionTreeClassifierTuner, self)._evaluate_sampled_model("classification", ExtraTreeClassifier, params)
+        model = super(DecisionTreeClassifierTuner, self).evaluate_sampled_model("classification", ExtraTreeClassifier, params)
         self.model = model
         return model
     

@@ -49,7 +49,7 @@ class LogisticRegressionTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().sample_model(trial)
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("classification", LogisticRegression, params)
+        model = super().evaluate_sampled_model("classification", LogisticRegression, params)
         self.model = model
 
         return model
@@ -96,7 +96,7 @@ class PerceptronTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().sample_model(trial)
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("classification", Perceptron, params)
+        model = super().evaluate_sampled_model("classification", Perceptron, params)
         self.model = model
 
         return model
@@ -141,7 +141,7 @@ class PassiveAggressiveClassifierTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().sample_model(trial)
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("classification", PassiveAggressiveClassifier, params)
+        model = super().evaluate_sampled_model("classification", PassiveAggressiveClassifier, params)
         self.model = model
 
         return model
@@ -207,7 +207,7 @@ class SGDClassifierTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().sample_model(trial)
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("classification", SGDClassifier, params)
+        model = super().evaluate_sampled_model("classification", SGDClassifier, params)
         self.model = model
 
         return model

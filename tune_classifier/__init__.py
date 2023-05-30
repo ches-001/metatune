@@ -6,7 +6,7 @@ from .ensemble_classifier import *
 from .naive_bayes_classifier import *
 from .neighbor_classifier import *
 from .mlp_classifier import *
-from typing import Iterable, Dict, Generator, Callable
+from typing import Iterable, Dict, Callable
 
 
 __modules__: Iterable[str] = [
