@@ -25,6 +25,8 @@ from sklearn.linear_model import (
     PoissonRegressor, 
     GammaRegressor, 
     TweedieRegressor)
+from sklearn.base import RegressorMixin, BaseEstimator 
+
 
 @dataclass
 class LinearRegressionTuner(BaseTuner):
@@ -354,10 +356,11 @@ class BayesianRidgeTuner(BaseTuner):
         
         params = {}
         params["n_iter"] = trial.suggest_int(f"{self.__class__.__name__}_n_iter", *self.n_iter_space, log=False)
+        params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.tol_space, log=False)
         params["alpha_1"] = trial.suggest_float(f"{self.__class__.__name__}_alpha_1", *self.alpha_1_space, log=False)
-        params["alpha_2"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.alpha_2_space, log=False)
-        params["lambda_1"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.lambda_1_space, log=False)
-        params["lambda_2"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.lambda_2_space, log=False)
+        params["alpha_2"] = trial.suggest_float(f"{self.__class__.__name__}_alpha_2", *self.alpha_2_space, log=False)
+        params["lambda_1"] = trial.suggest_float(f"{self.__class__.__name__}_lambda_1", *self.lambda_1_space, log=False)
+        params["lambda_2"] = trial.suggest_float(f"{self.__class__.__name__}_lambda_2", *self.lambda_2_space, log=False)
         set_alpha_init = trial.suggest_categorical(f"{self.__class__.__name__}_set_alpha_init", self.set_alpha_init_space)
         if set_alpha_init:
             params["alpha_init"] = trial.suggest_float(f"{self.__class__.__name__}_alpha_init", *self.alpha_init_space, log=False)
@@ -373,6 +376,41 @@ class BayesianRidgeTuner(BaseTuner):
         model = super().evaluate_sampled_model("regression", BayesianRidge, params)
         self.model = model
 
+        return model
+    
+
+@dataclass
+class ARDRegressionTuner(BaseTuner):
+    n_iter_space: Iterable[int] = (100, 1000)
+    tol_space: Iterable[float] = (1e-6, 1e-3)
+    alpha_1_space: Iterable[float] = (1e-6, 1e-3)
+    alpha_2_space: Iterable[float] = (1e-6, 1e-3)
+    lambda_1_space: Iterable[float] = (1e-6, 1e-3)
+    lambda_2_space: Iterable[float] = (1e-6, 1e-3)
+    threshold_lambda_space: Iterable[int] = (1e3, 1e5)
+    compute_score_space: Iterable[bool] = (True, False)
+    fit_intercept_space: Iterable[bool] = (True, False)
+    
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
+        
+        params = {}
+        params["n_iter"] = trial.suggest_int(f"{self.__class__.__name__}_n_iter", *self.n_iter_space, log=False)
+        params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.tol_space, log=False)
+        params["alpha_1"] = trial.suggest_float(f"{self.__class__.__name__}_alpha_1", *self.alpha_1_space, log=False)
+        params["alpha_2"] = trial.suggest_float(f"{self.__class__.__name__}_alpha_2", *self.alpha_2_space, log=False)
+        params["lambda_1"] = trial.suggest_float(f"{self.__class__.__name__}_lambda_1", *self.lambda_1_space, log=False)
+        params["lambda_2"] = trial.suggest_float(f"{self.__class__.__name__}_lambda_2", *self.lambda_2_space, log=False)        
+        params["threshold_lambda"] = trial.suggest_float(f"{self.__class__.__name__}_threshold_lambda", *self.threshold_lambda_space, log=False)
+        params["compute_score"] = trial.suggest_categorical(f"{self.__class__.__name__}_compute_score", self.compute_score_space)
+        params["fit_intercept"] = trial.suggest_categorical(f"{self.__class__.__name__}_fit_intercept", self.fit_intercept_space)
+        return params
+    
+    def sample_model(self, trial: Optional[Trial]=None) -> Any:
+        super().sample_model(trial)
+        params = self.sample_params(trial)
+        model = super().evaluate_sampled_model("regression", ARDRegression, params)
+        self.model = model
         return model
     
 
@@ -457,7 +495,7 @@ class QuantileRegressorTuner(BaseTuner):
     quantile_space: Iterable[float] = (0.1, 1.0)
     alpha_space: Iterable[float] = (0.01, 1.0)
     fit_intercept_space: Iterable[bool] = (True, False)
-    solver_space: Iterable[str] = ("highs-ds", "highs-ipm", "highs", "interior-point", "revised simplex")
+    solver_space: Iterable[str] = ("highs-ds", "highs-ipm", "highs", "revised simplex")
     solver_options_space: Iterable[Optional[Dict[str, Any]]] = (None, )
     
     def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
@@ -588,12 +626,13 @@ class GammaRegressorTuner(PoissonRegressorTuner):
 @dataclass
 class TweedieRegressorTuner(BaseTuner):
     power_space: Iterable[float] = (0.0, 3.0)
-    alpha_space: Iterable[float] = (0.7, 1.0)
+    alpha_space: Iterable[float] = (0.7, 100.0)
     fit_intercept_space: Iterable[bool] = (True, False)
     link_space: Iterable[str] = ("auto", "identity", "log")
     solver_space: Iterable[str] = ("lbfgs", "newton-cholesky")
     max_iter_space: Iterable[int] = (100, 1000)
-    tol_space: Iterable[int] = (1e-6, 1e-3)
+    tol_space: Iterable[float] = (1e-6, 1e-3)
+    model: Any = None
     
     def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
         super().sample_params(trial)
@@ -616,7 +655,107 @@ class TweedieRegressorTuner(BaseTuner):
         self.model = model
 
         return model
+
+
+@dataclass
+class HuberRegressorTuner(BaseTuner):
+    epsilon_space: Iterable[float] = (1.0, 1e4)
+    max_iter_space: Iterable[int] = (100, 1000)
+    alpha_space: Iterable[float] = (0.0, 10.0)
+    fit_intercept_space: Iterable[bool] = (True, False)
+    tol_space: Iterable[float] = (1e-6, 1e-3)
+    model: Any = None
     
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
+        
+        params = {}
+        params["epsilon"] = trial.suggest_float(f"{self.__class__.__name__}_epsilon", *self.epsilon_space, log=False)
+        params["max_iter"] = trial.suggest_int(f"{self.__class__.__name__}_max_iter", *self.max_iter_space, log=False)
+        params["alpha"] = trial.suggest_float(f"{self.__class__.__name__}_alpha", *self.alpha_space, log=False)
+        params["fit_intercept"] = trial.suggest_categorical(f"{self.__class__.__name__}_fit_intercept", self.fit_intercept_space)
+        params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.tol_space, log=False)
+        return params
+    
+    def sample_model(self, trial: Optional[Trial]=None) -> Any:
+        super().sample_model(trial)
+
+        params = self.sample_params(trial)
+        model = super().evaluate_sampled_model("regression", HuberRegressor, params)
+        self.model = model
+        return model
+    
+
+@dataclass
+class TheilSenRegressorTuner(BaseTuner):
+    fit_intercept_space: Iterable[bool] = (True, False)
+    max_subpopulation_space: Iterable[int] = (100, 1e4)
+    n_subsamples_space: Optional[Iterable[int]] = None
+    max_iter_space: Iterable[int] = (100, 300)
+    tol_space: Iterable[float] = (1e-6, 1e-3)
+    random_state_space: Iterable[int] = (0, 10000)
+    model: Any = None
+    
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
+        
+        params = {}
+        params["fit_intercept"] = trial.suggest_categorical(f"{self.__class__.__name__}_fit_intercept", self.fit_intercept_space)
+        params["max_subpopulation"] = trial.suggest_int(f"{self.__class__.__name__}_max_subpopulation", *self.max_subpopulation_space, log=False)
+        
+        if self.n_subsamples_space:
+            params["n_subsamples"] = trial.suggest_int(f"{self.__class__.__name__}_n_subsamples", *self.n_subsamples_space, log=False)
+        
+        params["max_iter"] = trial.suggest_int(f"{self.__class__.__name__}_max_iter", *self.max_iter_space, log=False)
+        params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.tol_space, log=False)
+        params["random_state"] = trial.suggest_int(f"{self.__class__.__name__}_random_state", *self.random_state_space, log=False)
+        return params
+    
+    def sample_model(self, trial: Optional[Trial]=None) -> Any:
+        super().sample_model(trial)
+
+        params = self.sample_params(trial)
+        model = super().evaluate_sampled_model("regression", TheilSenRegressor, params)
+        self.model = model
+        return model    
+
+
+@dataclass
+class RANSACRegressorTuner(BaseTuner):
+    estimator: Optional[Union[RegressorMixin, BaseEstimator]] = None
+    min_samples_space: Iterable[float] = (0, 1)
+    residual_threshold_space: Iterable[float] = (0, 1)
+    max_trials_space: Iterable[int] = (100, 1000)
+    max_skips_space: Iterable[int] = (1, 1e5)
+    stop_n_inliers_space: Iterable[int] = (1, 1e5)
+    stop_score_space: Iterable[float] = (1.0, 1e5)
+    stop_probability_space: Iterable[float] = (0.5, 0.99)
+    random_state_space: Iterable[int] = (0, 10000)
+    model: Any = None
+    
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
+        
+        params = {}
+        params["estimator"] = self.estimator
+        params["min_samples"] = trial.suggest_float(f"{self.__class__.__name__}_min_samples", *self.min_samples_space, log=False)
+        params["residual_threshold"] = trial.suggest_float(f"{self.__class__.__name__}_residual_threshold", *self.residual_threshold_space, log=False)
+        params["max_trials"] = trial.suggest_int(f"{self.__class__.__name__}_max_trials", *self.max_trials_space, log=False)
+        params["max_skips"] = trial.suggest_int(f"{self.__class__.__name__}_max_skips", *self.max_skips_space, log=False)
+        params["stop_n_inliers"] = trial.suggest_int(f"{self.__class__.__name__}_stop_n_inliers", *self.stop_n_inliers_space, log=False)
+        params["stop_score"] = trial.suggest_float(f"{self.__class__.__name__}_stop_score", *self.stop_score_space, log=False)
+        params["stop_probability"] = trial.suggest_float(f"{self.__class__.__name__}_stop_probability", *self.stop_probability_space, log=False)
+        params["random_state"] = trial.suggest_int(f"{self.__class__.__name__}_random_state", *self.random_state_space, log=False)
+        return params
+    
+    def sample_model(self, trial: Optional[Trial]=None) -> Any:
+        super().sample_model(trial)
+
+        params = self.sample_params(trial)
+        model = super().evaluate_sampled_model("regression", RANSACRegressor, params)
+        self.model = model
+        return model    
+
 
 tuner_model_class_dict: Dict[str, Callable] = {
     LinearRegressionTuner.__name__: LinearRegression,
@@ -636,4 +775,8 @@ tuner_model_class_dict: Dict[str, Callable] = {
     PoissonRegressorTuner.__name__: PoissonRegressor,
     GammaRegressorTuner.__name__: GammaRegressor,
     TweedieRegressorTuner.__name__: TweedieRegressor,
+    HuberRegressorTuner.__name__: HuberRegressor,
+    TheilSenRegressorTuner.__name__: TheilSenRegressor,
+    ARDRegressionTuner.__name__: ARDRegression,
+    RANSACRegressorTuner.__name__: RANSACRegressor
 }

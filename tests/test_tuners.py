@@ -285,3 +285,23 @@ class TestQuantileRegressor(BaseTest):
     model: BaseTuner = tune_regressor.QuantileRegressorTuner()
     task: str = "regression"
 
+
+class TestHuberRegressor(BaseTest):
+    model: BaseTuner = tune_regressor.HuberRegressorTuner()
+    task: str = "regression"
+
+
+class TestTheilSenRegressor(BaseTest):
+    model: BaseTuner = tune_regressor.TheilSenRegressorTuner()
+    task: str = "regression"
+
+
+class TestARDRegressor(BaseTest):
+    model: BaseTuner = tune_regressor.ARDRegressionTuner()
+    task: str = "regression"
+
+
+class TestRANSACRegressor(BaseTest):
+    model: BaseTuner = tune_regressor.RANSACRegressorTuner()
+    task: str = "regression"
+
