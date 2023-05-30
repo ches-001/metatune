@@ -72,7 +72,8 @@ class MetaTune(TrialCheckMixin):
         
         valid_tasks: Iterable[str] = ["classification", "regression"]
         if task not in valid_tasks:
-            raise ValueError(f"Invalid task {task}, expects tasks to be 'regression' or 'classification'")
+            raise ValueError(
+                f"Invalid task {task}, expects tasks to be 'regression' or 'classification', got {task}")
         
         self.task = task
         self.custom_tuners = custom_tuners
