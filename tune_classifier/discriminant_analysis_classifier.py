@@ -21,7 +21,7 @@ class LDAClassifierTuner(BaseTuner):
         else:
             params["shrinkage"] = trial.suggest_float(f"{self.__class__.__name__}_shrinkage", *self.shrinkage_space)
 
-        params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.tol_space)
+        params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.tol_space, log=True)
 
         return params
 
@@ -46,7 +46,7 @@ class QDAClassifierTuner(BaseTuner):
 
         params = {}
         params["reg_param"] = trial.suggest_float(f"{self.__class__.__name__}_reg_param", *self.reg_param_space)
-        params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.tol_space)
+        params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.tol_space, log=True)
 
         return params
 
