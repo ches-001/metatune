@@ -34,7 +34,7 @@ class SVRTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial] = None) -> Any:
         super().sample_model(trial)
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("regression", SVR, params)
+        model = super().evaluate_sampled_model("regression", SVR, params)
         self.model = model
 
         return model
@@ -71,7 +71,7 @@ class LinearSVRTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().sample_model(trial)
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("regression", LinearSVR, params)
+        model = super().evaluate_sampled_model("regression", LinearSVR, params)
         self.model = model
 
         return model
@@ -107,7 +107,7 @@ class NuSVRTuner(BaseTuner):
         super().sample_model(trial)
 
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("regression", NuSVR, params)
+        model = super().evaluate_sampled_model("regression", NuSVR, params)
         return model
     
 

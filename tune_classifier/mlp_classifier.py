@@ -70,7 +70,7 @@ class MLPClassifierTuner(BaseTuner):
         super().sample_model(trial)
 
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("classification", MLPClassifier, params)
+        model = super().evaluate_sampled_model("classification", MLPClassifier, params)
         self.model = model
         return model
 

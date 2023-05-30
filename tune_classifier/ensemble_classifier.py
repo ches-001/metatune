@@ -43,12 +43,12 @@ class RandomForestClassifierTuner(BaseTuner):
         if set_max_depth:
             params["max_depth"] = trial.suggest_int(f"{self.__class__.__name__}_max_depth", *self.max_depth_space, log=False)
 
-        if self._is_space_type(self.min_samples_split_space, float):
+        if self.is_space_type(self.min_samples_split_space, float):
             params["min_samples_split"] = trial.suggest_float(f"{self.__class__.__name__}_min_samples_split", *self.min_samples_split_space, log=False)
         else:
             params["min_samples_split"] = trial.suggest_int(f"{self.__class__.__name__}_min_samples_split", *self.min_samples_split_space, log=False)
 
-        if self._is_space_type(self.min_samples_leaf_space, float):
+        if self.is_space_type(self.min_samples_leaf_space, float):
             params["min_samples_leaf"] = trial.suggest_float(f"{self.__class__.__name__}_min_samples_leaf", *self.min_samples_leaf_space, log=False)
         else:
             params["min_samples_leaf"] = trial.suggest_int(f"{self.__class__.__name__}_min_samples_leaf", *self.min_samples_leaf_space, log=False)
@@ -81,7 +81,7 @@ class RandomForestClassifierTuner(BaseTuner):
 
         set_max_samples = trial.suggest_categorical(f"{self.__class__.__name__}_set_max_samples", self.set_max_samples_space)
         if set_max_samples:
-            if self._is_space_type(self.max_samples_space, float):
+            if self.is_space_type(self.max_samples_space, float):
                 params["max_samples"] = trial.suggest_float(f"{self.__class__.__name__}_max_samples", *self.max_samples_space, log=False)
 
             else:
@@ -92,7 +92,7 @@ class RandomForestClassifierTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().sample_model(trial)
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("classification", RandomForestClassifier, params)
+        model = super().evaluate_sampled_model("classification", RandomForestClassifier, params)
         self.model = model
 
         return model
@@ -107,7 +107,7 @@ class ExtraTreesClassifierTuner(RandomForestClassifierTuner):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super(RandomForestClassifierTuner, self).sample_model(trial)
         params = self.sample_params(trial)
-        model = super(RandomForestClassifierTuner, self)._evaluate_sampled_model("classification", ExtraTreesClassifier, params)
+        model = super(RandomForestClassifierTuner, self).evaluate_sampled_model("classification", ExtraTreesClassifier, params)
         self.model = model
         
         return model
@@ -136,7 +136,7 @@ class AdaBoostClassifierTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().sample_model(trial)
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("classification", AdaBoostClassifier, params)
+        model = super().evaluate_sampled_model("classification", AdaBoostClassifier, params)
         self.model = model
 
         return model
@@ -175,12 +175,12 @@ class GradientBoostingClassifierTuner(BaseTuner):
         params["n_estimators"] = trial.suggest_int(f"{self.__class__.__name__}_n_estimators", *self.n_estimators_space, log=False)
         params["subsample"] = trial.suggest_float(f"{self.__class__.__name__}_subsample", *self.subsample_space, log=False)
         params["criterion"] = trial.suggest_categorical(f"{self.__class__.__name__}_criterion", self.criterion_space)
-        if self._is_space_type(self.min_samples_split_space, float):
+        if self.is_space_type(self.min_samples_split_space, float):
             params["min_samples_split"] = trial.suggest_float(f"{self.__class__.__name__}_min_samples_split", *self.min_samples_split_space, log=False)
         else:
             params["min_samples_split"] = trial.suggest_int(f"{self.__class__.__name__}_min_samples_split", *self.min_samples_split_space, log=False)
 
-        if self._is_space_type(self.min_samples_leaf_space, float):
+        if self.is_space_type(self.min_samples_leaf_space, float):
             params["min_samples_leaf"] = trial.suggest_float(f"{self.__class__.__name__}_min_samples_leaf", *self.min_samples_leaf_space, log=False)
         else:
             params["min_samples_leaf"] = trial.suggest_int(f"{self.__class__.__name__}_min_samples_leaf", *self.min_samples_leaf_space, log=False)
@@ -221,7 +221,7 @@ class GradientBoostingClassifierTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().sample_model(trial)
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("classification", GradientBoostingClassifier, params)
+        model = super().evaluate_sampled_model("classification", GradientBoostingClassifier, params)
         self.model = model
 
         return model
@@ -245,12 +245,12 @@ class BaggingClassifierTuner(BaseTuner):
         params["estimator"] = trial.suggest_categorical(f"{self.__class__.__name__}_estimator", self.estimator_space)
         params["n_estimators"] = trial.suggest_int(f"{self.__class__.__name__}_n_estimators", *self.n_estimators_space, log=False)
 
-        if self._is_space_type(self.max_samples_space, float):
+        if self.is_space_type(self.max_samples_space, float):
             params["max_samples"] = trial.suggest_float(f"{self.__class__.__name__}_max_samples", *self.max_samples_space, log=False)
         else:
             params["max_samples"] = trial.suggest_int(f"{self.__class__.__name__}_max_samples", *self.max_samples_space, log=False)
 
-        if self._is_space_type(self.max_features_space, float):
+        if self.is_space_type(self.max_features_space, float):
             params["max_features"] = trial.suggest_float(f"{self.__class__.__name__}_max_features", *self.max_features_space, log=False)
         else:
             params["max_features"] = trial.suggest_int(f"{self.__class__.__name__}_max_features", *self.max_features_space, log=False)
@@ -265,7 +265,7 @@ class BaggingClassifierTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().sample_model(trial)
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("classification", BaggingClassifier, params)
+        model = super().evaluate_sampled_model("classification", BaggingClassifier, params)
         self.model = model
 
         return model
@@ -329,7 +329,7 @@ class HistGradientBoostingClassifierTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().sample_model(trial)
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("classification", HistGradientBoostingClassifier, params)
+        model = super().evaluate_sampled_model("classification", HistGradientBoostingClassifier, params)
         self.model = model
 
         return model

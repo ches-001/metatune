@@ -5,22 +5,26 @@ from dataclasses import dataclass
 from typing import Optional, Dict, Any, Tuple, Iterable, Callable
 
 
-class SampleClassMixin:
-
-    def _is_space_type(self, space: Iterable, type: Callable) -> bool:
+class SpaceValidationMixin:
+    def is_space_type(self, space: Iterable, type: Callable) -> bool:
         return all(list(map(lambda x: isinstance(x, type), space)))
     
     def is_valid_int_space(self, space: Iterable) -> bool:
-        return self._is_space_type(space, int) and len(space) == 2
+        return self.is_space_type(space, int) and len(space) == 2
     
     def is_valid_float_space(self, space: Iterable) -> bool:
-        return self._is_space_type(space, float) and len(space) == 2
+        return self.is_space_type(space, float) and len(space) == 2
     
     def is_valid_categorical_space(self, space: Iterable) -> bool:
         return (not self.is_valid_float_space(space)) and (not self.is_valid_float_space(space))
+    
 
-    def _in_trial(self, trial: Optional[Trial]=None) -> Dict[str, Any]: 
+class TrialCheckMixin:
+    def in_trial(self, trial: Optional[Trial]=None) -> Dict[str, Any]: 
         if trial is None: raise ValueError("Method should be called in an optuna trial study")
+
+
+class SampledModelEvaluationMixin:
 
     def _evaluate_params(self, model_class: Callable, params: Dict[str, Any]):
         assert isinstance(model_class, Callable), f"Invalid model_class, {model_class} is not Callable"
@@ -46,7 +50,7 @@ class SampleClassMixin:
         else:
             return np.abs(np.random.randn(25, 5)), np.abs(np.random.randn(25, 2)) + 1e-4
     
-    def _evaluate_sampled_model(
+    def evaluate_sampled_model(
             self, 
             task: str, 
             model_class: Callable, 
@@ -77,12 +81,12 @@ class SampleClassMixin:
 
 
 @dataclass
-class BaseTuner(SampleClassMixin):
+class BaseTuner(SpaceValidationMixin, TrialCheckMixin, SampledModelEvaluationMixin):
 
     model: Any = None
 
     def sample_params(self, trial: Trial) -> Dict[str, Any]:
-        super()._in_trial(trial)
+        super().in_trial(trial)
 
     def sample_model(self, trial: Trial) -> Any:
-        super()._in_trial(trial)
+        super().in_trial(trial)

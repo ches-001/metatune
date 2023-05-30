@@ -29,7 +29,7 @@ class GaussianNBTuner(BaseTuner):
         super().sample_model(trial)
 
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("classification", GaussianNB, params)
+        model = super().evaluate_sampled_model("classification", GaussianNB, params)
         self.model = model
         return model
 
@@ -63,7 +63,7 @@ class BernoulliNBTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial] = None) -> Any:
         super().sample_model(trial)
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("classification", BernoulliNB, params)
+        model = super().evaluate_sampled_model("classification", BernoulliNB, params)
 
         self.model = model
         return model
@@ -91,7 +91,7 @@ class MultinomialNBTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial] = None) -> Any:
         super().sample_model(trial)
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("classification", MultinomialNB, params)
+        model = super().evaluate_sampled_model("classification", MultinomialNB, params)
 
         self.model = model
         return model
@@ -120,7 +120,7 @@ class ComplementNBTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial] = None) -> Any:
         super().sample_model(trial)
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("classification", ComplementNB, params)
+        model = super().evaluate_sampled_model("classification", ComplementNB, params)
 
         self.model = model
         return model
@@ -150,7 +150,7 @@ class CategoricalNBTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial] = None) -> Any:
         super().sample_model(trial)
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("classification", CategoricalNB, params)
+        model = super().evaluate_sampled_model("classification", CategoricalNB, params)
 
         self.model = model
         return model
