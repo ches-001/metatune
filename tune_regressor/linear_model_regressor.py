@@ -666,7 +666,7 @@ class HuberRegressorTuner(BaseTuner):
     tol_space: Iterable[float] = (1e-6, 1e-3)
     model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
         super().sample_params(trial)
         
         params = {}
@@ -680,7 +680,7 @@ class HuberRegressorTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().sample_model(trial)
 
-        params = self._sample_params(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("regression", HuberRegressor, params)
         self.model = model
         return model
@@ -696,7 +696,7 @@ class TheilSenRegressorTuner(BaseTuner):
     random_state_space: Iterable[int] = (0, 10000)
     model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
         super().sample_params(trial)
         
         params = {}
@@ -714,7 +714,7 @@ class TheilSenRegressorTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().sample_model(trial)
 
-        params = self._sample_params(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("regression", TheilSenRegressor, params)
         self.model = model
         return model    
@@ -733,7 +733,7 @@ class RANSACRegressorTuner(BaseTuner):
     random_state_space: Iterable[int] = (0, 10000)
     model: Any = None
     
-    def _sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
         super().sample_params(trial)
         
         params = {}
@@ -751,7 +751,7 @@ class RANSACRegressorTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().sample_model(trial)
 
-        params = self._sample_params(trial)
+        params = self.sample_params(trial)
         model = super()._evaluate_sampled_model("regression", RANSACRegressor, params)
         self.model = model
         return model    
