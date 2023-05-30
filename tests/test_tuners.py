@@ -305,3 +305,12 @@ class TestRANSACRegressor(BaseTest):
     model: BaseTuner = tune_regressor.RANSACRegressorTuner()
     task: str = "regression"
 
+
+class TestLinearDiscriminantAnalysis(BaseTest):
+    model: BaseTuner = tune_classifier.LDAClassifierTuner()
+    task: str = "classification"
+
+
+class TestQuadraticDiscriminantAnalysis(BaseTest):
+    model: BaseTuner = tune_classifier.QDAClassifierTuner()
+    task: str = "classification"

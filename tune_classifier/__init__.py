@@ -6,6 +6,7 @@ from .ensemble_classifier import *
 from .naive_bayes_classifier import *
 from .neighbor_classifier import *
 from .mlp_classifier import *
+from .discriminant_analysis_classifier import *
 from typing import Iterable, Dict, Callable
 
 
@@ -17,6 +18,7 @@ __modules__: Iterable[str] = [
     "tune_classifier.naive_bayes_classifier",
     "tune_classifier.neighbor_classifier",
     "tune_classifier.mlp_classifier",
+    "tune_classifier.discriminant_analysis_classifier"
 ]
 
 classifier_tuning_entities: Dict[str, object] = {k:v for k, v in sum(list(map(get_tuner_entities, __modules__)), [])}
@@ -51,5 +53,7 @@ __all__: Iterable[str] = [
     "KNeighborsClassifierTuner", 
     "MLPClassifierTuner",
     "RadiusNeighborsClassifierTuner",
-    "NearestCentroidClassifierTuner"
+    "NearestCentroidClassifierTuner",
+    "LDAClassifierTuner",
+    "QDAClassifierTuner"
 ]

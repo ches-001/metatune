@@ -27,7 +27,7 @@ class RadiusNeighborsRegressorTuner(BaseTuner):
     radius_space: Iterable[int] = (2, 20)
     weight_space: Iterable[str] = ("uniform", "distance")
     algorithm_space: Iterable[str] = ("ball_tree", "kd_tree", "brute")
-    leaf_size_space: Iterable[int] = (2, 60)
+    leaf_size_space: Iterable[int] = (2, 100)
     p_space: Iterable[int] = (3, 10)
     metric_space: Iterable[str] = ("cityblock", "cosine", "euclidean", "manhattan", "minkowski")
     
@@ -38,7 +38,7 @@ class RadiusNeighborsRegressorTuner(BaseTuner):
         params["radius"] = trial.suggest_int(f"{self.__class__.__name__}_radius", *self.radius_space)
         params["weights"] = trial.suggest_categorical(f"{self.__class__.__name__}_weight", self.weight_space)
         params["algorithm"] = trial.suggest_categorical(f"{self.__class__.__name__}_algorithm", self.algorithm_space)
-        params["leaf_size"] = trial.suggest_int(f"{self.__class__.__name__}_leaf_size", *self.leaf_size_space)
+        params["leaf_size"] = trial.suggest_int(f"{self.__class__.__name__}_leaf_size", *self.leaf_size_space, log=True)
         params["p"] = trial.suggest_int(f"{self.__class__.__name__}_p", *self.p_space)
         params["metric"] = trial.suggest_categorical(f"{self.__class__.__name__}_metric", self.metric_space)
 
