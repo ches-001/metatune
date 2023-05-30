@@ -409,7 +409,7 @@ class ARDRegressionTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().sample_model(trial)
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("regression", ARDRegression, params)
+        model = super().evaluate_sampled_model("regression", ARDRegression, params)
         self.model = model
         return model
     
@@ -681,7 +681,7 @@ class HuberRegressorTuner(BaseTuner):
         super().sample_model(trial)
 
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("regression", HuberRegressor, params)
+        model = super().evaluate_sampled_model("regression", HuberRegressor, params)
         self.model = model
         return model
     
@@ -715,7 +715,7 @@ class TheilSenRegressorTuner(BaseTuner):
         super().sample_model(trial)
 
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("regression", TheilSenRegressor, params)
+        model = super().evaluate_sampled_model("regression", TheilSenRegressor, params)
         self.model = model
         return model    
 
@@ -752,7 +752,7 @@ class RANSACRegressorTuner(BaseTuner):
         super().sample_model(trial)
 
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("regression", RANSACRegressor, params)
+        model = super().evaluate_sampled_model("regression", RANSACRegressor, params)
         self.model = model
         return model    
 
