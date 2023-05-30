@@ -190,10 +190,11 @@ class MetaTune(TrialCheckMixin):
         Parameters
         ----------
         X : Iterable | Array like of shape (n_samples, n_features)
-            Feature vectors or other representations of training data
+            Feature vectors or other representations of training data,
+            (preferably preprocessed)
 
         y : Iterable | Array like of shape (n_samples, ) or (n_samples, labels)
-            Target values to predict
+            Target values to predict, (preferably preprocessed)
 
         probability_score : bool, default=True
             use the `predict_proba(...)` method of the tuner `model_class` to
