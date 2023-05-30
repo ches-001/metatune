@@ -3,7 +3,7 @@ from typing import Iterable
 
 
 __all__: Iterable[str] = [
-    "SpaceValidationMixin",
+    "SpaceTypeValidationMixin",
     "TrialCheckMixin", 
     "SampledModelEvaluationMixin",
     "BaseTuner"

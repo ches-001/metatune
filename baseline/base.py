@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from typing import Optional, Dict, Any, Tuple, Iterable, Callable
 
 
-class SpaceValidationMixin:
+class SpaceTypeValidationMixin:
     def is_space_type(self, space: Iterable, type: Callable) -> bool:
         return all(list(map(lambda x: isinstance(x, type), space)))
     
@@ -17,7 +17,7 @@ class SpaceValidationMixin:
     
     def is_valid_categorical_space(self, space: Iterable) -> bool:
         return (not self.is_valid_float_space(space)) and (not self.is_valid_float_space(space))
-    
+            
 
 class TrialCheckMixin:
     def in_trial(self, trial: Optional[Trial]=None) -> Dict[str, Any]: 
@@ -81,7 +81,7 @@ class SampledModelEvaluationMixin:
 
 
 @dataclass
-class BaseTuner(SpaceValidationMixin, TrialCheckMixin, SampledModelEvaluationMixin):
+class BaseTuner(SpaceTypeValidationMixin, TrialCheckMixin, SampledModelEvaluationMixin):
 
     model: Any = None
 

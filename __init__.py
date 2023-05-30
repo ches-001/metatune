@@ -1,7 +1,7 @@
 from .tune_classifier import *
 from .tune_regressor import *
 from .baseline import *
-from .sample import *
+from ._metatune import *
 from typing import Iterable
 
 
@@ -22,5 +22,6 @@ __all__: Iterable[str] = [
     "neighbor_regressor",
     "svr",
     "tree_regressor",
+    "MetaTune",
     "utils.module_utils",
 ]
