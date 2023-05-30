@@ -44,7 +44,7 @@ class LinearRegressionTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().sample_model(trial)
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("regression", LinearRegression, params)
+        model = super().evaluate_sampled_model("regression", LinearRegression, params)
         self.model = model
 
         return model
@@ -79,7 +79,7 @@ class LassoTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().sample_model(trial)
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("regression", Lasso, params)
+        model = super().evaluate_sampled_model("regression", Lasso, params)
         self.model = model
 
         return model
@@ -114,7 +114,7 @@ class RidgeTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().sample_model(trial)
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("regression", Ridge, params)
+        model = super().evaluate_sampled_model("regression", Ridge, params)
         self.model = model
 
         return model
@@ -152,7 +152,7 @@ class ElasticNetTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().sample_model(trial)
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("regression", ElasticNet, params)
+        model = super().evaluate_sampled_model("regression", ElasticNet, params)
         self.model = model
 
         return model
@@ -185,7 +185,7 @@ class MultiTaskLassoTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().sample_model(trial)
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("regression", MultiTaskLasso, params, is_multitask=self.is_multitask)
+        model = super().evaluate_sampled_model("regression", MultiTaskLasso, params, is_multitask=self.is_multitask)
         self.model = model
 
         return model
@@ -220,7 +220,7 @@ class MultiTaskElasticNetTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().sample_model(trial)
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model(
+        model = super().evaluate_sampled_model(
             "regression", MultiTaskElasticNet, params, is_multitask=self.is_multitask)
         self.model = model
 
@@ -255,7 +255,7 @@ class LarsTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().sample_model(trial)
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("regression", Lars, params)
+        model = super().evaluate_sampled_model("regression", Lars, params)
         self.model = model
 
         return model
@@ -293,7 +293,7 @@ class LassoLarsTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().sample_model(trial)
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("regression", LassoLars, params)
+        model = super().evaluate_sampled_model("regression", LassoLars, params)
         self.model = model
 
         return model
@@ -329,7 +329,7 @@ class LassoLarsICTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().sample_model(trial)
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("regression", LassoLarsIC, params)
+        model = super().evaluate_sampled_model("regression", LassoLarsIC, params)
         self.model = model
 
         return model
@@ -370,7 +370,7 @@ class BayesianRidgeTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().sample_model(trial)
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("regression", BayesianRidge, params)
+        model = super().evaluate_sampled_model("regression", BayesianRidge, params)
         self.model = model
 
         return model
@@ -400,7 +400,7 @@ class OrthogonalMatchingPursuitTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().sample_model(trial)
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("regression", OrthogonalMatchingPursuit, params)
+        model = super().evaluate_sampled_model("regression", OrthogonalMatchingPursuit, params)
         self.model = model
 
         return model
@@ -446,7 +446,7 @@ class PassiveAggressiveRegressorTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().sample_model(trial)
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("regression", PassiveAggressiveRegressor, params)
+        model = super().evaluate_sampled_model("regression", PassiveAggressiveRegressor, params)
         self.model = model
 
         return model
@@ -475,7 +475,7 @@ class QuantileRegressorTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().sample_model(trial)
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("regression", QuantileRegressor, params)
+        model = super().evaluate_sampled_model("regression", QuantileRegressor, params)
         self.model = model
 
         return model
@@ -535,7 +535,7 @@ class SGDRegressorTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().sample_model(trial)
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("regression", SGDRegressor, params)
+        model = super().evaluate_sampled_model("regression", SGDRegressor, params)
         self.model = model
 
         return model
@@ -564,7 +564,7 @@ class PoissonRegressorTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().sample_model(trial)
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("regression", PoissonRegressor, params)
+        model = super().evaluate_sampled_model("regression", PoissonRegressor, params)
         self.model = model
 
         return model
@@ -580,7 +580,7 @@ class GammaRegressorTuner(PoissonRegressorTuner):
         super(PoissonRegressorTuner, self).sample_model(trial)
 
         params = self.sample_params(trial)
-        model = super(PoissonRegressorTuner, self)._evaluate_sampled_model("regression", GammaRegressor, params)
+        model = super(PoissonRegressorTuner, self).evaluate_sampled_model("regression", GammaRegressor, params)
         self.model = model
         return model
     
@@ -612,7 +612,7 @@ class TweedieRegressorTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().sample_model(trial)
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("regression", TweedieRegressor, params)
+        model = super().evaluate_sampled_model("regression", TweedieRegressor, params)
         self.model = model
 
         return model

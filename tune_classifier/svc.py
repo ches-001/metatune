@@ -40,7 +40,7 @@ class SVCTuner(BaseTuner):
         super().sample_model(trial)
 
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("classification", SVC, params)
+        model = super().evaluate_sampled_model("classification", SVC, params)
         return model
     
 
@@ -80,7 +80,7 @@ class LinearSVCTuner(BaseTuner):
     def sample_model(self, trial: Optional[Trial]=None) -> Any:
         super().sample_model(trial)
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("classification", LinearSVC, params)
+        model = super().evaluate_sampled_model("classification", LinearSVC, params)
         self.model = model
 
         return model
@@ -126,7 +126,7 @@ class NuSVCTuner(BaseTuner):
         super().sample_model(trial)
 
         params = self.sample_params(trial)
-        model = super()._evaluate_sampled_model("classification", NuSVC, params)
+        model = super().evaluate_sampled_model("classification", NuSVC, params)
         return model
 
 

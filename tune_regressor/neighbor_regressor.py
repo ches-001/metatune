@@ -16,7 +16,7 @@ class KNeighborsRegressorTuner(KNeighborsClassifierTuner):
         super(KNeighborsClassifierTuner, self).sample_model(trial)
         
         params = self.sample_params(trial)
-        model = super(KNeighborsClassifierTuner, self)._evaluate_sampled_model("regression", KNeighborsRegressor, params)
+        model = super(KNeighborsClassifierTuner, self).evaluate_sampled_model("regression", KNeighborsRegressor, params)
         self.model = model
 
         return model
@@ -49,7 +49,7 @@ class RadiusNeighborsRegressorTuner(BaseTuner):
 
         params = self.sample_params(trial)
 
-        model = super()._evaluate_sampled_model("regression", RadiusNeighborsRegressor, params)
+        model = super().evaluate_sampled_model("regression", RadiusNeighborsRegressor, params)
 
         self.model = model
 

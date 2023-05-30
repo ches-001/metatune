@@ -34,7 +34,7 @@ class KNeighborsClassifierTuner(BaseTuner):
 
         params = self.sample_params(trial)
 
-        model = super()._evaluate_sampled_model("classification", KNeighborsClassifier, params)
+        model = super().evaluate_sampled_model("classification", KNeighborsClassifier, params)
 
         self.model = model
 
@@ -70,7 +70,7 @@ class RadiusNeighborsClassifierTuner(BaseTuner):
 
         params = self.sample_params(trial)
 
-        model = super()._evaluate_sampled_model("classification", RadiusNeighborsClassifier, params)
+        model = super().evaluate_sampled_model("classification", RadiusNeighborsClassifier, params)
 
         self.model = model
 
@@ -96,7 +96,7 @@ class NearestCentroidClassifierTuner(BaseTuner):
 
         params = self.sample_params(trial)
 
-        model = super()._evaluate_sampled_model("classification", NearestCentroid, params)
+        model = super().evaluate_sampled_model("classification", NearestCentroid, params)
 
         self.model = model
 
