@@ -32,18 +32,78 @@ class MetaTune(TrialCheckMixin):
                 nusvc_tuner = NuSVCTuner(nu_space={"low":0.2, "high":1.0, "step":None, "log":False})
                 MetaTune(task="regression", custom_tuners=[nusvc_tuner])
 
-            If you wish to implement a custom tuner, you must first extend from 
-            the BaseTuner class. The custom tuner must have the class attribute 
-            'model_class' of type (Callable), which indicates the class of the 
-            model being tuned::
-
+            If you wish to implement a custom tuner class with some default parameters, 
+            you must first extend from the BaseTuner class. The custom tuner must 
+            have the class attribute 'model_class' of type (Callable), which indicates
+            the class of the model being tuned::
+                
+                from dataclasses import dataclass
                 from metatune.baseline import BaseTuner
                 from sklearn.gaussian_process import GaussianProcessRegressor
+                from typing import Callable, Dict, Iterable, Any
+                from types import MappingProxyType
 
+                @dataclass
                 class CustomTuner(BaseTuner):
                     model_class: Callable = GaussianProcessRegressor
+                    #int space
+                    param1_space: Dict[str, Any] = MappingProxyType({
+                        "low":2, 
+                        "high":1000, 
+                        "step":1, 
+                        "log":True,
+                    })
+                    #float space
+                    param2_space: Dict[str, Any] = MappingProxyType({
+                        "low":0.1, 
+                        "high":1.0, 
+                        "step":None, 
+                        "log":False,
+                    })
+                    #categorical space
+                    param3_space: Iterable[str] = ("cat1", "cat2", "cat3", "cat4") -> Dict[str, Any]
+
+
+                    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+                        super().sample_params(trial)
+                                
+                        params = {}
+                        params["param1"] = trial.suggest_int(
+                            f"{self.__class__.__name__}_param1", **dict(self.param1_space))
+                        params["param2"] = trial.suggest_float(
+                            f"{self.__class__.__name__}_param2", **dict(self.param1_space))
+                        params["param3"] = trial.suggest_categorical(
+                            f"{self.__class__.__name__}_param3", param1_space)
+                        
+                        return params
+
+                    def sample_model(self, trial: Optional[Trial]=None) -> Any:
+                        super().sample_model(trial)
+                        params = self.sample_params(trial)
+
+                        model = super().evaluate_sampled_model(
+                            "regression", self.model_class, params)
+
+                        self.model = model
+                        return model
 
                 MetaTune(task="regression", custom_tuners=[CustomTuner()])
+
+            Every custom tuner shoud be initialised with the `@dataclass` decorator and
+            must extend from the `BaseTuner` class.
+            Since a dataclass require that its default class attributes are immutable, 
+            we cannot directly use a dictionary to assign values of an int or float
+            sample space, this is because dictionaries are mutable data structures, so
+            in this case we use the `MappingProxyType` class to wrap any dictionary, 
+            hence extending immutable characteristics, which can them be used to 
+            initialise an integer or float space.
+
+            For the sake of naming conventions, all class attributes that represent a
+            sample space of some sort, must be named after the corresponding parameter
+            in the model with an '_space' suffix. 
+
+            The tuner has two methods, visit the BaseTuner class documentation to read up
+            about them as they are mandatory for defining a custom tuner.
 
 
         excluded : Optional[Iterable[Union[str, Callable]]], default=None
@@ -192,6 +252,10 @@ class MetaTune(TrialCheckMixin):
         and tuner model map. This way, during optuna sampling, less trials are 
         pruned
 
+        Note: 
+            Calling this method is compulsory, as it may filter out tuners whose
+            corresponding models are compatible with your data, but have default
+            parameters that may lead to exceptions.
         
         Parameters
         ----------
@@ -256,8 +320,9 @@ class MetaTune(TrialCheckMixin):
 
     def sample_models_with_params(self, trial: Trial) -> Any:
         r"""
-            This method samples a model and corresponding hyperparameters from 
-            the search space.
+            This method samples a tuner corresponding to a model and samples the 
+            corresponding hyperparameters from the search space defined in the tuner
+            that best optimizes an objective.
 
             Parameters
             ----------
@@ -272,16 +337,18 @@ class MetaTune(TrialCheckMixin):
         """
 
         super().in_trial(trial)
-        tuner_obj: BaseTuner = trial.suggest_categorical("model_tuner", list(self.search_space.values()))
-        model = tuner_obj.sample_model(trial)
+        tuner_name: str = trial.suggest_categorical("model_tuner", list(self.search_space.keys()))
+        tuner: BaseTuner = self.search_space[tuner_name]
+        model = tuner.sample_model(trial)
 
         return model
 
 
     def build_sampled_model(self, best_trial: FrozenTrial, **kwargs) -> Any:
         r"""
-            This method initialises a model from the sampled parameters of the
-            best trial in the optuna study.
+            This method initialises a model corresponding to the sampled
+            tuner from the corresponding sampled parameters of the best 
+            trial in the optuna study.
 
             Parameters
             ----------
@@ -298,14 +365,14 @@ class MetaTune(TrialCheckMixin):
                 Note: model must implement `fit(...)` method.
         """
 
-        model_tuner: BaseTuner = best_trial.params["model_tuner"]
-        model_class = self.tuner_model_class_map[model_tuner.__class__.__name__]
+        tuner_name: str = best_trial.params["model_tuner"]
+        model_class = self.tuner_model_class_map[tuner_name]
 
         model_params_names = list(inspect.signature(model_class.__dict__["__init__"]).parameters.keys())
         best_params_dict = {
-            k.replace(f"{model_tuner.__class__.__name__}_", "") : v 
+            k.replace(f"{tuner_name}_", "") : v 
             for k, v in best_trial.params.items() 
-            if k.replace(f"{model_tuner.__class__.__name__}_", "") in model_params_names
+            if k.replace(f"{tuner_name}_", "") in model_params_names
             }
 
         params = {**kwargs, **best_params_dict}

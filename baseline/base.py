@@ -99,11 +99,114 @@ class SampledModelEvaluationMixin:
 
 @dataclass
 class BaseTuner(SpaceTypeValidationMixin, TrialCheckMixin, SampledModelEvaluationMixin):
+    r"""
+    BaseTuner class that everyother tuner extends from
 
+    If you wish to implement a custom tuner class with some default parameters, 
+    you must first extend from the BaseTuner class. The custom tuner must 
+    have the class attribute 'model_class' of type (Callable), which indicates
+    the class of the model being tuned::
+        
+        from dataclasses import dataclass
+        from metatune.baseline import BaseTuner
+        from sklearn.gaussian_process import GaussianProcessRegressor
+        from typing import Callable, Dict, Iterable, Any
+        from types import MappingProxyType
+
+        @dataclass
+        class CustomTuner(BaseTuner):
+            model_class: Callable = GaussianProcessRegressor
+            #int space
+            param1_space: Dict[str, Any] = MappingProxyType({
+                "low":2, 
+                "high":1000, 
+                "step":1, 
+                "log":True,
+            })
+            #float space
+            param2_space: Dict[str, Any] = MappingProxyType({
+                "low":0.1, 
+                "high":1.0, 
+                "step":None, 
+                "log":False,
+            })
+            #categorical space
+            param3_space: Iterable[str] = ("cat1", "cat2", "cat3", "cat4") -> Dict[str, Any]
+
+
+            def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+                super().sample_params(trial)
+                        
+                params = {}
+                params["param1"] = trial.suggest_int(
+                    f"{self.__class__.__name__}_param1", **dict(self.param1_space))
+                params["param2"] = trial.suggest_float(
+                    f"{self.__class__.__name__}_param2", **dict(self.param1_space))
+                params["param3"] = trial.suggest_categorical(
+                    f"{self.__class__.__name__}_param3", param1_space)
+                
+                return params
+
+            def sample_model(self, trial: Optional[Trial]=None) -> Any:
+                super().sample_model(trial)
+                params = self.sample_params(trial)
+
+                model = super().evaluate_sampled_model(
+                    "regression", self.model_class, params)
+
+                self.model = model
+                return model
+    """
     model: Any = None
 
     def sample_params(self, trial: Trial) -> Dict[str, Any]:
+        r"""
+        This method sample parameters
+        from the defined sample spaces and returns them. For the sake of uniqueness 
+        and to avoid parameter space distribution related errors that optuna may throw,
+        it is mandatory that each parameter name must be registered with a unique identifiers
+        (the class name) alongside the parameter name, both seperated with an underscore (_). 
+        This way, conflict is avoided when multiple tuners that happen to have same 
+        model class parameter name for their corresponding model classes exist together in 
+        the search space. In this method, it is mandatory to call the `super().sample_params()`
+        method of the `BaseTuner` class before defining the params dictionary.
+
+        Parameter
+        ---------
+        trial: optuna.trial.Trial
+            optuna trial
+
+        Return
+        ------
+        params: Dict[str, Any]
+            collected parameters sampled from the defined search space
+        """
         super().in_trial(trial)
 
     def sample_model(self, trial: Trial) -> Any:
+        r"""
+        The `sample_model(...)` method first calls the `super().sample_model()` method from the
+        `BaseTuner` class. This method collects all the sampled parameters via the `sample_params(..)`
+        method and passes them as argument, alongside the task --"regression" or "classification"--
+        and the `model_class` into the `super().evaluate_sampled_model(...)` method. The
+        `super().evaluate_sampled_model(...)` method first verifies that the keys of the params dictionary
+        returned by the `sample_params(...)` method all correspond to argument names used to initialised the 
+        `model_class` object, it then initialises an object of the `model_class` and fits a small set of data
+        with it to check for bad sampled parameter combinations. If the combination of sampled parameters
+        is bad / errotic, it triggers a pruning exception to prune the trial and move on to the next trial.
+        Although It is not mandatory to use the `super().evaluate_sampled_model(...)` method in your 
+        custom tuner, you are advised to use it as it handles bad parameter combination automatically 
+        during search. The returned `model_class` instance after parameter and model evaluation is 
+        assigned to the `model` class attribute of the `BaseTuner` class and then returned.
+
+        Parameter
+        ---------
+        trial: optuna.trial.Trial
+            optuna trial
+
+        Return
+        ------
+        params: Any
+            model initialised with sampled parameters
+        """
         super().in_trial(trial)
