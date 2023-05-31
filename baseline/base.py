@@ -2,18 +2,36 @@ import inspect, optuna
 import numpy as np
 from optuna.trial import Trial
 from dataclasses import dataclass
-from typing import Optional, Dict, Any, Tuple, Iterable, Callable
+from typing import Optional, Dict, Any, Union, Tuple, Iterable, Callable
+from types import MappingProxyType
 
 
 class SpaceTypeValidationMixin:
-    def is_space_type(self, space: Iterable, type: Callable) -> bool:
-        return all(list(map(lambda x: isinstance(x, type), space[0:2])))
+    def is_space_type(self, space: Union[Dict, Iterable], type: Callable) -> bool:
+        if type not in [float, int]:
+            raise ValueError(
+                f"is_space_type method expects type being checked to be 'int' or 'float', got {type}."
+                f" To check for categorical types, try using the `is_valid_categorical_space(...)` method"
+            )
+
+        if (isinstance(space, dict) or isinstance(space, MappingProxyType)) and len(space) == 4:
+            valid_keys = ["low", "high", "step", "log"]
+            for key in valid_keys:
+                if key not in space.keys():
+                    raise ValueError(f"defined non-categorical space is missing key-value '{key}'")
+                
+            if space["low"] > space["high"]:
+                raise ValueError(f"low cannot be greater than high in space: {space}")
+            
+            return all(list(map(lambda x: isinstance(x, type), [space["low"], space["high"]])))
+        
+        return False
     
     def is_valid_int_space(self, space: Iterable) -> bool:
-        return self.is_space_type(space, int) and len(space) == 2
+        return self.is_space_type(space, int)
     
     def is_valid_float_space(self, space: Iterable) -> bool:
-        return self.is_space_type(space, float) and len(space) == 2
+        return self.is_space_type(space, float)
     
     def is_valid_categorical_space(self, space: Iterable) -> bool:
         return (not self.is_valid_float_space(space)) and (not self.is_valid_float_space(space))
@@ -25,7 +43,6 @@ class TrialCheckMixin:
 
 
 class SampledModelEvaluationMixin:
-
     def _evaluate_params(self, model_class: Callable, params: Dict[str, Any]):
         assert isinstance(model_class, Callable), f"Invalid model_class, {model_class} is not Callable"
 

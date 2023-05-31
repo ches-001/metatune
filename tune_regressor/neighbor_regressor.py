@@ -2,6 +2,7 @@ from baseline import BaseTuner
 from optuna.trial import Trial
 from dataclasses import dataclass
 from typing import Iterable, Optional, Dict, Any, Callable
+from types import MappingProxyType
 from sklearn.neighbors import KNeighborsRegressor, RadiusNeighborsRegressor
 from tune_classifier import KNeighborsClassifierTuner
 
@@ -24,22 +25,22 @@ class KNeighborsRegressorTuner(KNeighborsClassifierTuner):
 
 @dataclass
 class RadiusNeighborsRegressorTuner(BaseTuner):
-    radius_space: Iterable[int] = (2, 20)
+    radius_space: Dict[str, Any] = MappingProxyType({"low":2, "high":20, "step":1, "log":False})
     weight_space: Iterable[str] = ("uniform", "distance")
     algorithm_space: Iterable[str] = ("ball_tree", "kd_tree", "brute")
-    leaf_size_space: Iterable[int] = (2, 100)
-    p_space: Iterable[int] = (3, 10)
+    leaf_size_space: Dict[str, Any] = MappingProxyType({"low":2, "high":100, "step":1, "log":True})
+    p_space: Dict[str, Any] = MappingProxyType({"low":3, "high":10, "step":1, "log":False})
     metric_space: Iterable[str] = ("cityblock", "cosine", "euclidean", "manhattan", "minkowski")
     
     def sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
         super().sample_params(trial)
 
         params = {}
-        params["radius"] = trial.suggest_int(f"{self.__class__.__name__}_radius", *self.radius_space, log=False)
+        params["radius"] = trial.suggest_int(f"{self.__class__.__name__}_radius", **dict(self.radius_space))
         params["weights"] = trial.suggest_categorical(f"{self.__class__.__name__}_weight", self.weight_space)
         params["algorithm"] = trial.suggest_categorical(f"{self.__class__.__name__}_algorithm", self.algorithm_space)
-        params["leaf_size"] = trial.suggest_int(f"{self.__class__.__name__}_leaf_size", *self.leaf_size_space, log=True)
-        params["p"] = trial.suggest_int(f"{self.__class__.__name__}_p", *self.p_space, log=False)
+        params["leaf_size"] = trial.suggest_int(f"{self.__class__.__name__}_leaf_size", **dict(self.leaf_size_space))
+        params["p"] = trial.suggest_int(f"{self.__class__.__name__}_p", **dict(self.p_space))
         params["metric"] = trial.suggest_categorical(f"{self.__class__.__name__}_metric", self.metric_space)
 
         return params

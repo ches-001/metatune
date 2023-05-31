@@ -28,7 +28,7 @@ class MetaTune(TrialCheckMixin):
             the default space::
 
                 from metatune.tune_classifier import NuSVCTuner
-                nusvc_tuner = NuSVCTuner(nu=0.2, 1.0)
+                nusvc_tuner = NuSVCTuner(nu_space={"low":0.2, "high":1.0, "step":None, "log":False})
                 MetaTune(task="regression", custom_tuners=[nusvc_tuner])
 
             If you wish to implement a custom tuner, you must first extend from 

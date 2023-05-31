@@ -2,6 +2,7 @@ from baseline import BaseTuner
 from optuna.trial import Trial
 from dataclasses import dataclass
 from typing import Iterable, Optional, Dict, Any, Union, Callable
+from types import MappingProxyType
 from sklearn.ensemble import (
     RandomForestClassifier, 
     ExtraTreesClassifier, 
@@ -13,61 +14,61 @@ from sklearn.ensemble import (
 
 @dataclass
 class RandomForestClassifierTuner(BaseTuner):
-    n_estimators_space: Iterable[int] = (1, 200)
+    n_estimators_space: Dict[str, Any] = MappingProxyType({"low":1, "high":200, "step":1, "log":True})
     criterion_space: Iterable[str] = ("gini", "entropy", "log_loss")
     set_max_depth_space: Iterable[bool] = (True, False)
-    max_depth_space: Iterable[int] = (1, 2000)
-    min_samples_split_space: Iterable[Union[int, float]] = (0.1, 1.0)
-    min_samples_leaf_space: Iterable[Union[int, float]] = (0.1, 1.0)
-    min_weight_fraction_leaf_space: Iterable[float] = (0.0, 0.5)
+    max_depth_space: Dict[str, Any] = MappingProxyType({"low":10, "high":2000, "step":1, "log":True})
+    min_samples_split_space: Dict[str, Any] = MappingProxyType({"low":0.1, "high":1.0, "step":None, "log":False})
+    min_samples_leaf_space: Dict[str, Any] = MappingProxyType({"low":0.1, "high":1.0, "step":None, "log":False})
+    min_weight_fraction_leaf_space: Dict[str, Any] = MappingProxyType({"low":0.0, "high":0.5, "step":None, "log":False})
     max_features_space: Iterable[str] = ("sqrt", "log2", None)
     set_max_leaf_nodes_space: Iterable[bool] = (True, False)
-    max_leaf_nodes_space: Iterable[int] = (1, 1000)
-    min_impurity_decrease_space: Iterable[float] = (0.0, 1.0)
+    max_leaf_nodes_space: Dict[str, Any] = MappingProxyType({"low":1, "high":1000, "step":1, "log":True})
+    min_impurity_decrease_space: Dict[str, Any] = MappingProxyType({"low":0.0, "high":1.0, "step":None, "log":False})
     bootstrap_space: Iterable[bool] = (True, False)
     oob_score_space: Iterable[bool] = (True, False)
     class_weight_space: Iterable[str] = ("balanced", "balanced_subsample")
     set_random_state_space: Iterable[bool] = (False, )
-    random_state_space: Iterable[int] = (0, 10000)
-    ccp_alpha_space: Iterable[float] = (0.0, 1.0)
+    random_state_space: Dict[str, Any] = MappingProxyType({"low":1, "high":10000, "step":1, "log":True})
+    ccp_alpha_space: Dict[str, Any] = MappingProxyType({"low":0.0, "high":1.0, "step":None, "log":False})
     set_max_samples_space: Iterable[bool] = (True, False)
-    max_samples_space: Iterable[Union[int, float]] = (0.1, 1.0)
+    max_samples_space: Dict[str, Any] = MappingProxyType({"low":0.1, "high":1.0, "step":None, "log":False})
     
     def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
         super().sample_params(trial)
         
         params = {}
-        params["n_estimators"] = trial.suggest_int(f"{self.__class__.__name__}_n_estimators", *self.n_estimators_space, log=False)
+        params["n_estimators"] = trial.suggest_int(f"{self.__class__.__name__}_n_estimators", **dict(self.n_estimators_space))
         params["criterion"] = trial.suggest_categorical(f"{self.__class__.__name__}_criterion", self.criterion_space)
         set_max_depth = trial.suggest_categorical(f"{self.__class__.__name__}_set_max_depth", self.set_max_depth_space)
         if set_max_depth:
-            params["max_depth"] = trial.suggest_int(f"{self.__class__.__name__}_max_depth", *self.max_depth_space, log=False)
+            params["max_depth"] = trial.suggest_int(f"{self.__class__.__name__}_max_depth", **dict(self.max_depth_space))
 
         if self.is_space_type(self.min_samples_split_space, float):
-            params["min_samples_split"] = trial.suggest_float(f"{self.__class__.__name__}_min_samples_split", *self.min_samples_split_space, log=False)
+            params["min_samples_split"] = trial.suggest_float(f"{self.__class__.__name__}_min_samples_split", **dict(self.min_samples_split_space))
         else:
-            params["min_samples_split"] = trial.suggest_int(f"{self.__class__.__name__}_min_samples_split", *self.min_samples_split_space, log=False)
+            params["min_samples_split"] = trial.suggest_int(f"{self.__class__.__name__}_min_samples_split", **dict(self.min_samples_split_space))
 
         if self.is_space_type(self.min_samples_leaf_space, float):
-            params["min_samples_leaf"] = trial.suggest_float(f"{self.__class__.__name__}_min_samples_leaf", *self.min_samples_leaf_space, log=False)
+            params["min_samples_leaf"] = trial.suggest_float(f"{self.__class__.__name__}_min_samples_leaf", **dict(self.min_samples_leaf_space))
         else:
-            params["min_samples_leaf"] = trial.suggest_int(f"{self.__class__.__name__}_min_samples_leaf", *self.min_samples_leaf_space, log=False)
+            params["min_samples_leaf"] = trial.suggest_int(f"{self.__class__.__name__}_min_samples_leaf", **dict(self.min_samples_leaf_space))
 
-        params["min_weight_fraction_leaf"] = trial.suggest_float(f"{self.__class__.__name__}_min_weight_fraction_leaf", *self.min_weight_fraction_leaf_space, log=False)
+        params["min_weight_fraction_leaf"] = trial.suggest_float(f"{self.__class__.__name__}_min_weight_fraction_leaf", **dict(self.min_weight_fraction_leaf_space))
         
         if self.is_valid_categorical_space(self.max_features_space):
             params["max_features"] = trial.suggest_categorical(f"{self.__class__.__name__}_max_features", self.max_features_space)
         else:
             if self.is_valid_float_space(self.max_features_space):
-                params["max_features"] = trial.suggest_float(f"{self.__class__.__name__}_max_features", *self.max_features_space, log=False)
+                params["max_features"] = trial.suggest_float(f"{self.__class__.__name__}_max_features", **dict(self.max_features_space))
             else:
-                params["max_features"] = trial.suggest_int(f"{self.__class__.__name__}_max_features", *self.max_features_space, log=False)
+                params["max_features"] = trial.suggest_int(f"{self.__class__.__name__}_max_features", **dict(self.max_features_space))
 
         set_max_leaf_node = trial.suggest_categorical(f"{self.__class__.__name__}_set_max_leaf_nodes", self.set_max_leaf_nodes_space)
         if set_max_leaf_node:
-            params["max_leaf_nodes"] = trial.suggest_int(f"{self.__class__.__name__}_max_leaf_nodes", *self.max_leaf_nodes_space, log=False)
+            params["max_leaf_nodes"] = trial.suggest_int(f"{self.__class__.__name__}_max_leaf_nodes", **dict(self.max_leaf_nodes_space))
 
-        params["min_impurity_decrease"] = trial.suggest_float(f"{self.__class__.__name__}_min_impurity_decrease", *self.min_impurity_decrease_space)
+        params["min_impurity_decrease"] = trial.suggest_float(f"{self.__class__.__name__}_min_impurity_decrease", **dict(self.min_impurity_decrease_space))
         params["bootstrap"] = trial.suggest_categorical(f"{self.__class__.__name__}_bootstrap", self.bootstrap_space)
         params["oob_score"] = trial.suggest_categorical(f"{self.__class__.__name__}_oob_score", self.oob_score_space)
 
@@ -75,17 +76,17 @@ class RandomForestClassifierTuner(BaseTuner):
 
         set_random_state = trial.suggest_categorical(f"{self.__class__.__name__}_set_random_state", self.set_random_state_space)
         if set_random_state:
-            params["random_state"] = trial.suggest_int(f"{self.__class__.__name__}_random_state", *self.random_state_space, log=False)
+            params["random_state"] = trial.suggest_int(f"{self.__class__.__name__}_random_state", **dict(self.random_state_space))
 
-        params["ccp_alpha"] = trial.suggest_float(f"{self.__class__.__name__}_ccp_alpha", *self.ccp_alpha_space, log=False)
+        params["ccp_alpha"] = trial.suggest_float(f"{self.__class__.__name__}_ccp_alpha", **dict(self.ccp_alpha_space))
 
         set_max_samples = trial.suggest_categorical(f"{self.__class__.__name__}_set_max_samples", self.set_max_samples_space)
         if set_max_samples:
             if self.is_space_type(self.max_samples_space, float):
-                params["max_samples"] = trial.suggest_float(f"{self.__class__.__name__}_max_samples", *self.max_samples_space, log=False)
+                params["max_samples"] = trial.suggest_float(f"{self.__class__.__name__}_max_samples", **dict(self.max_samples_space))
 
             else:
-                params["max_samples"] = trial.suggest_int(f"{self.__class__.__name__}_max_samples", *self.max_samples_space, log=False)
+                params["max_samples"] = trial.suggest_int(f"{self.__class__.__name__}_max_samples", **dict(self.max_samples_space))
             
         return params
     
@@ -116,20 +117,20 @@ class ExtraTreesClassifierTuner(RandomForestClassifierTuner):
 @dataclass
 class AdaBoostClassifierTuner(BaseTuner):
     estimator_space: Iterable[Optional[object]] = (None, )
-    n_estimators_space: Iterable[int] = (1, 200)
-    learning_rate_space: Iterable[float] = (0.01, 1.0)
+    n_estimators_space: Dict[str, Any] = MappingProxyType({"low":1, "high":200, "step":1, "log":True})
+    learning_rate_space: Dict[str, Any] = MappingProxyType({"low":0.01, "high":1, "step":None, "log":True})
     algorithm_space: Iterable[str] = ("SAMME", "SAMME.R")
-    random_state_space: Iterable[int] = (0, 10000)
+    random_state_space: Dict[str, Any] = MappingProxyType({"low":1, "high":10000, "step":1, "log":True})
     
     def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
         super().sample_params(trial)
         
         params = {}
         params["estimator"] = trial.suggest_categorical(f"{self.__class__.__name__}_estimator", self.estimator_space)
-        params["n_estimators"] = trial.suggest_int(f"{self.__class__.__name__}_n_estimators", *self.n_estimators_space, log=False)
-        params["learning_rate"] = trial.suggest_float(f"{self.__class__.__name__}_learning_rate", *self.learning_rate_space, log=False)
+        params["n_estimators"] = trial.suggest_int(f"{self.__class__.__name__}_n_estimators", **dict(self.n_estimators_space))
+        params["learning_rate"] = trial.suggest_float(f"{self.__class__.__name__}_learning_rate", **dict(self.learning_rate_space))
         params["algorithm"] = trial.suggest_categorical(f"{self.__class__.__name__}_algorithm", self.algorithm_space)
-        params["random_state"] = trial.suggest_int(f"{self.__class__.__name__}_random_state", *self.random_state_space, log=False)
+        params["random_state"] = trial.suggest_int(f"{self.__class__.__name__}_random_state", **dict(self.random_state_space))
         
         return params
     
@@ -145,76 +146,76 @@ class AdaBoostClassifierTuner(BaseTuner):
 @dataclass
 class GradientBoostingClassifierTuner(BaseTuner):
     loss_space: Iterable[str] = ("log_loss", )
-    learning_rate_space: Iterable[float] = (0.001, 1.0)
-    n_estimators_space: Iterable[int] = (1, 100)
-    subsample_space: Iterable[float] = (0.1, 1.0)
+    learning_rate_space: Dict[str, Any] = MappingProxyType({"low":0.001, "high":1.0, "step":None, "log":True})
+    n_estimators_space: Dict[str, Any] = MappingProxyType({"low":1, "high":100, "step":1, "log":True})
+    subsample_space: Dict[str, Any] = MappingProxyType({"low":0.1, "high":1.0, "step":None, "log":False})
     criterion_space: Iterable[str] = ("friedman_mse", "squared_error")
-    min_samples_split_space: Iterable[Union[int, float]] = (0.1, 1.0)
-    min_samples_leaf_space: Iterable[Union[int, float]] = (0.1, 1.0)
-    min_weight_fraction_leaf_space: Iterable[float] = (0.0, 0.5)
+    min_samples_split_space: Dict[str, Any] = MappingProxyType({"low":0.1, "high":1.0, "step":None, "log":False})
+    min_samples_leaf_space: Dict[str, Any] = MappingProxyType({"low":0.1, "high":1.0, "step":None, "log":False})
+    min_weight_fraction_leaf_space: Dict[str, Any] = MappingProxyType({"low":0.0, "high":0.5, "step":None, "log":False})
     set_max_depth_space: Iterable[bool] = (True, False)
-    max_depth_space: Iterable[int] = (10, 2000)
-    min_impurity_decrease_space: Iterable[float] = (0.0, 1.0)
+    max_depth_space: Dict[str, Any] = MappingProxyType({"low":10, "high":2000, "step":1, "log":True})
+    min_impurity_decrease_space: Dict[str, Any] = MappingProxyType({"low":0.0, "high":1.0, "step":None, "log":False})
     init_space: Iterable[Optional[object]] = (None, )
     max_features_space: Iterable[str] = ("sqrt", "log2")
     set_max_leaf_nodes_space: Iterable[bool] = (True, False)
-    max_leaf_nodes_space: Iterable[Optional[int]] = (1, 1000)
-    validation_fraction_space: Iterable[float] = (0.1, 0.5)
+    max_leaf_nodes_space: Iterable[Optional[int]] = MappingProxyType({"low":1, "high":1000, "step":1, "log":True})
+    validation_fraction_space: Dict[str, Any] = MappingProxyType({"low":0.1, "high":0.5, "step":None, "log":False})
     set_n_iter_no_change_space:Iterable[bool] = (True, False)
-    n_iter_no_change_space: Iterable[int] = (1, 100)
-    random_state_space: Iterable[int] = (0, 10000)
-    tol_space: Iterable[float] = (1e-6, 1e-3)
-    ccp_alpha_space: Iterable[float] = (0.0, 1.0)
+    n_iter_no_change_space: Dict[str, Any] = MappingProxyType({"low":1, "high":100, "step":1, "log":True})
+    random_state_space: Dict[str, Any] = MappingProxyType({"low":1, "high":10000, "step":1, "log":True})
+    tol_space: Dict[str, Any] = MappingProxyType({"low":1e-6, "high":1e-3, "step":None, "log":True})
+    ccp_alpha_space: Dict[str, Any] = MappingProxyType({"low":0.0, "high":1.0, "step":None, "log":False})
     
     def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
         super().sample_params(trial)        
 
         params = {}
         params["loss"] = trial.suggest_categorical(f"{self.__class__.__name__}_loss", self.loss_space)
-        params["learning_rate"] = trial.suggest_float(f"{self.__class__.__name__}_learning_rate", *self.learning_rate_space, log=False)
-        params["n_estimators"] = trial.suggest_int(f"{self.__class__.__name__}_n_estimators", *self.n_estimators_space, log=False)
-        params["subsample"] = trial.suggest_float(f"{self.__class__.__name__}_subsample", *self.subsample_space, log=False)
+        params["learning_rate"] = trial.suggest_float(f"{self.__class__.__name__}_learning_rate", **dict(self.learning_rate_space))
+        params["n_estimators"] = trial.suggest_int(f"{self.__class__.__name__}_n_estimators", **dict(self.n_estimators_space))
+        params["subsample"] = trial.suggest_float(f"{self.__class__.__name__}_subsample", **dict(self.subsample_space))
         params["criterion"] = trial.suggest_categorical(f"{self.__class__.__name__}_criterion", self.criterion_space)
         if self.is_space_type(self.min_samples_split_space, float):
-            params["min_samples_split"] = trial.suggest_float(f"{self.__class__.__name__}_min_samples_split", *self.min_samples_split_space, log=False)
+            params["min_samples_split"] = trial.suggest_float(f"{self.__class__.__name__}_min_samples_split", **dict(self.min_samples_split_space))
         else:
-            params["min_samples_split"] = trial.suggest_int(f"{self.__class__.__name__}_min_samples_split", *self.min_samples_split_space, log=False)
+            params["min_samples_split"] = trial.suggest_int(f"{self.__class__.__name__}_min_samples_split", **dict(self.min_samples_split_space))
 
         if self.is_space_type(self.min_samples_leaf_space, float):
-            params["min_samples_leaf"] = trial.suggest_float(f"{self.__class__.__name__}_min_samples_leaf", *self.min_samples_leaf_space, log=False)
+            params["min_samples_leaf"] = trial.suggest_float(f"{self.__class__.__name__}_min_samples_leaf", **dict(self.min_samples_leaf_space))
         else:
-            params["min_samples_leaf"] = trial.suggest_int(f"{self.__class__.__name__}_min_samples_leaf", *self.min_samples_leaf_space, log=False)
+            params["min_samples_leaf"] = trial.suggest_int(f"{self.__class__.__name__}_min_samples_leaf", **dict(self.min_samples_leaf_space))
 
-        params["min_weight_fraction_leaf"] = trial.suggest_float(f"{self.__class__.__name__}_min_weight_fraction_leaf", *self.min_weight_fraction_leaf_space, log=False)
+        params["min_weight_fraction_leaf"] = trial.suggest_float(f"{self.__class__.__name__}_min_weight_fraction_leaf", **dict(self.min_weight_fraction_leaf_space))
 
         set_max_depth = trial.suggest_categorical(f"{self.__class__.__name__}_set_max_depth", self.set_max_depth_space)
         if set_max_depth:
-            params["max_depth"] = trial.suggest_int(f"{self.__class__.__name__}_max_depth", *self.max_depth_space, log=False)
+            params["max_depth"] = trial.suggest_int(f"{self.__class__.__name__}_max_depth", **dict(self.max_depth_space))
 
-        params["min_impurity_decrease"] = trial.suggest_float(f"{self.__class__.__name__}_min_impurity_decrease", *self.min_impurity_decrease_space)
+        params["min_impurity_decrease"] = trial.suggest_float(f"{self.__class__.__name__}_min_impurity_decrease", **dict(self.min_impurity_decrease_space))
         params["init"] = trial.suggest_categorical(f"{self.__class__.__name__}_init", self.init_space)
 
         if self.is_valid_categorical_space(self.max_features_space):
             params["max_features"] = trial.suggest_categorical(f"{self.__class__.__name__}_max_features", self.max_features_space)
         else:
             if self.is_valid_float_space(self.max_features_space):
-                params["max_features"] = trial.suggest_float(f"{self.__class__.__name__}_max_features", *self.max_features_space, log=False)
+                params["max_features"] = trial.suggest_float(f"{self.__class__.__name__}_max_features", **dict(self.max_features_space))
             else:
-                params["max_features"] = trial.suggest_int(f"{self.__class__.__name__}_max_features", *self.max_features_space, log=False)
+                params["max_features"] = trial.suggest_int(f"{self.__class__.__name__}_max_features", **dict(self.max_features_space))
 
         set_max_leaf_nodes = trial.suggest_categorical(f"{self.__class__.__name__}_set_max_leaf_nodes", self.set_max_leaf_nodes_space)
         if set_max_leaf_nodes:
-            params["max_leaf_nodes"] = trial.suggest_int(f"{self.__class__.__name__}_max_leaf_nodes", *self.max_leaf_nodes_space, log=False)
+            params["max_leaf_nodes"] = trial.suggest_int(f"{self.__class__.__name__}_max_leaf_nodes", **dict(self.max_leaf_nodes_space))
 
-        params["validation_fraction"] = trial.suggest_float(f"{self.__class__.__name__}_validation_fraction", *self.validation_fraction_space, log=False)
+        params["validation_fraction"] = trial.suggest_float(f"{self.__class__.__name__}_validation_fraction", **dict(self.validation_fraction_space))
 
         set_n_iter_no_change = trial.suggest_categorical(f"{self.__class__.__name__}_set_n_iter_no_change", self.set_n_iter_no_change_space)
         if set_n_iter_no_change:
-            params["n_iter_no_change"] = trial.suggest_int(f"{self.__class__.__name__}_n_iter_no_change", *self.n_iter_no_change_space, log=False)
-            params["random_state"] = trial.suggest_int(f"{self.__class__.__name__}_random_state", *self.random_state_space, log=False)
+            params["n_iter_no_change"] = trial.suggest_int(f"{self.__class__.__name__}_n_iter_no_change", **dict(self.n_iter_no_change_space))
+            params["random_state"] = trial.suggest_int(f"{self.__class__.__name__}_random_state", **dict(self.random_state_space))
 
-        params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.tol_space, log=False)
-        params["ccp_alpha"] = trial.suggest_float(f"{self.__class__.__name__}_ccp_alpha", *self.ccp_alpha_space, log=False)
+        params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", **dict(self.tol_space))
+        params["ccp_alpha"] = trial.suggest_float(f"{self.__class__.__name__}_ccp_alpha", **dict(self.ccp_alpha_space))
         
         return params
     
@@ -230,35 +231,35 @@ class GradientBoostingClassifierTuner(BaseTuner):
 @dataclass
 class BaggingClassifierTuner(BaseTuner):
     estimator_space: Iterable[Optional[object]] = (None, )
-    n_estimators_space: Iterable[int] = (1, 100)
-    max_samples_space: Iterable[Union[int, float]] = (0.1, 1.0)
-    max_features_space: Iterable[Union[int, float]] = (0.1, 1.0)
+    n_estimators_space: Dict[str, Any] = MappingProxyType({"low":1, "high":100, "step":1, "log":True})
+    max_samples_space: Dict[str, Any] = MappingProxyType({"low":0.1, "high":1.0, "step":None, "log":False})
+    max_features_space: Dict[str, Any] = MappingProxyType({"low":0.1, "high":1.0, "step":None, "log":False})
     bootstrap_space: Iterable[bool] = (True, False)
     bootstrap_features_space: Iterable[bool] = (True, False)
     oob_score_space: Iterable[bool] = (True, False)
-    random_state_space: Iterable[int] = (0, 10000)
+    random_state_space: Dict[str, Any] = MappingProxyType({"low":1, "high":10000, "step":1, "log":True})
     
     def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
         super().sample_params(trial)
 
         params = {}
         params["estimator"] = trial.suggest_categorical(f"{self.__class__.__name__}_estimator", self.estimator_space)
-        params["n_estimators"] = trial.suggest_int(f"{self.__class__.__name__}_n_estimators", *self.n_estimators_space, log=False)
+        params["n_estimators"] = trial.suggest_int(f"{self.__class__.__name__}_n_estimators", **dict(self.n_estimators_space))
 
         if self.is_space_type(self.max_samples_space, float):
-            params["max_samples"] = trial.suggest_float(f"{self.__class__.__name__}_max_samples", *self.max_samples_space, log=False)
+            params["max_samples"] = trial.suggest_float(f"{self.__class__.__name__}_max_samples", **dict(self.max_samples_space))
         else:
-            params["max_samples"] = trial.suggest_int(f"{self.__class__.__name__}_max_samples", *self.max_samples_space, log=False)
+            params["max_samples"] = trial.suggest_int(f"{self.__class__.__name__}_max_samples", **dict(self.max_samples_space))
 
         if self.is_space_type(self.max_features_space, float):
-            params["max_features"] = trial.suggest_float(f"{self.__class__.__name__}_max_features", *self.max_features_space, log=False)
+            params["max_features"] = trial.suggest_float(f"{self.__class__.__name__}_max_features", **dict(self.max_features_space))
         else:
-            params["max_features"] = trial.suggest_int(f"{self.__class__.__name__}_max_features", *self.max_features_space, log=False)
+            params["max_features"] = trial.suggest_int(f"{self.__class__.__name__}_max_features", **dict(self.max_features_space))
 
         params["bootstrap"] = trial.suggest_categorical(f"{self.__class__.__name__}_bootstrap", self.bootstrap_space)
         params["bootstrap_features"] = trial.suggest_categorical(f"{self.__class__.__name__}_bootstrap_features", self.bootstrap_features_space)
         params["oob_score"] = trial.suggest_categorical(f"{self.__class__.__name__}_oob_score", self.oob_score_space)
-        params["random_state"] = trial.suggest_int(f"{self.__class__.__name__}_random_state", *self.random_state_space, log=False)
+        params["random_state"] = trial.suggest_int(f"{self.__class__.__name__}_random_state", **dict(self.random_state_space))
 
         return params
     
@@ -274,24 +275,24 @@ class BaggingClassifierTuner(BaseTuner):
 @dataclass
 class HistGradientBoostingClassifierTuner(BaseTuner):
     loss_space: Iterable[str] = ("log_loss", )
-    learning_rate_space: Iterable[float] = (0.001, 1.0)
-    max_iter_space: Iterable[int] = (10, 1000)
+    learning_rate_space: Dict[str, Any] = MappingProxyType({"low":0.001, "high":1.0, "step":None, "log":True})
+    max_iter_space: Dict[str, Any] = MappingProxyType({"low":10, "high":1000, "step":1, "log":True})
     set_max_leaf_nodes_space: Iterable[bool] = (True, False)
-    max_leaf_nodes_space: Iterable[Optional[int]] = (1, 1000)
+    max_leaf_nodes_space: Iterable[Optional[int]] = MappingProxyType({"low":1, "high":1000, "step":1, "log":True})
     set_max_depth_space: Iterable[bool] = (True, False)
-    max_depth_space: Iterable[int] = (10, 2000)
-    min_samples_leaf_space: Iterable[int] = (1, 200)
-    l2_regularization_space: Iterable[float] = (0.0, 1.0)
-    max_bins_space: Iterable[int] = (10, 255)
+    max_depth_space: Dict[str, Any] = MappingProxyType({"low":10, "high":2000, "step":1, "log":True})
+    min_samples_leaf_space: Dict[str, Any] = MappingProxyType({"low":1, "high":200, "step":1, "log":True})
+    l2_regularization_space: Dict[str, Any] = MappingProxyType({"low":0.0, "high":1.0, "step":None, "log":False})
+    max_bins_space: Dict[str, Any] = MappingProxyType({"low":10, "high":255, "step":1, "log":True})
     categorical_features_space: Iterable[Any] = (None, )
     monotonic_cst_space: Iterable[Any] = (None, )
     interaction_cst_space: Iterable[Any] = (None, )
     early_stopping_space: Iterable[bool] = ("auto", True, False)
     scoring_space: Iterable[Optional[Union[str, Callable]]] = ("loss", None)
-    validation_fraction_space: Iterable[float] = (0.1, 0.5)
-    n_iter_no_change_space: Iterable[int] = (1, 100)
-    tol_space: Iterable[float] = (1e-6, 1e-3)
-    random_state_space: Iterable[int] = (0, 10000)
+    validation_fraction_space: Dict[str, Any] = MappingProxyType({"low":0.1, "high":0.5, "step":None, "log":True})
+    n_iter_no_change_space: Dict[str, Any] = MappingProxyType({"low":1, "high":100, "step":1, "log":True})
+    tol_space: Dict[str, Any] = MappingProxyType({"low":1e-6, "high":1e-3, "step":None, "log":True})
+    random_state_space: Dict[str, Any] = MappingProxyType({"low":1, "high":10000, "step":1, "log":True})
     class_weight_space: Iterable[str] = ("balanced", )
     
     def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
@@ -299,29 +300,29 @@ class HistGradientBoostingClassifierTuner(BaseTuner):
 
         params = {}
         params["loss"] = trial.suggest_categorical(f"{self.__class__.__name__}_loss", self.loss_space)
-        params["learning_rate"] = trial.suggest_float(f"{self.__class__.__name__}_learning_rate", *self.learning_rate_space, log=False)
-        params["max_iter"] = trial.suggest_int(f"{self.__class__.__name__}_max_iter", *self.max_iter_space, log=False)
+        params["learning_rate"] = trial.suggest_float(f"{self.__class__.__name__}_learning_rate", **dict(self.learning_rate_space))
+        params["max_iter"] = trial.suggest_int(f"{self.__class__.__name__}_max_iter", **dict(self.max_iter_space))
         
         set_max_leaf_nodes = trial.suggest_categorical(f"{self.__class__.__name__}_set_max_leaf_nodes", self.set_max_leaf_nodes_space)
         if set_max_leaf_nodes:
-            params["max_leaf_nodes"] = trial.suggest_int(f"{self.__class__.__name__}_max_leaf_nodes", *self.max_leaf_nodes_space, log=False)
+            params["max_leaf_nodes"] = trial.suggest_int(f"{self.__class__.__name__}_max_leaf_nodes", **dict(self.max_leaf_nodes_space))
         
         set_max_depth = trial.suggest_categorical(f"{self.__class__.__name__}_set_max_depth", self.set_max_depth_space)
         if set_max_depth:
-            params["max_depth"] = trial.suggest_int(f"{self.__class__.__name__}_max_depth", *self.max_depth_space, log=False)
+            params["max_depth"] = trial.suggest_int(f"{self.__class__.__name__}_max_depth", **dict(self.max_depth_space))
             
-        params["min_samples_leaf"] = trial.suggest_int(f"{self.__class__.__name__}_min_samples_leaf", *self.min_samples_leaf_space, log=False)
-        params["l2_regularization"] = trial.suggest_float(f"{self.__class__.__name__}_l2_regularization", *self.l2_regularization_space, log=False)
-        params["max_bins"] = trial.suggest_int(f"{self.__class__.__name__}_max_bins", *self.max_bins_space, log=False)
+        params["min_samples_leaf"] = trial.suggest_int(f"{self.__class__.__name__}_min_samples_leaf", **dict(self.min_samples_leaf_space))
+        params["l2_regularization"] = trial.suggest_float(f"{self.__class__.__name__}_l2_regularization", **dict(self.l2_regularization_space))
+        params["max_bins"] = trial.suggest_int(f"{self.__class__.__name__}_max_bins", **dict(self.max_bins_space))
         params["categorical_features"] = trial.suggest_categorical(f"{self.__class__.__name__}_categorical_features", self.categorical_features_space)
         params["monotonic_cst"] = trial.suggest_categorical(f"{self.__class__.__name__}_monotonic_cst", self.monotonic_cst_space)
         params["interaction_cst"] = trial.suggest_categorical(f"{self.__class__.__name__}_interaction_cst", self.interaction_cst_space)
         params["early_stopping"] = trial.suggest_categorical(f"{self.__class__.__name__}_early_stopping", self.early_stopping_space)
         params["scoring"] = trial.suggest_categorical(f"{self.__class__.__name__}_scoring", self.scoring_space)
-        params["validation_fraction"] = trial.suggest_float(f"{self.__class__.__name__}_validation_fraction", *self.validation_fraction_space, log=False)
-        params["n_iter_no_change"] = trial.suggest_int(f"{self.__class__.__name__}_n_iter_no_change", *self.n_iter_no_change_space, log=False)
-        params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.tol_space, log=False)
-        params["random_state"] = trial.suggest_int(f"{self.__class__.__name__}_random_state", *self.random_state_space, log=False)
+        params["validation_fraction"] = trial.suggest_float(f"{self.__class__.__name__}_validation_fraction", **dict(self.validation_fraction_space))
+        params["n_iter_no_change"] = trial.suggest_int(f"{self.__class__.__name__}_n_iter_no_change", **dict(self.n_iter_no_change_space))
+        params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", **dict(self.tol_space))
+        params["random_state"] = trial.suggest_int(f"{self.__class__.__name__}_random_state", **dict(self.random_state_space))
         params["class_weight"] = trial.suggest_categorical(f"{self.__class__.__name__}_class_weight", self.class_weight_space)
 
         return params

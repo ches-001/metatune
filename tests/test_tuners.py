@@ -57,11 +57,6 @@ class TestLinearSVR(BaseTest):
     task: str = "regression"
 
 
-class TestExtraTreeClassifier(BaseTest):
-    model: BaseTuner = tune_classifier.ExtraTreeClassifierTuner()
-    task: str = "classification"
-
-
 class TestExtraTreeRegressor(BaseTest):
     model: BaseTuner = tune_regressor.ExtraTreeRegressorTuner()
     task: str = "regression"
@@ -90,11 +85,6 @@ class TestExtraTreesRegressor(BaseTest):
 class TestExtraTreeClassifier(BaseTest):
     model: BaseTuner = tune_classifier.ExtraTreeClassifierTuner()
     task: str = "classification"
-
-
-class TestExtraTreeRegressor(BaseTest):
-    model: BaseTuner = tune_regressor.ExtraTreeRegressorTuner()
-    task: str = "regression"
 
 
 class TestAdaBoostClassifier(BaseTest):
@@ -222,6 +212,7 @@ class TestHistGradientBoostingClassifier(BaseTest):
 class TestHistGradientBoostingRegressor(BaseTest):
     model: BaseTuner = tune_regressor.HistGradientBoostingRegressorTuner()
     task: str = "regression"
+
 
 class TestLars(BaseTest):
     model: BaseTuner = tune_regressor.LarsTuner()

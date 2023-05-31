@@ -1,7 +1,8 @@
 from baseline import BaseTuner
 from optuna.trial import Trial
 from dataclasses import dataclass
-from typing import Iterable, Optional, Dict, Any, Union, Callable
+from types import MappingProxyType
+from typing import Iterable, Optional, Dict, Any, Callable
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis, QuadraticDiscriminantAnalysis
 
 
@@ -9,7 +10,7 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis, QuadraticD
 class LDAClassifierTuner(BaseTuner):
     solver_space: Iterable[str] = ("svd", "lsqr", "eigen")
     shrinkage_space: Iterable[str] = (None, "auto")
-    tol_space: Iterable[float] = (1e-10, 1e-1)
+    tol_space: Dict[str, Any] = MappingProxyType({"low":1e-6, "high":1e-3, "step":None, "log":True})
 
     def sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
         super().sample_params(trial)
@@ -19,9 +20,9 @@ class LDAClassifierTuner(BaseTuner):
         if self.is_valid_categorical_space(self.shrinkage_space):
             params["shrinkage"] = trial.suggest_categorical(f"{self.__class__.__name__}_shrinkage", self.shrinkage_space)
         else:
-            params["shrinkage"] = trial.suggest_float(f"{self.__class__.__name__}_shrinkage", *self.shrinkage_space, log=False)
+            params["shrinkage"] = trial.suggest_float(f"{self.__class__.__name__}_shrinkage", **dict(self.shrinkage_space))
 
-        params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.tol_space, log=True)
+        params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", **dict(self.tol_space))
 
         return params
 
@@ -38,15 +39,15 @@ class LDAClassifierTuner(BaseTuner):
 
 @dataclass
 class QDAClassifierTuner(BaseTuner):
-    reg_param_space: Iterable[float] = (0.0, 1.0)
-    tol_space: Iterable[float] = (1e-10, 1e-1)
+    reg_param_space: Dict[str, Any] = MappingProxyType({"low":0.1, "high":1.0, "step":None, "log":True})
+    tol_space: Dict[str, Any] = MappingProxyType({"low":1e-6, "high":1e-3, "step":None, "log":True})
 
     def sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
         super().sample_params(trial)
 
         params = {}
-        params["reg_param"] = trial.suggest_float(f"{self.__class__.__name__}_reg_param", *self.reg_param_space, log=False)
-        params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.tol_space, log=True)
+        params["reg_param"] = trial.suggest_float(f"{self.__class__.__name__}_reg_param", **dict(self.reg_param_space))
+        params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", **dict(self.tol_space))
 
         return params
 
