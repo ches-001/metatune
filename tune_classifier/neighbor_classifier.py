@@ -7,7 +7,6 @@ from sklearn.neighbors import KNeighborsClassifier, RadiusNeighborsClassifier, N
 
 @dataclass
 class KNeighborsClassifierTuner(BaseTuner):
-    radius_space: Iterable[int] = (1, 20)
     n_neighbors_space: Iterable[int] = (1, 10)
     weights_space: Iterable[str] = ("uniform", "distance")
     algorithm_space: Iterable[str] = ("ball_tree", "kd_tree", "brute")
@@ -20,7 +19,7 @@ class KNeighborsClassifierTuner(BaseTuner):
 
         params = {}
         params["n_neighbors"] = trial.suggest_categorical(
-            f"{self.__class__.__name__}_n_neighbors", [i for i in range(*self.n_neighbors_space) if i % 2 != 0 and i != 1], log=False)
+            f"{self.__class__.__name__}_n_neighbors", [i for i in range(*self.n_neighbors_space) if i % 2 != 0 and i != 1])
         params["weights"] = trial.suggest_categorical(f"{self.__class__.__name__}_weight", self.weights_space)
         params["algorithm"] = trial.suggest_categorical(f"{self.__class__.__name__}_algorithm", self.algorithm_space)
         params["leaf_size"] = trial.suggest_int(f"{self.__class__.__name__}_leaf_size", *self.leaf_size_space, log=True)
