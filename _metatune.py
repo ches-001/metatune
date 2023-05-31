@@ -3,6 +3,7 @@ from baseline import BaseTuner, TrialCheckMixin
 from optuna.trial import Trial, FrozenTrial
 from tune_regressor import regressor_tuning_entities, regressor_tuner_model_class_dict
 from tune_classifier import classifier_tuning_entities, classifier_tuner_model_class_dict
+from utils import make_default_tuner_type_mutable
 from typing import Iterable, Tuple, Dict, Union, Optional, Any, Callable
 
 
@@ -145,6 +146,11 @@ class MetaTune(TrialCheckMixin):
         if tuner is None:
             return
         
+        # by default some tuner attributes are of MappingProxyType objects. This wrapper was essential
+        # for sustaining the immutable nature of default class attributes of dataclasses, however we
+        # want to make these types mutable once more to avoid implementation issues.
+        tuner = make_default_tuner_type_mutable(tuner)
+
         if not isinstance(tuner, BaseTuner):
             raise ValueError(f"{tuner} most be of type or extend from {BaseTuner}")
         

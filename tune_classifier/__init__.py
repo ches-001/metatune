@@ -7,6 +7,7 @@ from .naive_bayes_classifier import *
 from .neighbor_classifier import *
 from .mlp_classifier import *
 from .discriminant_analysis_classifier import *
+from utils import make_default_tuner_type_mutable
 from typing import Iterable, Dict, Callable
 
 
@@ -22,6 +23,8 @@ __modules__: Iterable[str] = [
 ]
 
 classifier_tuning_entities: Dict[str, object] = {k:v for k, v in sum(list(map(get_tuner_entities, __modules__)), [])}
+classifier_tuning_entities: Dict[str, object] = dict(
+    map(lambda pair : (pair[0], make_default_tuner_type_mutable(pair[1])), classifier_tuning_entities.items()))
 
 classifier_tuner_model_class_dict: Dict[str, Callable] = {
     k:v for _dict in map(get_tuner_model_dict, __modules__) for k, v in _dict.items()
