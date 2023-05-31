@@ -7,11 +7,10 @@ from sklearn.neighbors import KNeighborsClassifier, RadiusNeighborsClassifier, N
 
 @dataclass
 class KNeighborsClassifierTuner(BaseTuner):
-    radius_space: Iterable[int] = (1, 20)
     n_neighbors_space: Iterable[int] = (1, 10)
     weights_space: Iterable[str] = ("uniform", "distance")
     algorithm_space: Iterable[str] = ("ball_tree", "kd_tree", "brute")
-    leaf_size_space: Iterable[int] = (2, 60)
+    leaf_size_space: Iterable[int] = (2, 100)
     p_space: Iterable[int] = (3, 8)
     metric_space: Iterable[str] = ("cityblock", "cosine", "euclidean", "manhattan", "minkowski")
     
@@ -20,11 +19,11 @@ class KNeighborsClassifierTuner(BaseTuner):
 
         params = {}
         params["n_neighbors"] = trial.suggest_categorical(
-            "n_neighbors", [i for i in range(*self.n_neighbors_space) if i % 2 != 0 and i != 1])
+            f"{self.__class__.__name__}_n_neighbors", [i for i in range(*self.n_neighbors_space) if i % 2 != 0 and i != 1])
         params["weights"] = trial.suggest_categorical(f"{self.__class__.__name__}_weight", self.weights_space)
         params["algorithm"] = trial.suggest_categorical(f"{self.__class__.__name__}_algorithm", self.algorithm_space)
-        params["leaf_size"] = trial.suggest_int(f"{self.__class__.__name__}_leaf_size", *self.leaf_size_space)
-        params["p"] = trial.suggest_int(f"{self.__class__.__name__}_p", *self.p_space)
+        params["leaf_size"] = trial.suggest_int(f"{self.__class__.__name__}_leaf_size", *self.leaf_size_space, log=True)
+        params["p"] = trial.suggest_int(f"{self.__class__.__name__}_p", *self.p_space, log=False)
         params["metric"] = trial.suggest_categorical(f"{self.__class__.__name__}_metric", self.metric_space)
 
         return params
@@ -46,7 +45,7 @@ class RadiusNeighborsClassifierTuner(BaseTuner):
     radius_space: Iterable[int] = (1, 10)
     weight_space: Iterable[str] = ("uniform", "distance")
     algorithm_space: Iterable[str] = ("ball_tree", "kd_tree", "brute")
-    leaf_size_space: Iterable[int] = (2, 60)
+    leaf_size_space: Iterable[int] = (2, 100)
     p_space: Iterable[int] = (3, 10)
     metric_space: Iterable[str] = ("cityblock", "cosine", "euclidean", "manhattan", "minkowski")
     outlier_label_space: Iterable[str] = (None, "most_frequent")
@@ -55,11 +54,11 @@ class RadiusNeighborsClassifierTuner(BaseTuner):
         super().sample_params(trial)
 
         params = {}
-        params["radius"] = trial.suggest_int(f"{self.__class__.__name__}_radius", *self.radius_space)
+        params["radius"] = trial.suggest_int(f"{self.__class__.__name__}_radius", *self.radius_space, log=False)
         params["weights"] = trial.suggest_categorical(f"{self.__class__.__name__}_weight", self.weight_space)
         params["algorithm"] = trial.suggest_categorical(f"{self.__class__.__name__}_algorithm", self.algorithm_space)
-        params["leaf_size"] = trial.suggest_int(f"{self.__class__.__name__}_leaf_size", *self.leaf_size_space)
-        params["p"] = trial.suggest_int(f"{self.__class__.__name__}_p", *self.p_space)
+        params["leaf_size"] = trial.suggest_int(f"{self.__class__.__name__}_leaf_size", *self.leaf_size_space, log=True)
+        params["p"] = trial.suggest_int(f"{self.__class__.__name__}_p", *self.p_space, log=False)
         params["metric"] = trial.suggest_categorical(f"{self.__class__.__name__}_metric", self.metric_space)
         params["outlier_label"] = trial.suggest_categorical(f"{self.__class__.__name__}_outlier_label", self.outlier_label_space)
 
@@ -87,7 +86,7 @@ class NearestCentroidClassifierTuner(BaseTuner):
 
         params = {}
         params["metric"] = trial.suggest_categorical(f"{self.__class__.__name__}_metric", self.metric_space)
-        params["shrink_threshold"] = trial.suggest_float(f"{self.__class__.__name__}_shrink_threshold", *self.shrink_threshold_space)
+        params["shrink_threshold"] = trial.suggest_float(f"{self.__class__.__name__}_shrink_threshold", *self.shrink_threshold_space, log=False)
 
         return params
 

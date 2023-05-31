@@ -71,7 +71,7 @@ class SampledModelEvaluationMixin:
 
         try:
             model_class(**params).fit(X, y)
-        except ValueError as e:
+        except (ValueError, NotImplementedError) as e:
             raise optuna.exceptions.TrialPruned(e)
         
         model = model_class(**params)
