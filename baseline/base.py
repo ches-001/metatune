@@ -7,7 +7,7 @@ from typing import Optional, Dict, Any, Tuple, Iterable, Callable
 
 class SpaceTypeValidationMixin:
     def is_space_type(self, space: Iterable, type: Callable) -> bool:
-        return all(list(map(lambda x: isinstance(x, type), space)))
+        return all(list(map(lambda x: isinstance(x, type), space[0:2])))
     
     def is_valid_int_space(self, space: Iterable) -> bool:
         return self.is_space_type(space, int) and len(space) == 2
