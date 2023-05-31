@@ -206,7 +206,6 @@ class GradientBoostingRegressorTuner(BaseTuner):
             params["max_leaf_nodes"] = trial.suggest_int(f"{self.__class__.__name__}_max_leaf_nodes", *self.max_leaf_nodes_space, log=False)
 
         params["alpha"] = trial.suggest_float(f"{self.__class__.__name__}_alpha", *self.alpha_space, log=False)
-        params["max_leaf_nodes"] = trial.suggest_int(f"{self.__class__.__name__}_max_leaf_nodes", *self.max_leaf_nodes_space, log=False)
         params["validation_fraction"] = trial.suggest_float(f"{self.__class__.__name__}_validation_fraction", *self.validation_fraction_space, log=False)
         
         set_n_iter_no_change = trial.suggest_categorical(f"{self.__class__.__name__}_set_n_iter_no_change", self.set_n_iter_no_change_space)

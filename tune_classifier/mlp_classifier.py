@@ -36,34 +36,34 @@ class MLPClassifierTuner(BaseTuner):
         params = {}
         n_hidden = trial.suggest_int(f"{self.__class__.__name__}_n_hidden", *self.n_hidden_space)
         params["hidden_layer_sizes"] = tuple(trial.suggest_int(f"hidden_layer_sizes_{i}", 
-                                                          *self.hidden_layer_sizes_space) 
+                                                          *self.hidden_layer_sizes_space, log=False) 
                                                           for i in range(n_hidden))
         params["activation"] = trial.suggest_categorical(f"{self.__class__.__name__}_activation", self.activation_space)
         params["solver"] = trial.suggest_categorical(f"{self.__class__.__name__}_solver", self.solver_space)
-        params["alpha"] = trial.suggest_float(f"{self.__class__.__name__}_alpha", *self.alpha_space)
-        params["batch_size"] = trial.suggest_int(f"{self.__class__.__name__}_batch_size", *self.batch_size_space)
+        params["alpha"] = trial.suggest_float(f"{self.__class__.__name__}_alpha", *self.alpha_space, log=False)
+        params["batch_size"] = trial.suggest_int(f"{self.__class__.__name__}_batch_size", *self.batch_size_space, log=False)
         params["learning_rate"] = trial.suggest_categorical(f"{self.__class__.__name__}_learning_rate", self.learning_rate_space)
-        params["learning_rate_init"] = trial.suggest_float(f"{self.__class__.__name__}_learning_rate_init", *self.learning_rate_init_space)
+        params["learning_rate_init"] = trial.suggest_float(f"{self.__class__.__name__}_learning_rate_init", *self.learning_rate_init_space, log=False)
 
         if params["learning_rate"] == "invscaling" and params["solver"] == "sgd":
-            params["power_t"] = trial.suggest_float(f"{self.__class__.__name__}_power_t", *self.power_t_space)
+            params["power_t"] = trial.suggest_float(f"{self.__class__.__name__}_power_t", *self.power_t_space, log=False)
 
-        params["max_iter"] = trial.suggest_int(f"{self.__class__.__name__}_max_iter", *self.max_iter_space)
+        params["max_iter"] = trial.suggest_int(f"{self.__class__.__name__}_max_iter", *self.max_iter_space, log=False)
         params["shuffle"] = trial.suggest_categorical(f"{self.__class__.__name__}_shuffle", self.shuffle_space)
-        params["random_state"] = trial.suggest_int(f"{self.__class__.__name__}_random_state", *self.random_state_space)
-        params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.tol_space)
+        params["random_state"] = trial.suggest_int(f"{self.__class__.__name__}_random_state", *self.random_state_space, log=False)
+        params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.tol_space, log=False)
 
         if params["solver"] == "sgd":
-            params["momentum"] = trial.suggest_float(f"{self.__class__.__name__}_momentum", *self.momentum_space)
+            params["momentum"] = trial.suggest_float(f"{self.__class__.__name__}_momentum", *self.momentum_space, log=False)
             params["nesterovs_momentum"] = trial.suggest_categorical(f"{self.__class__.__name__}_nesterovs_momentum", self.nesterovs_momentum_space)
 
         params["early_stopping"] = trial.suggest_categorical(f"{self.__class__.__name__}_early_stopping", self.early_stopping_space)
-        params["validation_fraction"] = trial.suggest_float(f"{self.__class__.__name__}_validation_fraction", *self.validation_fraction_space)
-        params["beta_1"] = trial.suggest_float(f"{self.__class__.__name__}_beta_1", *self.beta_1_space)
-        params["beta_2"] = trial.suggest_float(f"{self.__class__.__name__}_beta_2", *self.beta_2_space)
-        params["epsilon"] = trial.suggest_float(f"{self.__class__.__name__}_epsilon", *self.epsilon_space)
-        params["n_iter_no_change"] = trial.suggest_int(f"{self.__class__.__name__}_n_iter_no_change", *self.n_iter_no_change_space)
-        params["max_fun"] = trial.suggest_int(f"{self.__class__.__name__}_max_fun", *self.max_fun_space)
+        params["validation_fraction"] = trial.suggest_float(f"{self.__class__.__name__}_validation_fraction", *self.validation_fraction_space, log=False)
+        params["beta_1"] = trial.suggest_float(f"{self.__class__.__name__}_beta_1", *self.beta_1_space, log=False)
+        params["beta_2"] = trial.suggest_float(f"{self.__class__.__name__}_beta_2", *self.beta_2_space, log=False)
+        params["epsilon"] = trial.suggest_float(f"{self.__class__.__name__}_epsilon", *self.epsilon_space, log=False)
+        params["n_iter_no_change"] = trial.suggest_int(f"{self.__class__.__name__}_n_iter_no_change", *self.n_iter_no_change_space, log=False)
+        params["max_fun"] = trial.suggest_int(f"{self.__class__.__name__}_max_fun", *self.max_fun_space, log=False)
         return params
 
     def sample_model(self, trial: Optional[Trial] = None) -> Any:

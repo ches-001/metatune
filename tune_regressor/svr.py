@@ -56,7 +56,7 @@ class LinearSVRTuner(BaseTuner):
         super().sample_params(trial)
         
         params = {}
-        params["epsilon"] = trial.suggest_float(f"{self.__class__.__name__}_epsilon", *self.tol_space, log=False)
+        params["epsilon"] = trial.suggest_float(f"{self.__class__.__name__}_epsilon", *self.epsilon_space, log=False)
         params["tol"] = trial.suggest_float(f"{self.__class__.__name__}_tol", *self.tol_space, log=False)
         params["C"] = trial.suggest_float(f"{self.__class__.__name__}_C", *self.C_space, log=False)
         params["loss"] = trial.suggest_categorical(f"{self.__class__.__name__}_loss", self.loss_space)
