@@ -182,7 +182,7 @@ class MetaTune(TrialCheckMixin):
 
 
     def _prepare_custom_tuners(self):
-        if self.custom_tuners is None:
+        if not self.custom_tuners:
             return
         
         _search_space: Dict[str, BaseTuner] = {}
@@ -198,8 +198,8 @@ class MetaTune(TrialCheckMixin):
             self.tuner_model_class_map: Dict[str, Callable] = _tuner_model_class_map
 
         else:
-            self.search_space: Dict[str, BaseTuner] = {**_search_space, **self.search_space}
-            self.tuner_model_class_map: Dict[str, Callable] = {**_tuner_model_class_map, **self.tuner_model_class_map}
+            self.search_space.update(_search_space)
+            self.tuner_model_class_map.update(_tuner_model_class_map)
 
         
     def _get_single_tuner(self, tuner: BaseTuner) -> Tuple[Dict[str, BaseTuner], Dict[str, Callable]]:

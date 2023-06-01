@@ -14,14 +14,23 @@ class SpaceTypeValidationMixin:
                 f" To check for categorical types, try using the `is_valid_categorical_space(...)` method"
             )
 
-        if (isinstance(space, dict) or isinstance(space, MappingProxyType)) and len(space) == 4:
-            valid_keys = ["low", "high", "step", "log"]
+        if (isinstance(space, dict) or isinstance(space, MappingProxyType)):
+            valid_keys = ["low", "high"]
             for key in valid_keys:
                 if key not in space.keys():
                     raise ValueError(f"defined non-categorical space is missing key-value '{key}'")
-                
+                                
             if space["low"] > space["high"]:
                 raise ValueError(f"low cannot be greater than high in space: {space}")
+            
+            if "log" in space.keys():
+                if not isinstance(space["log"], bool):
+                    raise TypeError(f"log is expected to be bool type, got {type(space['log'])} instead")
+                
+            if "step" in space.keys():
+                if space["step"] is not None:
+                    if not isinstance(space["step"], float) or not isinstance(space["step"], int):
+                        raise TypeError(f"step is expected to be numerical type, got {type(space['step'])} instead")
             
             return all(list(map(lambda x: isinstance(x, type), [space["low"], space["high"]])))
         
