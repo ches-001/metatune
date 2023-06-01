@@ -88,6 +88,8 @@ sampled_model = metatune.build_sampled_model(study.best_trial)
 <hr>
 In some cases, not all sci-kit-learn models will be compatible with your data. In such cases, you can do one of two things
 
+**NOTE:** A thing to note is that for large datasets, hyperparameter search ought to be used on a subset of the data rather than the entire dataset. The reason for this being that the aim of hyperparameter tuning is not fit all of the data, but rather to sample the parameters that best model the data. After tuning, you can instantiate the sampled model with the corresponding sampled parameters and fine-tune the model on the large dataset, this way you avoid the unnecessary computation required to model the entirety of the available dataset.
+
 <br>
 
 ### 1. Calling the `only_compatible_with_data(...)` method:
