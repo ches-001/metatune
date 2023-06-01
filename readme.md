@@ -1,4 +1,91 @@
 # MetaTune
 
-A metaheuristic search algorithm based model selection and hyperparameter tuning module aimed at getting the 
-most optimum model and corresponding hyperparameters for your data.
+MetaTune framework implements simultaneous model selection and hyperparameter tuning of sci-kit-learn supervised learning algorithms with [optuna](https://github.com/optuna/optuna) implemented metaheuristic search algorithms
+
+<hr>
+
+## Getting Started
+<hr>
+MetaTune implements user customizable tuners for all sci-kit-learn supervised learning algorithms, with it one can easily sampled the best model out of a search space of all sc-kit-learn algorithms and their corresponding hyperparameters with relative with only a few lines of code.
+
+Importing the `MetaTune(...)` class is as easy as:
+
+```python
+from metatune import MetaTune
+
+metatune = MetaTune(task="classification")
+```
+
+We can further use this object to select the machine learning algorithm and the corresponding parameters that best model our data like so:
+
+```python
+import optuna
+from sklearn import datasets
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import f1_score, recall_score, precision_score
+
+
+# load classification dataset
+X, y = datasets.load_iris(return_X_y=True)
+
+# define data scaler
+scaler = MinMaxScaler()
+
+# split data to training and evaluation set
+X_train, X_eval, y_train, y_eval = train_test_split(X, y, random_state=0, shuffle=True)
+
+#scaler features
+scaler.fit(X_train)
+X_train = scaler.transform(X_train)
+X_eval = scaler.transform(X_eval)
+
+
+def objective(trial):
+    model = metatune.sample_models_with_params(trial)
+    model.fit(X_train, y_train)
+
+    pred = model.predict(X_eval)
+    f1 = f1_score(y_eval, pred, average="micro")
+    recall = recall_score(y_eval, pred, average="micro")
+    precision = precision_score(y_eval, pred, average="micro")
+
+    return (f1 + recall + precision) / 3
+
+
+# create optuna study
+study = optuna.create_study(
+    study_name="classifier_model",
+    direction="maximize",
+    pruner=optuna.pruners.MedianPruner(), # pruner is necessary to prune bad parameter combinations of models when sampling
+    sampler=optuna.samplers.TPESampler(),
+)
+
+study.optimize(objective, n_trials=50)
+
+#output
+...
+# [I 2023-06-01 07:19:01,678] Trial 27 finished with value: 0.8947368421052632 and parameters: {'model_tuner': 'AdaBoostClassifierTuner', #'AdaBoostClassifierTuner_estimator': None, 'AdaBoostClassifierTuner_n_estimators': 90, 'AdaBoostClassifierTuner_learning_rate': #              0.12391614619885151, 'AdaBoostClassifierTuner_algorithm': 'SAMME.R', 'AdaBoostClassifierTuner_random_state': 7705}. Best is trial 1 with value: # 0.9736842105263158.
+...
+```
+
+In this task, we hope to find the best classification algorithm and its hyperparameters that best maximize objective, which happens to be the average sum of f1, recall and precision metrics.
+
+After running this, we can retrieve the best optuna trial and build a model out of it for further finetuning with more data, like so:
+
+```python
+sampled_model = metatune.build_sampled_model(study.best_trial)
+```
+**Note** that the models returned are purely sci-kit-learn models, thus the reason the regular `fit(...)` and `predict(...)` methods can be called on them.
+
+
+In some cases, not all sci-kit-learn models will be compatible with your data. In such cases, you can do one of two things
+
+#### 1. Calling the `only_compatible_with_data(...)` method:
+This method takes in three arguments, X, y and probability_score. X and y correspond to the training data, this attempts a data fit on all models (intialised with there default parameters) in the search space, it exempts models that are not compatible to the dataset, hence reducing the search space.
+
+**NOTE:**, Some models may not actually be incompatible with your dataset, and a model may be exempted simply because the default parameter being used raises an exception when an attempt to fit the model on the data is made. so it may not be suitable to use this method in some cases, hence the reason to opt for the second option
+
+
+#### 2. raising an optuna.exceptions.TrialPruned(e)
+
