@@ -161,7 +161,6 @@ This argument is used to specify a list of tuners to exempt from the search spac
 from metatune.tune_classifier import NuSVCTuner
 
 metatune = MetaTune(task="classification", excluded=[NuSVCTuner, "SGDClassifierTuner"])
-
 ```
 <br>
 
