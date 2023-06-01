@@ -122,8 +122,9 @@ This way, instead of terminating the metaheuristic search program, optuna simply
 ## Advanced Configurations
 
 In the `MetaTuner(..)` class, there are four more arguments alongside the `task` argument used for advanced configuration when initialising a `MetaTuner(..)` class, namely: `custom_tuners`, `custom_only`, `excluded` and `single_tuner`.
+<br>
 
-### custom_tuners Argument: ```Optional[Iterable[BaseTuner]] (Default=None)```
+### 1. custom_tuners Argument: ```Optional[Iterable[BaseTuner]] (Default=None)```
 
 The `custom_tuners` argument is used to specify custom tuners or overwrite the default parameter space of existing tuners in the sample space. If you wish to extend or shrink the sample space of a given parameter in tuner, you can do so as shown:
 
@@ -147,12 +148,13 @@ You can view all the tuners in the search space with the `search_space` attribut
 ```python
 metatune.search_space
 ```
+<br>
 
-### custom_only Argument: ```bool (Default=False)```
+### 2. custom_only Argument: ```bool (Default=False)```
 If set to `True`, this argument makes it such that only the list of tuners specified in the `custom_tuners` argument make up the search space
+<br>
 
-
-### excluded: ```Optional[Iterable[Union[str, Callable]]] (default=None)```
+### 3. excluded: ```Optional[Iterable[Union[str, Callable]]] (default=None)```
 This argument is used to specify a list of tuners to exempt from the search space. It takes as value, a list of strings or Callable types corresponding to class names or class of tuners being excluded, it can be used as shown:
 
 ```python
@@ -161,8 +163,9 @@ from metatune.tune_classifier import NuSVCTuner
 metatune = MetaTune(task="classification", excluded=[NuSVCTuner, "SGDClassifierTuner"])
 
 ```
+<br>
 
-### single_tuner: ```Optional[BaseTuner] (default=None)```
+### 4. single_tuner: ```Optional[BaseTuner] (default=None)```
 This is used when you wish to perform parameter searching for a single specific model class with its corresponding tuner. If specified, only the tuner passed as argument will exit in the search space. You can use this to specify a custom tuner or an already implemented tuner with or without overwriting the parameter search spaces as shown:
 
 ```python
