@@ -106,7 +106,7 @@ The `probability_score` (default=False) when set to `True` remove models that do
 <br>
 
 ### 2. raising an optuna.exceptions.TrialPruned(e)
-Calling `.fit(...)` on your dataset may throw an exception regardless of whether the combination of sampled parameters is correct, for example, calling the `.fit(...)` method of a naive bayes classifier model on dataset with non-positive features will raise an exception, or in some cases, the sampled `nu` parameter for the `NuSVC` or `NuSVR` model may not be compatible with your dataset and may raise an exception. In cases like these the optimization process will be terminated due to these unforseen errors. To handle them, you will need to catch the exception and instead, raise a `TrialPruned` exceptions instead. You can do this like so:
+Calling the `.fit(...)` `predict(...)` or `predict_proba(...)` method on your dataset may throw an exception regardless of whether the combination of sampled parameters is correct, for example, calling the `.fit(...)` method of a naive bayes classifier model on dataset with non-positive features will raise an exception, or in some cases, the sampled `nu` parameter for the `NuSVC` or `NuSVR` model may not be compatible with your dataset and may raise an exception. In cases like these the optimization process will be terminated due to these unforseen errors. To handle them, you will need to catch the exception and instead, raise a `TrialPruned` exceptions instead. You can do this like so:
 
 ```python
 ...
@@ -118,6 +118,8 @@ except Exception as e:
 ```
 
 This way, instead of terminating the metaheuristic search program, optuna simply skips to the next trial and gives you a log relating to why the trial was pruned. Similarly, if you happen to want to optimize an objective the relies on predicted probability scores for each class, rather than the class label, you can call the `predict_proba(...)` method on `X_train`  in the `try` block, just after called the `fit(...)` method.
+
+**NOTE:** You must first ensure that your dataset is properly formatted and correct before utilising the `try` block this way.
 
 <br>
 <br>
