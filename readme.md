@@ -1,6 +1,6 @@
 # MetaTune
 
-MetaTune framework implements simultaneous model selection and hyperparameter tuning of sci-kit-learn supervised learning algorithms with [optuna](https://github.com/optuna/optuna) implemented metaheuristic search algorithms
+MetaTune framework implements simultaneous model selection and hyperparameter tuning of scikit-learn supervised learning algorithms with [optuna](https://github.com/optuna/optuna) implemented metaheuristic search algorithms
 
 <br>
 <br>
@@ -8,7 +8,7 @@ MetaTune framework implements simultaneous model selection and hyperparameter tu
 
 ## Getting Started
 <hr>
-MetaTune implements user customizable tuners for all sci-kit-learn supervised learning algorithms, with it one can easily sampled the best model out of a search space of all sc-kit-learn algorithms and their corresponding hyperparameters with relative with only a few lines of code.
+MetaTune implements user customizable tuners for all sci-kit-learn supervised learning algorithms, with it one can easily sample the best model out of a search space of all scikit-learn algorithms and their corresponding hyperparameters with relative ease with only a few lines of code.
 
 Importing the `MetaTune(...)` class is as easy as:
 
@@ -71,14 +71,14 @@ study.optimize(objective, n_trials=50)
 ...
 ```
 
-In this task, we hope to find the best classification algorithm and its hyperparameters that best maximize objective, which happens to be the average sum of f1, recall and precision metrics.
+In this task, we hope to find the best classification algorithm and its hyperparameters that best maximizes the  objective, which happens to be the average sum of f1, recall and precision metrics.
 
-After running this, we can retrieve the best optuna trial and build a model out of it for further finetuning with more data, like so:
+After running this, we can retrieve the best optuna trial and build a model out of it for further fine-tuning with more data, like so:
 
 ```python
 sampled_model = metatune.build_sampled_model(study.best_trial)
 ```
-**Note** that the models returned are purely sci-kit-learn models, thus the reason the regular `fit(...)` and `predict(...)` methods can be called on them.
+**Note** that the models returned are purely scikit-learn models, thus the reason the regular `fit(...)` and `predict(...)` methods can be called on them.
 
 <br>
 <br>
@@ -86,18 +86,18 @@ sampled_model = metatune.build_sampled_model(study.best_trial)
 
 ## Handling Model Data Incompatibility
 <hr>
-In some cases, not all sci-kit-learn models will be compatible with your data. In such cases, you can do one of two things
+In some cases, not all scikit-learn models will be compatible with your data. In such cases, you can do one of two things
 
 <br>
 
 ### 1. Calling the `only_compatible_with_data(...)` method:
-This method takes in three arguments, X, y and probability_score. X and y correspond to the training data, this attempts a data fit on all models (intialised with there default parameters) in the search space, it exempts models that are not compatible to the dataset, hence reducing the search space.
+This method takes in three arguments, X, y and probability_score. X and y correspond to the training data, this attempts a data fit on all models (initialized with their default parameters) in the search space, it exempts models that are not compatible to the dataset, hence reducing the search space.
 
 **NOTE:**, Some models may not actually be incompatible with your dataset, and a model may be exempted simply because the default parameter being used raises an exception when an attempt to fit the model on the data is made. so it may not be suitable to use this method in some cases, hence the reason to opt for the second option
 
-The `probability_score` (default=False) when set to `True` remove models that do not implement the `predict_proba(...)` method, this can be handy if you wish to maximise an objective that relies on the predicted probability scores for each class rather than predicted labels. This argument is only effective is `task = "classification"`.
+The `probability_score` (default=False) when set to `True` remove models that do not implement the `predict_proba(...)` method, this can be handy if you wish to maximise an objective that relies on the predicted probability scores for each class rather than predicted labels. This argument is only effective if `task = "classification"`.
 
-**NOTE:**, Some models may not have the `predict_proba(...)` readily available until certain conditions are met in the parameter combination used to initialise the model object. For example, the `SVC` class objects will only have this method if the `probability` parameter is set to `True`.
+**NOTE:** Some models may not have the `predict_proba(...)` readily available until certain conditions are met in the parameter combination used to initialise the model object. For example, the `SVC` class objects will only have this method if the `probability` parameter is set to `True`.
 
 <br>
 
@@ -165,7 +165,7 @@ metatune = MetaTune(task="classification", excluded=[NuSVCTuner, "SGDClassifierT
 <br>
 
 ### 4. single_tuner: ```Optional[BaseTuner] (default=None)```
-This is used when you wish to perform parameter searching for a single specific model class with its corresponding tuner. If specified, only the tuner passed as argument will exit in the search space. You can use this to specify a custom tuner or an already implemented tuner with or without overwriting the parameter search spaces as shown:
+This is used when you wish to perform parameter searching for a single specific model class with its corresponding tuner. If specified, only the tuner passed as argument will exist in the search space. You can use this to specify a custom tuner or an already implemented tuner with or without overwriting the parameter search spaces as shown:
 
 ```python
 

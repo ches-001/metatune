@@ -1,4 +1,4 @@
 numpy>=1.24.3
-scikit-learn>=1.1.2
+scikit-learn>=1.2.2
 optuna>=2.10.1
 pytest>=7.2.0
