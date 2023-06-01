@@ -2,6 +2,8 @@
 
 MetaTune framework implements simultaneous model selection and hyperparameter tuning of sci-kit-learn supervised learning algorithms with [optuna](https://github.com/optuna/optuna) implemented metaheuristic search algorithms
 
+<br>
+<br>
 <hr>
 
 ## Getting Started
@@ -78,7 +80,12 @@ sampled_model = metatune.build_sampled_model(study.best_trial)
 ```
 **Note** that the models returned are purely sci-kit-learn models, thus the reason the regular `fit(...)` and `predict(...)` methods can be called on them.
 
+<br>
+<br>
+<hr>
 
+## Handling Model Data Incompatibility
+<hr>
 In some cases, not all sci-kit-learn models will be compatible with your data. In such cases, you can do one of two things
 
 #### 1. Calling the `only_compatible_with_data(...)` method:
@@ -86,6 +93,20 @@ This method takes in three arguments, X, y and probability_score. X and y corres
 
 **NOTE:**, Some models may not actually be incompatible with your dataset, and a model may be exempted simply because the default parameter being used raises an exception when an attempt to fit the model on the data is made. so it may not be suitable to use this method in some cases, hence the reason to opt for the second option
 
+The `probability_score` (default=False) when set to `True` remove models that do not implement the `predict_proba(...)` method, this can be handy if you wish to maximise an objective that relies on the predicted probability scores for each class rather than predicted labels. This argument is only effective is `task = "classification"`.
+
+**NOTE:**, Some models may not have the `predict_proba(...)` readily available until certain conditions are met in the parameter combination used to initialise the model object. For example, the `SVC` class objects will only have this method if the `probability` parameter is set to `True`.
 
 #### 2. raising an optuna.exceptions.TrialPruned(e)
+Calling `.fit(...)` on your dataset may throw an exception regardless of whether the combination of sampled parameters is correct, for example, calling the `.fit(...)` method of a naive bayes classifier model on dataset with non-positive features will raise an exception, or in some cases, the sampled `nu` parameter for the `NuSVC` or `NuSVR` model may not be compatible with your dataset and may raise an exception. In cases like these the optimization process will be terminated due to these unforseen errors. To handle them, you will need to catch the exception and instead, raise a `TrialPruned` exceptions instead. You can do this like so:
 
+```python
+...
+try:
+    model.fit(X_train, y_train)
+
+except Exception as e:
+    optuna.exceptions.TrialPruned(e)
+```
+
+This way, instead of terminating the metaheuristic search program, optuna simply skips to the next trial and gives you a log relating to why the trial was pruned. Similarly, if you happen to want to optimize an objective the relies on predicted probability scores for each class, rather than the class label, you can call the `predict_proba(...)` method on `X_train`  in the `try` block, just after called the `fit(...)` method.
