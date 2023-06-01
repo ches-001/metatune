@@ -97,7 +97,7 @@ In some cases, not all sci-kit-learn models will be compatible with your data. I
 ### 1. Calling the `only_compatible_with_data(...)` method:
 This method takes in three arguments, X, y and probability_score. X and y correspond to the training data, this attempts a data fit on all models (intialised with there default parameters) in the search space, it exempts models that are not compatible to the dataset, hence reducing the search space.
 
-**NOTE:**, Some models may not actually be incompatible with your dataset, and a model may be exempted simply because the default parameter being used raises an exception when an attempt to fit the model on the data is made. so it may not be suitable to use this method in some cases, hence the reason to opt for the second option
+**NOTE:**, Some models may not actually be incompatible with your dataset, and a model may be exempted simply because the default parameters being used raises an exception when an attempt to fit the model on the data is made. so it may not be suitable to use this method in some cases, hence the reason to opt for the second option. If you wish to also implement custom tuners that do not exist amongst the implemented library of tuners, then using this method is not advisable.
 
 The `probability_score` (default=False) when set to `True` remove models that do not implement the `predict_proba(...)` method, this can be handy if you wish to maximise an objective that relies on the predicted probability scores for each class rather than predicted labels. This argument is only effective is `task = "classification"`.
 
