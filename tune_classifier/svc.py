@@ -1,4 +1,4 @@
-from baseline import BaseTuner
+from ..baseline import BaseTuner
 from optuna.trial import Trial
 from dataclasses import dataclass
 from typing import Iterable, Optional, Dict, Any, Callable
@@ -129,10 +129,3 @@ class NuSVCTuner(BaseTuner):
         params = self.sample_params(trial)
         model = super().evaluate_sampled_model("classification", NuSVC, params)
         return model
-
-
-tuner_model_class_dict: Dict[str, Callable] = {
-    SVCTuner.__name__: SVC,
-    LinearSVCTuner.__name__: LinearSVC,
-    NuSVCTuner.__name__: NuSVC,
-}

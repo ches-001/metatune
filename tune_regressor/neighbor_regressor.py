@@ -1,10 +1,10 @@
-from baseline import BaseTuner
+from ..baseline import BaseTuner
 from optuna.trial import Trial
 from dataclasses import dataclass
 from typing import Iterable, Optional, Dict, Any, Callable
 from types import MappingProxyType
 from sklearn.neighbors import KNeighborsRegressor, RadiusNeighborsRegressor
-from tune_classifier import KNeighborsClassifierTuner
+from ..tune_classifier import KNeighborsClassifierTuner
 
 
 @dataclass
@@ -55,9 +55,3 @@ class RadiusNeighborsRegressorTuner(BaseTuner):
         self.model = model
 
         return model
-
-
-tuner_model_class_dict: Dict[str, Callable] = {
-    KNeighborsRegressorTuner.__name__: KNeighborsRegressor,
-    RadiusNeighborsRegressorTuner.__name__: RadiusNeighborsRegressor
-}

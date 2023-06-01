@@ -1,4 +1,4 @@
-from baseline import BaseTuner
+from ..baseline import BaseTuner
 from optuna.trial import Trial
 from dataclasses import dataclass
 from typing import Iterable, Optional, Dict, Any, Union, Callable
@@ -334,13 +334,3 @@ class HistGradientBoostingClassifierTuner(BaseTuner):
         self.model = model
 
         return model
-    
-
-tuner_model_class_dict: Dict[str, Callable] = {
-    RandomForestClassifierTuner.__name__: RandomForestClassifier,
-    ExtraTreesClassifierTuner.__name__: ExtraTreesClassifier,
-    AdaBoostClassifierTuner.__name__: AdaBoostClassifier,
-    GradientBoostingClassifierTuner.__name__: GradientBoostingClassifier,
-    BaggingClassifierTuner.__name__: BaggingClassifier,
-    HistGradientBoostingClassifierTuner.__name__: HistGradientBoostingClassifier,
-}

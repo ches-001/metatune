@@ -1,4 +1,4 @@
-from baseline import BaseTuner
+from ..baseline import BaseTuner
 from optuna.trial import Trial
 from dataclasses import dataclass
 from types import MappingProxyType
@@ -59,9 +59,3 @@ class QDAClassifierTuner(BaseTuner):
 
         self.model = model
         return model
-
-
-tuner_model_class_dict: Dict[str, Callable] = {
-    LDAClassifierTuner.__name__: LinearDiscriminantAnalysis,
-    QDAClassifierTuner.__name__: QuadraticDiscriminantAnalysis
-}

@@ -1,7 +1,7 @@
-from baseline.base import BaseTuner
-import tune_classifier
-import tune_regressor
-from tests.utils import BaseTest
+from ..baseline.base import BaseTuner
+from .. import tune_classifier
+from .. import tune_regressor
+from .utils import BaseTest
 
 
 # run python -m pytest -v

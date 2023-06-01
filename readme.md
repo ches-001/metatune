@@ -114,3 +114,12 @@ except Exception as e:
 ```
 
 This way, instead of terminating the metaheuristic search program, optuna simply skips to the next trial and gives you a log relating to why the trial was pruned. Similarly, if you happen to want to optimize an objective the relies on predicted probability scores for each class, rather than the class label, you can call the `predict_proba(...)` method on `X_train`  in the `try` block, just after called the `fit(...)` method.
+
+<br>
+<br>
+<hr>
+
+## Advanced Configurations
+
+
+<hr>

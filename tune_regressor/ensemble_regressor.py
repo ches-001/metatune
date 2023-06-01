@@ -1,4 +1,4 @@
-from baseline import BaseTuner
+from ..baseline import BaseTuner
 from optuna.trial import Trial
 from dataclasses import dataclass
 from typing import Iterable, Optional, Dict, Any, Union, Callable
@@ -11,7 +11,7 @@ from sklearn.ensemble import (
     BaggingRegressor, 
     HistGradientBoostingRegressor,
 )
-from tune_classifier import BaggingClassifierTuner
+from ..tune_classifier import BaggingClassifierTuner
 
 @dataclass
 class RandomForestRegressorTuner(BaseTuner):
@@ -308,13 +308,3 @@ class HistGradientBoostingRegressorTuner(BaseTuner):
         self.model = model
 
         return model
-    
-
-tuner_model_class_dict: Dict[str, Callable] = {
-    RandomForestRegressorTuner.__name__: RandomForestRegressor,
-    ExtraTreesRegressorTuner.__name__: ExtraTreesRegressor,
-    AdaBoostRegressorTuner.__name__: AdaBoostRegressor,
-    GradientBoostingRegressorTuner.__name__: GradientBoostingRegressor,
-    BaggingRegressorTuner.__name__: BaggingRegressor,
-    HistGradientBoostingRegressorTuner.__name__: HistGradientBoostingRegressor,
-}

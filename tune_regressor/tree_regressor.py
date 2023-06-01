@@ -1,4 +1,4 @@
-from baseline import BaseTuner
+from ..baseline import BaseTuner
 from optuna.trial import Trial
 from dataclasses import dataclass
 from typing import Iterable, Optional, Dict, Any, Union, Callable
@@ -70,9 +70,3 @@ class ExtraTreeRegressorTuner(DecisionTreeRegressorTuner):
         model = super(DecisionTreeRegressorTuner, self).evaluate_sampled_model("regression", ExtraTreeRegressor, params)
         self.model = model
         return model
-    
-
-tuner_model_class_dict: Dict[str, Callable] = {
-    DecisionTreeRegressorTuner.__name__: DecisionTreeRegressor,
-    ExtraTreeRegressorTuner.__name__: ExtraTreeRegressor,
-}

@@ -1,9 +1,9 @@
 import inspect, copy
-from baseline import BaseTuner, TrialCheckMixin
+from .baseline import BaseTuner, TrialCheckMixin
 from optuna.trial import Trial, FrozenTrial
-from tune_regressor import regressor_tuning_entities, regressor_tuner_model_class_dict
-from tune_classifier import classifier_tuning_entities, classifier_tuner_model_class_dict
-from utils import make_default_tuner_type_mutable
+from .tune_regressor import regressor_search_space, regressor_tuner_model_class_map
+from .tune_classifier import classifier_search_space, classifier_tuner_model_class_map
+from .utils import make_default_tuner_type_mutable
 from typing import Iterable, Tuple, Dict, Union, Optional, Any, Callable
 
 
@@ -143,12 +143,12 @@ class MetaTune(TrialCheckMixin):
         self.single_tuner = single_tuner
 
         if self.task == "regression":
-            self.search_space: Dict[str, BaseTuner] = copy.deepcopy(regressor_tuning_entities)
-            self.tuner_model_class_map: Dict[str, Callable] = copy.deepcopy(regressor_tuner_model_class_dict)
+            self.search_space: Dict[str, BaseTuner] = copy.deepcopy(regressor_search_space)
+            self.tuner_model_class_map: Dict[str, Callable] = copy.deepcopy(regressor_tuner_model_class_map)
 
         else:
-            self.search_space:  Dict[str, BaseTuner] = copy.deepcopy(classifier_tuning_entities)
-            self.tuner_model_class_map: Dict[str, Callable] = copy.deepcopy(classifier_tuner_model_class_dict)
+            self.search_space:  Dict[str, BaseTuner] = copy.deepcopy(classifier_search_space)
+            self.tuner_model_class_map: Dict[str, Callable] = copy.deepcopy(classifier_tuner_model_class_map)
 
         self._exclude_tuners()
         self._prepare_custom_tuners()

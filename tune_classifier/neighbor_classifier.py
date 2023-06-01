@@ -1,4 +1,4 @@
-from baseline import BaseTuner
+from ..baseline import BaseTuner
 from optuna.trial import Trial
 from dataclasses import dataclass
 from typing import Iterable, Optional, Dict, Any, Callable
@@ -100,10 +100,3 @@ class NearestCentroidClassifierTuner(BaseTuner):
         self.model = model
 
         return model
-
-
-tuner_model_class_dict: Dict[str, Callable] = {
-    KNeighborsClassifierTuner.__name__: KNeighborsClassifier,
-    RadiusNeighborsClassifierTuner.__name__: RadiusNeighborsClassifier,
-    NearestCentroidClassifierTuner.__name__: NearestCentroid
-}

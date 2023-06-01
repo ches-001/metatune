@@ -1,4 +1,4 @@
-from baseline import BaseTuner
+from ..baseline import BaseTuner
 from optuna.trial import Trial
 from dataclasses import dataclass
 from typing import Iterable, Optional, Dict, Any, Callable
@@ -110,10 +110,3 @@ class NuSVRTuner(BaseTuner):
         params = self.sample_params(trial)
         model = super().evaluate_sampled_model("regression", NuSVR, params)
         return model
-    
-
-tuner_model_class_dict: Dict[str, Callable] = {
-    SVRTuner.__name__: SVR,
-    LinearSVRTuner.__name__: LinearSVR,
-    NuSVRTuner.__name__: NuSVR,
-}

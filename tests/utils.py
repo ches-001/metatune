@@ -3,9 +3,9 @@ import numpy as np
 from sklearn import datasets
 from sklearn.preprocessing import MinMaxScaler
 from optuna.trial import Trial
-from baseline.base import BaseTuner
-from tune_classifier import classifier_tuner_model_class_dict
-from tune_regressor import regressor_tuner_model_class_dict
+from ..baseline.base import BaseTuner
+from ..tune_classifier import classifier_tuner_model_class_map
+from ..tune_regressor import regressor_tuner_model_class_map
 
 
 # load sample datasets
@@ -59,10 +59,10 @@ class BaseTest:
 
     def test_dict_mapping(self):
         if self.task == "classification":
-            assert self.model.__class__.__name__ in classifier_tuner_model_class_dict.keys()
+            assert self.model.__class__.__name__ in classifier_tuner_model_class_map.keys()
         
         elif self.task == "regression":
-            assert self.model.__class__.__name__ in regressor_tuner_model_class_dict.keys()
+            assert self.model.__class__.__name__ in regressor_tuner_model_class_map.keys()
 
         else: assert False
 

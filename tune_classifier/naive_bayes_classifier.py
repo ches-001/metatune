@@ -1,4 +1,4 @@
-from baseline import BaseTuner
+from ..baseline import BaseTuner
 from optuna.trial import Trial
 from dataclasses import dataclass
 from typing import Callable,Iterable, Optional, Dict, Any, Union
@@ -155,11 +155,3 @@ class CategoricalNBTuner(BaseTuner):
 
         self.model = model
         return model
-    
-tuner_model_class_dict: Dict[str, Callable] = {
-    GaussianNBTuner.__name__: GaussianNB,
-    BernoulliNBTuner.__name__: BernoulliNB,
-    MultinomialNBTuner.__name__: MultinomialNB,
-    ComplementNBTuner.__name__: ComplementNB,
-    CategoricalNBTuner.__name__: CategoricalNB,
-}

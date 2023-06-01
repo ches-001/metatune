@@ -1,5 +1,5 @@
 import numpy as np
-from baseline import BaseTuner
+from ..baseline import BaseTuner
 from optuna.trial import Trial
 from dataclasses import dataclass, field
 from typing import Iterable, Optional, Dict, Any, Union, Callable
@@ -758,28 +758,3 @@ class RANSACRegressorTuner(BaseTuner):
         model = super().evaluate_sampled_model("regression", RANSACRegressor, params)
         self.model = model
         return model    
-
-
-tuner_model_class_dict: Dict[str, Callable] = {
-    LinearRegressionTuner.__name__: LinearRegression,
-    LassoTuner.__name__: Lasso,
-    RidgeTuner.__name__: Ridge,
-    ElasticNetTuner.__name__: ElasticNet,
-    MultiTaskLassoTuner.__name__: MultiTaskLasso,
-    MultiTaskElasticNetTuner.__name__: MultiTaskElasticNet,
-    LarsTuner.__name__: Lars,
-    LassoLarsTuner.__name__: LassoLars,
-    LassoLarsICTuner.__name__: LassoLarsIC,
-    PassiveAggressiveRegressorTuner.__name__: PassiveAggressiveRegressor,
-    QuantileRegressorTuner.__name__: QuantileRegressor,
-    SGDRegressorTuner.__name__: SGDRegressor,
-    BayesianRidgeTuner.__name__: BayesianRidge,
-    OrthogonalMatchingPursuitTuner.__name__: OrthogonalMatchingPursuit,
-    PoissonRegressorTuner.__name__: PoissonRegressor,
-    GammaRegressorTuner.__name__: GammaRegressor,
-    TweedieRegressorTuner.__name__: TweedieRegressor,
-    HuberRegressorTuner.__name__: HuberRegressor,
-    TheilSenRegressorTuner.__name__: TheilSenRegressor,
-    ARDRegressionTuner.__name__: ARDRegression,
-    RANSACRegressorTuner.__name__: RANSACRegressor
-}

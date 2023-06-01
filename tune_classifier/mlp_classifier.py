@@ -1,4 +1,4 @@
-from baseline import BaseTuner
+from ..baseline import BaseTuner
 from optuna.trial import Trial
 from dataclasses import dataclass
 from typing import Iterable, Optional, Dict, Any, Callable
@@ -74,8 +74,3 @@ class MLPClassifierTuner(BaseTuner):
         model = super().evaluate_sampled_model("classification", MLPClassifier, params)
         self.model = model
         return model
-
-
-tuner_model_class_dict: Dict[str, Callable] = {
-    MLPClassifierTuner.__name__: MLPClassifier
-}

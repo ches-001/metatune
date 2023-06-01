@@ -1,4 +1,4 @@
-from baseline import BaseTuner
+from ..baseline import BaseTuner
 from optuna.trial import Trial
 from dataclasses import dataclass
 from typing import Iterable, Optional, Dict, Any, Callable
@@ -212,11 +212,3 @@ class SGDClassifierTuner(BaseTuner):
         self.model = model
 
         return model
-    
-
-tuner_model_class_dict: Dict[str, Callable] = {
-    LogisticRegressionTuner.__name__: LogisticRegression,
-    PerceptronTuner.__name__: Perceptron,
-    PassiveAggressiveClassifierTuner.__name__: PassiveAggressiveClassifier,
-    SGDClassifierTuner.__name__: SGDClassifier,
-}

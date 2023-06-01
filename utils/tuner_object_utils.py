@@ -1,4 +1,4 @@
-from baseline import BaseTuner
+from ..baseline import BaseTuner
 from types import MappingProxyType
 
 def make_default_tuner_type_mutable(tuner: BaseTuner) -> BaseTuner:

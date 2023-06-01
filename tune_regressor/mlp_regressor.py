@@ -2,7 +2,7 @@ from optuna.trial import Trial
 from dataclasses import dataclass
 from typing import Optional, Dict, Any, Callable
 from sklearn.neural_network import MLPRegressor
-from tune_classifier import MLPClassifierTuner
+from ..tune_classifier import MLPClassifierTuner
 
 
 @dataclass
@@ -18,8 +18,3 @@ class MLPRegressorTuner(MLPClassifierTuner):
         model = super(MLPClassifierTuner, self).evaluate_sampled_model("regression", MLPRegressor, params)
         self.model = model
         return model
-
-
-tuner_model_class_dict: Dict[str, Callable] = {
-    MLPRegressorTuner.__name__: MLPRegressor
-}
