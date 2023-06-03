@@ -78,15 +78,11 @@ After running this, we can retrieve the best optuna trial and build a model out 
 ```python
 sampled_model = metatune.build_sampled_model(study.best_trial)
 ```
-<<<<<<< HEAD
 **NOTE** that the models returned are purely scikit-learn models, thus the reason the regular `fit(...)` and `predict(...)` methods can be called on them.
-=======
-**NOTE** that the models returned are purely sci-kit-learn models, thus the reason the regular `fit(...)` and `predict(...)` methods can be called on them.
 
 <br>
 
 **NOTE:** A thing to note is that for large datasets, model and hyperparameter search ought to be used on a subset of the data rather than the entire dataset. The reason for this being that the aim of hyperparameter tuning is not to fit all of the data, but rather to sample the parameters that best model the data. After tuning, you can instantiate the sampled model with the corresponding sampled parameters and fine-tune the model on the large dataset, this way you avoid the unnecessary computation required to model the entirety of the available dataset.
->>>>>>> 5950660293bdbefcc65fd19cdcbaee336077d543
 
 <br>
 <br>
@@ -101,11 +97,7 @@ In some cases, not all scikit-learn models will be compatible with your data. In
 ### 1. Calling the `only_compatible_with_data(...)` method:
 This method takes in three arguments, X, y and probability_score. X and y correspond to the training data, this attempts a data fit on all models (initialized with their default parameters) in the search space, it exempts models that are not compatible to the dataset, hence reducing the search space.
 
-<<<<<<< HEAD
-**NOTE:** Some models may not actually be incompatible with your dataset, and a model may be exempted simply because the default parameter being used raises an exception when an attempt to fit the model on the data is made. so it may not be suitable to use this method in some cases, hence the reason to opt for the second option
-=======
 **NOTE:**, Some models may not actually be incompatible with your dataset, and a model may be exempted simply because the default parameters being used raises an exception when an attempt to fit the model on the data is made. so it may not be suitable to use this method in some cases, hence the reason to opt for the second option. If you wish to also implement custom tuners that do not exist amongst the implemented library of tuners, then using this method is not advisable.
->>>>>>> 5950660293bdbefcc65fd19cdcbaee336077d543
 
 The `probability_score` (default=False) when set to `True` remove models that do not implement the `predict_proba(...)` method, this can be handy if you wish to maximise an objective that relies on the predicted probability scores for each class rather than predicted labels. This argument is only effective if `task = "classification"`.
 
@@ -122,11 +114,7 @@ try:
     model.fit(X_train, y_train)
 
 except Exception as e:
-<<<<<<< HEAD
    raise optuna.exceptions.TrialPruned(e)
-=======
-    raise optuna.exceptions.TrialPruned(e)
->>>>>>> 5950660293bdbefcc65fd19cdcbaee336077d543
 ```
 
 This way, instead of terminating the metaheuristic search program, optuna simply skips to the next trial and gives you a log relating to why the trial was pruned. Similarly, if you happen to want to optimize an objective the relies on predicted probability scores for each class, rather than the class label, you can call the `predict_proba(...)` method on `X_train`  in the `try` block, just after called the `fit(...)` method.
