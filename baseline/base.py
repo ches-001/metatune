@@ -115,12 +115,6 @@ class BaseTuner(SpaceTypeValidationMixin, TrialCheckMixin, SampledModelEvaluatio
     you must first extend from the BaseTuner class. The custom tuner must 
     have the class attribute 'model_class' of type (Callable), which indicates
     the class of the model being tuned::
-        
-        from dataclasses import dataclass
-        from metatune.baseline import BaseTuner
-        from sklearn.gaussian_process import GaussianProcessRegressor
-        from typing import Callable, Dict, Iterable, Any
-        from types import MappingProxyType
 
         @dataclass
         class CustomTuner(BaseTuner):
@@ -140,7 +134,7 @@ class BaseTuner(SpaceTypeValidationMixin, TrialCheckMixin, SampledModelEvaluatio
                 "log":False,
             })
             #categorical space
-            param3_space: Iterable[str] = ("cat1", "cat2", "cat3", "cat4") -> Dict[str, Any]
+            param3_space: Iterable[str] = ("cat1", "cat2", "cat3", "cat4")
 
 
             def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
@@ -150,9 +144,9 @@ class BaseTuner(SpaceTypeValidationMixin, TrialCheckMixin, SampledModelEvaluatio
                 params["param1"] = trial.suggest_int(
                     f"{self.__class__.__name__}_param1", **dict(self.param1_space))
                 params["param2"] = trial.suggest_float(
-                    f"{self.__class__.__name__}_param2", **dict(self.param1_space))
+                    f"{self.__class__.__name__}_param2", **dict(self.param2_space))
                 params["param3"] = trial.suggest_categorical(
-                    f"{self.__class__.__name__}_param3", param1_space)
+                    f"{self.__class__.__name__}_param3", self.param3_space)
                 
                 return params
 
@@ -170,15 +164,6 @@ class BaseTuner(SpaceTypeValidationMixin, TrialCheckMixin, SampledModelEvaluatio
 
     def sample_params(self, trial: Trial) -> Dict[str, Any]:
         r"""
-        This method sample parameters
-        from the defined sample spaces and returns them. For the sake of uniqueness 
-        and to avoid parameter space distribution related errors that optuna may throw,
-        it is mandatory that each parameter name must be registered with a unique identifiers
-        (the class name) alongside the parameter name, both seperated with an underscore (_). 
-        This way, conflict is avoided when multiple tuners that happen to have same 
-        model class parameter name for their corresponding model classes exist together in 
-        the search space. In this method, it is mandatory to call the `super().sample_params()`
-        method of the `BaseTuner` class before defining the params dictionary.
 
         Parameter
         ---------
@@ -194,20 +179,6 @@ class BaseTuner(SpaceTypeValidationMixin, TrialCheckMixin, SampledModelEvaluatio
 
     def sample_model(self, trial: Trial) -> Any:
         r"""
-        The `sample_model(...)` method first calls the `super().sample_model()` method from the
-        `BaseTuner` class. This method collects all the sampled parameters via the `sample_params(..)`
-        method and passes them as argument, alongside the task --"regression" or "classification"--
-        and the `model_class` into the `super().evaluate_sampled_model(...)` method. The
-        `super().evaluate_sampled_model(...)` method first verifies that the keys of the params dictionary
-        returned by the `sample_params(...)` method all correspond to argument names used to initialised the 
-        `model_class` object, it then initialises an object of the `model_class` and fits a small set of data
-        with it to check for bad sampled parameter combinations. If the combination of sampled parameters
-        is bad / errotic, it triggers a pruning exception to prune the trial and move on to the next trial.
-        Although It is not mandatory to use the `super().evaluate_sampled_model(...)` method in your 
-        custom tuner, you are advised to use it as it handles bad parameter combination automatically 
-        during search. The returned `model_class` instance after parameter and model evaluation is 
-        assigned to the `model` class attribute of the `BaseTuner` class and then returned.
-
         Parameter
         ---------
         trial: optuna.trial.Trial

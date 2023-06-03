@@ -106,7 +106,7 @@ The `probability_score` (default=False) when set to `True` remove models that do
 <br>
 
 ### 2. raising an optuna.exceptions.TrialPruned(e)
-Calling the `.fit(...)` `predict(...)` or `predict_proba(...)` method on your dataset may throw an exception regardless of whether the combination of sampled parameters is correct, for example, calling the `.fit(...)` method of a naive bayes classifier model on dataset with non-positive features will raise an exception, or in some cases, the sampled `nu` parameter for the `NuSVC` or `NuSVR` model may not be compatible with your dataset and may raise an exception. In cases like these the optimization process will be terminated due to these unforseen errors. To handle them, you will need to catch the exception and instead, raise a `TrialPruned` exceptions instead. You can do this like so:
+Calling the `.fit(...)` `predict(...)` or `predict_proba(...)` method on your dataset may throw an exception regardless of whether the combination of sampled parameters is correct, for example, calling the `.fit(...)` method of a naive bayes classifier model on dataset with non-positive features will raise an exception, or in some cases, the sampled `nu` parameter for the `NuSVC` or `NuSVR` model may not be compatible with your dataset and may raise an exception. In cases like these the optimization process will be terminated due to these unforseen errors. To handle them, you will need to catch the raised exception and reraise it as an `optuna.exceptions.TrialPruned` exception instead. You can do this like so:
 
 ```python
 ...
@@ -116,6 +116,8 @@ try:
 except Exception as e:
    raise optuna.exceptions.TrialPruned(e)
 ```
+
+Depending on the error, you might also want to put the `pred = model.predict(X_eval)` line in the `try` block for this same reason, this is because some models may fit on your data but due to data incompatibility may throw an exception during prediction. An example of this can be observed when trying to fit a categorical Naive Bayes model on data with continous numerical feature column vectors instead of categorical feature column vectors.
 
 This way, instead of terminating the metaheuristic search program, optuna simply skips to the next trial and gives you a log relating to why the trial was pruned. Similarly, if you happen to want to optimize an objective the relies on predicted probability scores for each class, rather than the class label, you can call the `predict_proba(...)` method on `X_train`  in the `try` block, just after called the `fit(...)` method.
 
@@ -178,4 +180,74 @@ This is used when you wish to perform parameter searching for a single specific 
 from metatune.tune_classifier import GradientBoostingClassifierTuner
 
 metatune = MetaTune(task="classification", single_tuner=GradientBoostingClassifierTuner())
+```
+
+<br>
+<br>
+<hr>
+
+## Creating a Custom Tuner
+
+You may want to perform hyperparameter sampling for a given machine learning algorithm whose tuner is not part of the library of implemented tuners, in such case, you can opt for creating your own custom tuner as shown in the example below where we implement a tuner for gaussian process classifier.
+
+```python
+
+from optuna.trial import Trial
+from dataclasses import dataclass
+from metatune.baseline import BaseTuner
+from sklearn.gaussian_process import GaussianProcessClassifier
+from sklearn.gaussian_process.kernels import RBF, WhiteKernel, ExpSineSquared
+from typing import Callable, Dict, Iterable, Any, Optional
+from types import MappingProxyType
+from metatune import MetaTune
+
+@dataclass
+class CustomGPCTuner(BaseTuner):
+    model_class: Callable = GaussianProcessClassifier
+    kernel_space: Iterable[object] = (RBF(), WhiteKernel(), ExpSineSquared())
+    max_iter_predict_space: Dict[str, Any] = MappingProxyType({
+        "low":10, "high":300, "step":1, "log":True
+    })
+
+    def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
+        super().sample_params(trial)
+                
+        params = {}
+        params["kernel"] = trial.suggest_categorical(f"{self.__class__.__name__}_kernel", self.kernel_space)
+        params["max_iter_predict"] = trial.suggest_int(
+            f"{self.__class__.__name__}_max_iter_predict", **dict(self.max_iter_predict_space))
+        
+        return params
+
+    def sample_model(self, trial: Optional[Trial]=None) -> Any:
+        super().sample_model(trial)
+        params = self.sample_params(trial)
+        model = super().evaluate_sampled_model("classification", self.model_class, params)
+        self.model = model
+
+        return model
+```
+
+A thing to note is that every custom tuner must exhibit data class behaviour and hence must be decorated with the `@dataclass` decorator. The tuner class must also extend the `BaseTuner` class and must have the `model_class` attribute which corresponds to a callable of the model class to be tuned.
+
+Since a dataclass require that its default class attributes are immutable, we cannot directly use a dictionary to assign values of an int or float sample space, this is because dictionaries are mutable data structures, so in this case we use the `MappingProxyType` class to wrap any dictionary used to define a search space, so as to exhibit immutable characteristics, which can then be used to initialise an integer or float search space.
+
+The `sample_model(...)` method of your custom tuner must first call the `super().sample_model(...)` method from the `BaseTuner` class. Your custom `sample_model(...)` method collects all the sampled parameters via your custom `sample_params(...)` method and passes them as argument, alongside the task ("regression" or "classification") and the `model_class` into the `super().evaluate_sampled_model(...)` method. The `super().evaluate_sampled_model(...)` method first verifies that the keys of the `params` dictionary returned by the `sample_params(...)` method all correspond to argument names used to initialised the `model_class` object, it then initialises an object of the `model_class` and fits a small set of data with it to check for bad parameter combinations that have been sampled. If the combination of sampled parameters is bad / errotic, it triggers a pruning exception to prune the trial and moves on to the next trial.
+
+You can set the defined custom tuner as only tuner in the search space like so:
+
+```python
+MetaTune(task="classification", single_tuner=CustomGPCTuner())
+```
+
+Or
+
+```python
+MetaTune(task="classification", custom_tuners=[CustomGPCTuner()], custom_only=True)
+```
+
+You can decide add it to the already existing search space as a new tuner like so:
+
+```python
+MetaTune(task="classification", custom_tuners=[CustomGPCTuner()], custom_only=False)
 ```
