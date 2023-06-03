@@ -246,7 +246,7 @@ Or
 MetaTune(task="classification", custom_tuners=[CustomGPCTuner()], custom_only=True)
 ```
 
-You can decide add it to the already existing search space as a new tuner like so:
+You can also decide to add it to the already existing search space as a new tuner like so:
 
 ```python
 MetaTune(task="classification", custom_tuners=[CustomGPCTuner()], custom_only=False)
