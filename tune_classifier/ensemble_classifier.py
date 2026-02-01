@@ -118,7 +118,7 @@ class AdaBoostClassifierTuner(BaseTuner):
     estimator_space: Iterable[Optional[object]] = (None, )
     n_estimators_space: Dict[str, Any] = field(default_factory=lambda: {"low":1, "high":200, "step":1, "log":True})
     learning_rate_space: Dict[str, Any] = field(default_factory=lambda: {"low":0.01, "high":1, "step":None, "log":True})
-    algorithm_space: Iterable[str] = ("SAMME", "SAMME.R")
+    algorithm_space: Iterable[str] = ("SAMME", )
     random_state_space: Dict[str, Any] = field(default_factory=lambda: {"low":1, "high":10000, "step":1, "log":True})
     
     def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
