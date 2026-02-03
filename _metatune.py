@@ -171,7 +171,13 @@ class MetaTune(TrialCheckMixin):
         return _search_space, _tuner_model_class_map
             
 
-    def only_compatible_with_data(self, X: Iterable, y: Iterable, probability_score: bool=False) -> Iterable[str]:
+    def only_compatible_with_data(
+            self, 
+            X: Iterable[Any],
+            y: Iterable[Any],
+            probability_score: bool=False, 
+            tag_filters: Optional[Dict[str, Any]]=None
+        ) -> Iterable[str]:
         r"""
         This method checks the tuners in the search space that are incompatible 
         with the given data, and automatically exludes them from the search space
@@ -197,6 +203,9 @@ class MetaTune(TrialCheckMixin):
             verify if `model_class` can output probability scores. Only useful
             if `self.task="classification"`
 
+        tag_filters: Dict[str, Any]
+            Use to filter model by their tags (using the model._get_tags() call)
+
         Return
         ------
         tuners: Iterable[str]
@@ -220,12 +229,18 @@ class MetaTune(TrialCheckMixin):
                     " in the model_class of your custom tuner")
             
             try:
-                _model.fit(X, y)
-                _model.predict(X)
+                if tag_filters is not None:
+                    model_tags = _model._get_tags()
+                    for k in tag_filters:
+                        if model_tags[k] != tag_filters[k]:
+                            raise Exception()
 
                 if probability_score:
                     if self.task == "classification" and not hasattr(_model, "predict_proba"):
                         raise AttributeError()
+                    
+                _model.fit(X, y)
+                _model.predict(X)
 
             except Exception as e:
                 if tuner_name in self.search_space.keys():
