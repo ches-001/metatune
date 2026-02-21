@@ -1,6 +1,6 @@
 from ..baseline import BaseTuner
 from optuna.trial import Trial
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, Field
 from typing import Iterable, Optional, Dict, Any
 from sklearn.linear_model import (
     LogisticRegression, 
@@ -12,16 +12,16 @@ from sklearn.linear_model import (
 class LogisticRegressionTuner(BaseTuner):
     penalty_space: Iterable[Optional[str]] = ("l1", "l2", "elasticnet", None)
     dual_space: Iterable[bool] = (True, False)
-    tol_space: Dict[str, Any] = field(default_factory=lambda: {"low":1e-6, "high":1e-3, "step":None, "log":True})
-    C_space: Dict[str, Any] = field(default_factory=lambda: {"low":0.9, "high":1.0, "step":None, "log":False})
+    tol_space: Field = field(default_factory=lambda: {"low":1e-6, "high":1e-3, "step":None, "log":True})
+    C_space: Field = field(default_factory=lambda: {"low":0.9, "high":1.0, "step":None, "log":False})
     fit_intercept_space: Iterable[bool] = (True, False)
-    intercept_scaling_space: Dict[str, Any] = field(default_factory=lambda: {"low":0.5, "high":1.0, "step":None, "log":False})
+    intercept_scaling_space: Field = field(default_factory=lambda: {"low":0.5, "high":1.0, "step":None, "log":False})
     class_weight_space: Iterable[str] = ("balanced", )
     solver_space: Iterable[str] = ("lbfgs", "liblinear", "newton-cg", "newton-cholesky", "sag", "saga")
-    max_iter_space: Dict[str, Any] = field(default_factory=lambda: {"low":100, "high":1000, "step":1, "log":True})
+    max_iter_space: Field = field(default_factory=lambda: {"low":100, "high":1000, "step":1, "log":True})
     multi_class_space: Iterable[str] = ("auto", )
-    l1_ratio_space: Dict[str, Any] = field(default_factory=lambda: {"low":0.0, "high":1.0, "step":None, "log":False})
-    random_state_space: Dict[str, Any] = field(default_factory=lambda: {"low":1, "high":10000, "step":1, "log":True})
+    l1_ratio_space: Field = field(default_factory=lambda: {"low":0.0, "high":1.0, "step":None, "log":False})
+    random_state_space: Field = field(default_factory=lambda: {"low":1, "high":10000, "step":1, "log":True})
     
     def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
         super().sample_params(trial)
@@ -58,17 +58,17 @@ class LogisticRegressionTuner(BaseTuner):
 @dataclass
 class PerceptronTuner(BaseTuner):
     penalty_space: Iterable[Optional[str]] = ("l1", "l2", "elasticnet", None)
-    alpha_space: Dict[str, Any] = field(default_factory=lambda: {"low":1e-5, "high":1.0, "step":None, "log":True})
-    l1_ratio_space: Dict[str, Any] = field(default_factory=lambda: {"low":0.0, "high":1.0, "step":None, "log":False})
+    alpha_space: Field = field(default_factory=lambda: {"low":1e-5, "high":1.0, "step":None, "log":True})
+    l1_ratio_space: Field = field(default_factory=lambda: {"low":0.0, "high":1.0, "step":None, "log":False})
     fit_intercept_space: Iterable[bool] = (True, False)
-    max_iter_space: Dict[str, Any] = field(default_factory=lambda: {"low":100, "high":2000, "step":1, "log":True})
-    tol_space: Dict[str, Any] = field(default_factory=lambda: {"low":1e-6, "high":1e-3, "step":None, "log":True})
+    max_iter_space: Field = field(default_factory=lambda: {"low":100, "high":2000, "step":1, "log":True})
+    tol_space: Field = field(default_factory=lambda: {"low":1e-6, "high":1e-3, "step":None, "log":True})
     shuffle_space: Iterable[bool] = (True, False)
-    eta0_space: Dict[str, Any] = field(default_factory=lambda: {"low":0.1, "high":1.0, "step":None, "log":False})
-    random_state_space: Dict[str, Any] = field(default_factory=lambda: {"low":1, "high":10000, "step":1, "log":True})
+    eta0_space: Field = field(default_factory=lambda: {"low":0.1, "high":1.0, "step":None, "log":False})
+    random_state_space: Field = field(default_factory=lambda: {"low":1, "high":10000, "step":1, "log":True})
     early_stopping_space: Iterable[bool] = (True, False)
-    validation_fraction_space: Dict[str, Any] = field(default_factory=lambda: {"low":0.1, "high":0.5, "step":None, "log":False})
-    n_iter_no_change_space: Dict[str, Any] = field(default_factory=lambda: {"low":1, "high":100, "step":1, "log":True})
+    validation_fraction_space: Field = field(default_factory=lambda: {"low":0.1, "high":0.5, "step":None, "log":False})
+    n_iter_no_change_space: Field = field(default_factory=lambda: {"low":1, "high":100, "step":1, "log":True})
     class_weight_space: Iterable[str] = ("balanced", )
     
     def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
@@ -104,16 +104,16 @@ class PerceptronTuner(BaseTuner):
 
 @dataclass
 class PassiveAggressiveClassifierTuner(BaseTuner):
-    C_space: Dict[str, Any] = field(default_factory=lambda: {"low":0.9, "high":1.0, "step":None, "log":False})
+    C_space: Field = field(default_factory=lambda: {"low":0.9, "high":1.0, "step":None, "log":False})
     fit_intercept_space: Iterable[bool] = (True, False)
-    max_iter_space: Dict[str, Any] = field(default_factory=lambda: {"low":100, "high":2000, "step":1, "log":True})
-    tol_space: Dict[str, Any] = field(default_factory=lambda: {"low":1e-6, "high":1e-3, "step":None, "log":True})
+    max_iter_space: Field = field(default_factory=lambda: {"low":100, "high":2000, "step":1, "log":True})
+    tol_space: Field = field(default_factory=lambda: {"low":1e-6, "high":1e-3, "step":None, "log":True})
     early_stopping_space: Iterable[bool] = (True, False)
-    validation_fraction_space: Dict[str, Any] = field(default_factory=lambda: {"low":0.1, "high":0.5, "step":None, "log":False})
-    n_iter_no_change_space: Dict[str, Any] = field(default_factory=lambda: {"low":1, "high":100, "step":1, "log":True})
+    validation_fraction_space: Field = field(default_factory=lambda: {"low":0.1, "high":0.5, "step":None, "log":False})
+    n_iter_no_change_space: Field = field(default_factory=lambda: {"low":1, "high":100, "step":1, "log":True})
     shuffle_space: Iterable[bool] = (True, False)
     loss_space: Iterable[str] = ("hinge", )
-    random_state_space: Dict[str, Any] = field(default_factory=lambda: {"low":1, "high":10000, "step":1, "log":True})
+    random_state_space: Field = field(default_factory=lambda: {"low":1, "high":10000, "step":1, "log":True})
     class_weight_space: Iterable[str] = ("balanced", )
     average_space: Iterable[bool] = (True, False)
     
@@ -160,20 +160,20 @@ class SGDClassifierTuner(BaseTuner):
         "epsilon_insensitive", 
         "squared_epsilon_insensitive")
     penalty_space: Iterable[str] = ("l1", "l2", "elasticnet", None)
-    alpha_space: Dict[str, Any] = field(default_factory=lambda: {"low":1e-5, "high":1.0, "step":None, "log":True})
-    l1_ratio_space: Dict[str, Any] = field(default_factory=lambda: {"low":0.0, "high":1.0, "step":None, "log":False})
+    alpha_space: Field = field(default_factory=lambda: {"low":1e-5, "high":1.0, "step":None, "log":True})
+    l1_ratio_space: Field = field(default_factory=lambda: {"low":0.0, "high":1.0, "step":None, "log":False})
     fit_intercept_space: Iterable[bool] = (True, False)
-    max_iter_space: Dict[str, Any] = field(default_factory=lambda: {"low":100, "high":2000, "step":1, "log":True})
-    tol_space: Dict[str, Any] = field(default_factory=lambda: {"low":1e-6, "high":1e-3, "step":None, "log":True})
+    max_iter_space: Field = field(default_factory=lambda: {"low":100, "high":2000, "step":1, "log":True})
+    tol_space: Field = field(default_factory=lambda: {"low":1e-6, "high":1e-3, "step":None, "log":True})
     shuffle_space: Iterable[bool] = (True, False)
-    epsilon_space: Dict[str, Any] = field(default_factory=lambda: {"low":0.1, "high":1.0, "step":None, "log":False})
-    random_state_space: Dict[str, Any] = field(default_factory=lambda: {"low":1, "high":10000, "step":1, "log":True})
+    epsilon_space: Field = field(default_factory=lambda: {"low":0.1, "high":1.0, "step":None, "log":False})
+    random_state_space: Field = field(default_factory=lambda: {"low":1, "high":10000, "step":1, "log":True})
     learning_rate_space: Iterable[str] = ("constant", "optimal", "invscaling", "adaptive")
-    eta0_space: Dict[str, Any] = field(default_factory=lambda: {"low":0.1, "high":1.0, "step":None, "log":False})
-    power_t_space: Dict[str, Any] = field(default_factory=lambda: {"low":-1.0, "high":1.0, "step":None, "log":False})
+    eta0_space: Field = field(default_factory=lambda: {"low":0.1, "high":1.0, "step":None, "log":False})
+    power_t_space: Field = field(default_factory=lambda: {"low":-1.0, "high":1.0, "step":None, "log":False})
     early_stopping_space: Iterable[bool] = (True, False)
-    validation_fraction_space: Dict[str, Any] = field(default_factory=lambda: {"low":0.1, "high":0.5, "step":None, "log":False})
-    n_iter_no_change_space: Dict[str, Any] = field(default_factory=lambda: {"low":1, "high":100, "step":1, "log":True})
+    validation_fraction_space: Field = field(default_factory=lambda: {"low":0.1, "high":0.5, "step":None, "log":False})
+    n_iter_no_change_space: Field = field(default_factory=lambda: {"low":1, "high":100, "step":1, "log":True})
     class_weight_space: Iterable[str] = ("balanced", )
     average_space: Iterable[bool] = (True, False)
     

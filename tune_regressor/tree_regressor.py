@@ -1,6 +1,6 @@
 from ..baseline import BaseTuner
 from optuna.trial import Trial
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, Field
 from typing import Iterable, Optional, Dict, Any
 from sklearn.tree import DecisionTreeRegressor, ExtraTreeRegressor
 
@@ -10,8 +10,8 @@ class DecisionTreeRegressorTuner(BaseTuner):
     criterion_space: Iterable[str] = ("squared_error", "friedman_mse", "absolute_error", "poisson")
     splitter_space: Iterable[str] = ("best", "random")
     max_depth_space: Iterable[int] = field(default_factory=lambda: {"low":2, "high":1000, "step":1, "log":True})
-    min_samples_split_space: Dict[str, Any] = field(default_factory=lambda: {"low":1e-4, "high":1.0, "step":None, "log":True})
-    min_samples_leaf_space: Dict[str, Any] = field(default_factory=lambda: {"low":1e-4, "high":1.0, "step":None, "log":True})
+    min_samples_split_space: Field = field(default_factory=lambda: {"low":1e-4, "high":1.0, "step":None, "log":True})
+    min_samples_leaf_space: Field = field(default_factory=lambda: {"low":1e-4, "high":1.0, "step":None, "log":True})
     min_weight_fraction_leaf_space: Iterable[float] = field(default_factory=lambda: {"low":0.0, "high":0.5, "step":None, "log":False})
     max_features_space: Iterable[Optional[str]] = ("sqrt", "log2", None)
     random_state_space: Iterable[int] = field(default_factory=lambda: {"low":1, "high":10000, "step":1, "log":True})

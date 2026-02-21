@@ -1,17 +1,17 @@
 from ..baseline import BaseTuner
 from optuna.trial import Trial
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, Field
 from typing import Iterable, Optional, Dict, Any
 from sklearn.neighbors import KNeighborsClassifier, RadiusNeighborsClassifier, NearestCentroid
 
 
 @dataclass
 class KNeighborsClassifierTuner(BaseTuner):
-    n_neighbors_space: Dict[str, Any] = field(default_factory=lambda: {"low":1, "high":10, "step":2, "log":False})
+    n_neighbors_space: Field = field(default_factory=lambda: {"low":1, "high":10, "step":2, "log":False})
     weights_space: Iterable[str] = ("uniform", "distance")
     algorithm_space: Iterable[str] = ("ball_tree", "kd_tree", "brute")
-    leaf_size_space: Dict[str, Any] = field(default_factory=lambda: {"low":2, "high":100, "step":1, "log":True})
-    p_space: Dict[str, Any] = field(default_factory=lambda: {"low":3, "high":8, "step":1, "log":False})
+    leaf_size_space: Field = field(default_factory=lambda: {"low":2, "high":100, "step":1, "log":True})
+    p_space: Field = field(default_factory=lambda: {"low":3, "high":8, "step":1, "log":False})
     metric_space: Iterable[str] = ("cityblock", "cosine", "euclidean", "manhattan", "minkowski")
     
     def sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
@@ -41,11 +41,11 @@ class KNeighborsClassifierTuner(BaseTuner):
 
 @dataclass
 class RadiusNeighborsClassifierTuner(BaseTuner):
-    radius_space: Dict[str, Any] = field(default_factory=lambda: {"low":2, "high":20, "step":1, "log":False})
+    radius_space: Field = field(default_factory=lambda: {"low":2, "high":20, "step":1, "log":False})
     weight_space: Iterable[str] = ("uniform", "distance")
     algorithm_space: Iterable[str] = ("ball_tree", "kd_tree", "brute")
-    leaf_size_space: Dict[str, Any] = field(default_factory=lambda: {"low":2, "high":100, "step":1, "log":True})
-    p_space: Dict[str, Any] = field(default_factory=lambda: {"low":3, "high":10, "step":1, "log":False})
+    leaf_size_space: Field = field(default_factory=lambda: {"low":2, "high":100, "step":1, "log":True})
+    p_space: Field = field(default_factory=lambda: {"low":3, "high":10, "step":1, "log":False})
     metric_space: Iterable[str] = ("cityblock", "cosine", "euclidean", "manhattan", "minkowski")
     outlier_label_space: Iterable[str] = (None, "most_frequent")
     
@@ -78,7 +78,7 @@ class RadiusNeighborsClassifierTuner(BaseTuner):
 @dataclass
 class NearestCentroidClassifierTuner(BaseTuner):
     metric_space: Iterable[str] = ("cityblock", "cosine", "euclidean", "manhattan")
-    shrink_threshold_space: Dict[str, Any] = field(default_factory=lambda: {"low":0.1, "high":0.9, "step":None, "log":False})
+    shrink_threshold_space: Field = field(default_factory=lambda: {"low":0.1, "high":0.9, "step":None, "log":False})
 
     def sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
         super().sample_params(trial)

@@ -1,21 +1,21 @@
 from ..baseline import BaseTuner
 from optuna.trial import Trial
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, Field
 from typing import Iterable, Optional, Dict, Any
 from sklearn.svm import SVC, LinearSVC, NuSVC
 
 @dataclass
 class SVCTuner(BaseTuner):
     kernel_space: Iterable[str] = ("linear", "poly", "rbf", "sigmoid")
-    degree_space: Dict[str, Any] = field(default_factory=lambda: {"low":1, "high":5, "step":1, "log":False})
+    degree_space: Field = field(default_factory=lambda: {"low":1, "high":5, "step":1, "log":False})
     gamma_space: Iterable[str] = ("scale", "auto")
-    coef0_space: Dict[str, Any] = field(default_factory=lambda: {"low":0.0, "high":0.5, "step":None, "log":False})
-    tol_space: Dict[str, Any] = field(default_factory=lambda: {"low":1e-6, "high":1e-3, "step":None, "log":True})
-    C_space: Dict[str, Any] = field(default_factory=lambda: {"low":0.5, "high":1.0, "step":None, "log":False})
+    coef0_space: Field = field(default_factory=lambda: {"low":0.0, "high":0.5, "step":None, "log":False})
+    tol_space: Field = field(default_factory=lambda: {"low":1e-6, "high":1e-3, "step":None, "log":True})
+    C_space: Field = field(default_factory=lambda: {"low":0.5, "high":1.0, "step":None, "log":False})
     class_weight_space: Iterable[str] = ("balanced", )
     shrinking_space: Iterable[bool] = (True, )
     probability_space: Iterable[bool] = (True, )
-    random_state_space: Dict[str, Any] = field(default_factory=lambda: {"low":1, "high":10000, "step":1, "log":True})
+    random_state_space: Field = field(default_factory=lambda: {"low":1, "high":10000, "step":1, "log":True})
     
     def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
         super().sample_params(trial)
@@ -48,14 +48,14 @@ class LinearSVCTuner(BaseTuner):
     penalty_space: Iterable[str] = ("l1", "l2")
     loss_space: Iterable[str] = ("hinge", "squared_hinge")
     dual_space: Iterable[bool] = (True, False)
-    tol_space: Dict[str, Any] = field(default_factory=lambda: {"low":1e-6, "high":1e-3, "step":None, "log":True})
-    C_space: Dict[str, Any] = field(default_factory=lambda: {"low":0.5, "high":1.0, "step":None, "log":False})
+    tol_space: Field = field(default_factory=lambda: {"low":1e-6, "high":1e-3, "step":None, "log":True})
+    C_space: Field = field(default_factory=lambda: {"low":0.5, "high":1.0, "step":None, "log":False})
     multi_class_space: Iterable[str] = ("ovr", "crammer_singer")
     fit_intercept_space: Iterable[bool] = (True, False)
-    intercept_scaling_space: Dict[str, Any] = field(default_factory=lambda: {"low":0.5, "high":1.0, "step":None, "log":False})
+    intercept_scaling_space: Field = field(default_factory=lambda: {"low":0.5, "high":1.0, "step":None, "log":False})
     class_weight_space: Iterable[str] = ("balanced", )
-    max_iter_space: Dict[str, Any] = field(default_factory=lambda: {"low":500, "high":2000, "step":1, "log":True})
-    random_state_space: Dict[str, Any] = field(default_factory=lambda: {"low":1, "high":10000, "step":1, "log":True})
+    max_iter_space: Field = field(default_factory=lambda: {"low":500, "high":2000, "step":1, "log":True})
+    random_state_space: Field = field(default_factory=lambda: {"low":1, "high":10000, "step":1, "log":True})
     
     def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
         super().sample_params(trial)
@@ -87,18 +87,18 @@ class LinearSVCTuner(BaseTuner):
 
 @dataclass
 class NuSVCTuner(BaseTuner):
-    nu_space: Dict[str, Any] = field(default_factory=lambda: {"low":0.1, "high":0.5, "step":None, "log":False})
+    nu_space: Field = field(default_factory=lambda: {"low":0.1, "high":0.5, "step":None, "log":False})
     kernel_space: Iterable[str] = ("linear", "poly", "rbf", "sigmoid")
-    degree_space: Dict[str, Any] = field(default_factory=lambda: {"low":1, "high":5, "step":1, "log":False})
+    degree_space: Field = field(default_factory=lambda: {"low":1, "high":5, "step":1, "log":False})
     gamma_space: Iterable[str] = ("scale", "auto")
-    coef0_space: Dict[str, Any] = field(default_factory=lambda: {"low":0.0, "high":0.5, "step":None, "log":False})
+    coef0_space: Field = field(default_factory=lambda: {"low":0.0, "high":0.5, "step":None, "log":False})
     shrinking_space: Iterable[bool] = (True, )
     probability_space: Iterable[bool] = (True, )
-    tol_space: Dict[str, Any] = field(default_factory=lambda: {"low":1e-6, "high":1e-3, "step":None, "log":True})
+    tol_space: Field = field(default_factory=lambda: {"low":1e-6, "high":1e-3, "step":None, "log":True})
     class_weight_space: Iterable[str] = ("balanced", )
     decision_function_shape_space: Iterable[str] = ("ovo", "ovr")
     break_ties_space: Iterable[bool] = (False, )
-    random_state_space: Dict[str, Any] = field(default_factory=lambda: {"low":1, "high":10000, "step":1, "log":True})
+    random_state_space: Field = field(default_factory=lambda: {"low":1, "high":10000, "step":1, "log":True})
     
     def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
         super().sample_params(trial)
