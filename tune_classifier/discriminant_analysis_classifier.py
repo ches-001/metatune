@@ -1,7 +1,7 @@
 from ..baseline import BaseTuner
 from optuna.trial import Trial
-from dataclasses import dataclass, field, Field
-from typing import Iterable, Optional, Dict, Any
+from dataclasses import dataclass, field
+from typing import Iterable, Optional, Dict, Any, Callable
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis, QuadraticDiscriminantAnalysis
 
 
@@ -9,7 +9,7 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis, QuadraticD
 class LDAClassifierTuner(BaseTuner):
     solver_space: Iterable[str] = ("svd", "lsqr", "eigen")
     shrinkage_space: Iterable[str] = (None, "auto")
-    tol_space: Field = field(default_factory=lambda: {"low":1e-6, "high":1e-3, "step":None, "log":True})
+    tol_space: Dict[str, Any] = field(default_factory=lambda: {"low":1e-6, "high":1e-3, "step":None, "log":True})
     priors_space: Iterable[Optional[Iterable[float]]] = (None, )
     store_covariance: Iterable[bool] = (False, )
     covariance_estimator_space: Iterable[Optional[object]] = (None, )
@@ -43,8 +43,8 @@ class LDAClassifierTuner(BaseTuner):
 
 @dataclass
 class QDAClassifierTuner(BaseTuner):
-    reg_param_space: Field = field(default_factory=lambda: {"low":0.1, "high":1.0, "step":None, "log":False})
-    tol_space: Field = field(default_factory=lambda: {"low":1e-6, "high":1e-3, "step":None, "log":True})
+    reg_param_space: Dict[str, Any] = field(default_factory=lambda: {"low":0.1, "high":1.0, "step":None, "log":False})
+    tol_space: Dict[str, Any] = field(default_factory=lambda: {"low":1e-6, "high":1e-3, "step":None, "log":True})
     priors_space: Iterable[Optional[Iterable[float]]] = (None,)
     store_covariance: Iterable[bool] = (False,)
 

@@ -1,34 +1,34 @@
 from ..baseline import BaseTuner
 from optuna.trial import Trial
-from dataclasses import dataclass, field, Field
+from dataclasses import dataclass, field
 from typing import Iterable, Optional, Dict, Any
 from sklearn.neural_network import MLPClassifier
 
 
 @dataclass
 class MLPClassifierTuner(BaseTuner):
-    n_hidden_space: Field = field(default_factory=lambda: {"low":1, "high":5, "step":1, "log":False})
-    hidden_layer_sizes_space: Field = field(default_factory=lambda: {"low":100, "high":200, "step":1, "log":True})
+    n_hidden_space: Dict[str, Any] = field(default_factory=lambda: {"low":1, "high":5, "step":1, "log":False})
+    hidden_layer_sizes_space: Dict[str, Any] = field(default_factory=lambda: {"low":100, "high":200, "step":1, "log":True})
     activation_space: Iterable[str] = ("identity", "logistic", "tanh", "relu")
     solver_space: Iterable[str] = ("lbfgs", "sgd", "adam")
-    alpha_space: Field = field(default_factory=lambda: {"low":1e-4, "high":1.0, "step":None, "log":True})
-    batch_size_space: Field = field(default_factory=lambda: {"low":8, "high":256, "step":1, "log":True})
+    alpha_space: Dict[str, Any] = field(default_factory=lambda: {"low":1e-4, "high":1.0, "step":None, "log":True})
+    batch_size_space: Dict[str, Any] = field(default_factory=lambda: {"low":8, "high":256, "step":1, "log":True})
     learning_rate_space: Iterable[str] = ("constant", "invscaling", "adaptive")
-    learning_rate_init_space: Field = field(default_factory=lambda: {"low":1e-4, "high":1e-2, "step":None, "log":True})
-    power_t_space: Field = field(default_factory=lambda: {"low":0.1, "high":1.0, "step":None, "log":False})
-    max_iter_space: Field = field(default_factory=lambda: {"low":200, "high":1000, "step":1, "log":True})
+    learning_rate_init_space: Dict[str, Any] = field(default_factory=lambda: {"low":1e-4, "high":1e-2, "step":None, "log":True})
+    power_t_space: Dict[str, Any] = field(default_factory=lambda: {"low":0.1, "high":1.0, "step":None, "log":False})
+    max_iter_space: Dict[str, Any] = field(default_factory=lambda: {"low":200, "high":1000, "step":1, "log":True})
     shuffle_space: Iterable[bool] = (True, False)
-    random_state_space: Field = field(default_factory=lambda: {"low":1, "high":10000, "step":1, "log":True})
-    tol_space: Field = field(default_factory=lambda: {"low":1e-5, "high":1e-2, "step":None, "log":True})
-    momentum_space: Field = field(default_factory=lambda: {"low":0.9, "high":1.0, "step":None, "log":False})
+    random_state_space: Dict[str, Any] = field(default_factory=lambda: {"low":1, "high":10000, "step":1, "log":True})
+    tol_space: Dict[str, Any] = field(default_factory=lambda: {"low":1e-5, "high":1e-2, "step":None, "log":True})
+    momentum_space: Dict[str, Any] = field(default_factory=lambda: {"low":0.9, "high":1.0, "step":None, "log":False})
     nesterovs_momentum_space: Iterable[bool] = (True, False)
     early_stopping_space: Iterable[bool] = (True, False)
-    validation_fraction_space: Field = field(default_factory=lambda: {"low":0.1, "high":0.5, "step":None, "log":False})
-    beta_1_space: Field = field(default_factory=lambda: {"low":0.9, "high":1.0, "step":None, "log":False})
-    beta_2_space: Field = field(default_factory=lambda: {"low":0.9, "high":1.0, "step":None, "log":False})
-    epsilon_space: Field = field(default_factory=lambda: {"low":1e-8, "high":1e-5, "step":None, "log":True})
-    n_iter_no_change_space: Field = field(default_factory=lambda: {"low":3, "high":50, "step":1, "log":True})
-    max_fun_space: Field = field(default_factory=lambda: {"low":10000, "high":20000, "step":1, "log":True})
+    validation_fraction_space: Dict[str, Any] = field(default_factory=lambda: {"low":0.1, "high":0.5, "step":None, "log":False})
+    beta_1_space: Dict[str, Any] = field(default_factory=lambda: {"low":0.9, "high":1.0, "step":None, "log":False})
+    beta_2_space: Dict[str, Any] = field(default_factory=lambda: {"low":0.9, "high":1.0, "step":None, "log":False})
+    epsilon_space: Dict[str, Any] = field(default_factory=lambda: {"low":1e-8, "high":1e-5, "step":None, "log":True})
+    n_iter_no_change_space: Dict[str, Any] = field(default_factory=lambda: {"low":3, "high":50, "step":1, "log":True})
+    max_fun_space: Dict[str, Any] = field(default_factory=lambda: {"low":10000, "high":20000, "step":1, "log":True})
     
     def sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:
         super().sample_params(trial)

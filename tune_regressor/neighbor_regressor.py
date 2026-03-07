@@ -1,6 +1,6 @@
 from ..baseline import BaseTuner
 from optuna.trial import Trial
-from dataclasses import dataclass, field, Field
+from dataclasses import dataclass, field
 from typing import Iterable, Optional, Dict, Any
 from sklearn.neighbors import KNeighborsRegressor, RadiusNeighborsRegressor
 from ..tune_classifier import KNeighborsClassifierTuner
@@ -24,11 +24,11 @@ class KNeighborsRegressorTuner(KNeighborsClassifierTuner):
 
 @dataclass
 class RadiusNeighborsRegressorTuner(BaseTuner):
-    radius_space: Field = field(default_factory=lambda: {"low":2, "high":20, "step":1, "log":False})
+    radius_space: Dict[str, Any] = field(default_factory=lambda: {"low":2, "high":20, "step":1, "log":False})
     weight_space: Iterable[str] = ("uniform", "distance")
     algorithm_space: Iterable[str] = ("ball_tree", "kd_tree", "brute")
-    leaf_size_space: Field = field(default_factory=lambda: {"low":2, "high":100, "step":1, "log":True})
-    p_space: Field = field(default_factory=lambda: {"low":3, "high":10, "step":1, "log":False})
+    leaf_size_space: Dict[str, Any] = field(default_factory=lambda: {"low":2, "high":100, "step":1, "log":True})
+    p_space: Dict[str, Any] = field(default_factory=lambda: {"low":3, "high":10, "step":1, "log":False})
     metric_space: Iterable[str] = ("cityblock", "cosine", "euclidean", "manhattan", "minkowski")
     
     def sample_params(self, trial: Optional[Trial] = None) -> Dict[str, Any]:

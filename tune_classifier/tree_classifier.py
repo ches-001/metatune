@@ -1,6 +1,6 @@
 from ..baseline import BaseTuner
 from optuna.trial import Trial
-from dataclasses import dataclass, field, Field
+from dataclasses import dataclass, field
 from typing import Iterable, Optional, Dict, Any, Union
 from sklearn.tree import DecisionTreeClassifier, ExtraTreeClassifier
 
@@ -9,15 +9,15 @@ from sklearn.tree import DecisionTreeClassifier, ExtraTreeClassifier
 class DecisionTreeClassifierTuner(BaseTuner):
     criterion_space: Iterable[str] = ("gini", "entropy", "log_loss")
     splitter_space: Iterable[str] = ("best", "random")
-    max_depth_space: Field = field(default_factory=lambda: {"low":2, "high":1000, "step":1, "log":True})
+    max_depth_space: Dict[str, Any] = field(default_factory=lambda: {"low":2, "high":1000, "step":1, "log":True})
     min_samples_split_space: Iterable[Union[int, float]] = field(default_factory=lambda: {"low":1e-4, "high":1.0, "step":None, "log":True})
     min_samples_leaf_space: Iterable[Union[int, float]] = field(default_factory=lambda: {"low":1e-4, "high":1.0, "step":None, "log":True})
-    min_weight_fraction_leaf_space: Field = field(default_factory=lambda: {"low":0.0, "high":0.5, "step":None, "log":False})
+    min_weight_fraction_leaf_space: Dict[str, Any] = field(default_factory=lambda: {"low":0.0, "high":0.5, "step":None, "log":False})
     max_features_space: Iterable[Optional[str]] = ("sqrt", "log2", None)
-    random_state_space: Field = field(default_factory=lambda: {"low":1, "high":10000, "step":1, "log":True})
-    max_leaf_nodes_space: Field = field(default_factory=lambda: {"low":2, "high":1000, "step":1, "log":True})
-    min_impurity_decrease_space: Field = field(default_factory=lambda: {"low":0.0, "high":1.0, "step":None, "log":False})
-    ccp_alpha_space: Field = field(default_factory=lambda: {"low":0.0, "high":1.0, "step":None, "log":False})
+    random_state_space: Dict[str, Any] = field(default_factory=lambda: {"low":1, "high":10000, "step":1, "log":True})
+    max_leaf_nodes_space: Dict[str, Any] = field(default_factory=lambda: {"low":2, "high":1000, "step":1, "log":True})
+    min_impurity_decrease_space: Dict[str, Any] = field(default_factory=lambda: {"low":0.0, "high":1.0, "step":None, "log":False})
+    ccp_alpha_space: Dict[str, Any] = field(default_factory=lambda: {"low":0.0, "high":1.0, "step":None, "log":False})
     class_weight_space: Iterable[Optional[str]] = ("balanced", None)
     
     def sample_params(self, trial: Optional[Trial]=None) -> Dict[str, Any]:
