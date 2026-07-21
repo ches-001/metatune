@@ -7,10 +7,10 @@ from types import MappingProxyType
 
 
 class SpaceTypeValidationMixin:
-    def is_space_type(self, space: Union[Dict, Iterable], type: Callable) -> bool:
-        if type not in [float, int]:
+    def is_space_type(self, space: Union[Dict, Iterable], dtype: Callable) -> bool:
+        if dtype not in [float, int]:
             raise ValueError(
-                f"is_space_type method expects type being checked to be 'int' or 'float', got {type}."
+                f"is_space_type method expects type being checked to be 'int' or 'float', got {dtype}."
                 f" To check for categorical types, try using the `is_valid_categorical_space(...)` method"
             )
 
@@ -29,10 +29,10 @@ class SpaceTypeValidationMixin:
                 
             if "step" in space.keys():
                 if space["step"] is not None:
-                    if not isinstance(space["step"], float) or not isinstance(space["step"], int):
+                    if not isinstance(space["step"], (int, float)):
                         raise TypeError(f"step is expected to be numerical type, got {type(space['step'])} instead")
             
-            return all(list(map(lambda x: isinstance(x, type), [space["low"], space["high"]])))
+            return all(list(map(lambda x: isinstance(x, dtype), [space["low"], space["high"]])))
         
         return False
     
